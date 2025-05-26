@@ -1,0 +1,15 @@
+{
+  "_comment": "這份文件用於通用位置的**中文翻譯** --- ex：Header 標題、通用元件等",
+
+  "page_title_about": "關於我",
+  "page_title_project": "專案介紹",
+  "page_title_home": "首頁",
+  "page_title_service": "服務",
+  "page_title_item": "物品 × 生活",
+  "page_title_motor": "HONDA MSX 125 GROM",
+  "page_title_car": "Grand Lancer",
+
+  "linelogin": "LINE 登入",
+  "logout" : "登出",
+  "nickname": "暱稱"
+}

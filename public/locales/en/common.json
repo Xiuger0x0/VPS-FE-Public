@@ -1,0 +1,15 @@
+{
+  "_comment": "這份文件用於通用位置的**英文翻譯** --- ex：Header 標題、通用元件等",
+
+  "page_title_about": "About Me",
+  "page_title_project": "Projects",
+  "page_title_home": "Home",
+  "page_title_service": "Service",
+  "page_title_item": "ITEM × LIFE",
+  "page_title_motor": "HONDA MSX 125 GROM",
+  "page_title_car": "Grand Lancer",
+
+  "linelogin": "LINE LOGIN",
+  "logout" : "LOGOUT",
+  "nickname": "Nickname"
+}

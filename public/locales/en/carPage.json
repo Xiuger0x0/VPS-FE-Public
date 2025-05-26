@@ -1,0 +1,27 @@
+{
+  "introductionText": "The Grand Lancer (2017) stands as one of the notable entries in the mid-size sedan category. Designed by the renowned Italian design house Pininfarina, its exterior boasts clean, sharp lines that blend elegance with a dynamic presence, showcasing a distinct European flair. Equipped with a 1.8L MIVEC engine and a CVT transmission, it offers a smooth and refined driving experience. Although production has ended, it remains a timeless favorite among drivers who value both design and practicality.",
+
+  "detailsTitle": "Details",
+  "advantage1": "Sleek exterior with Pininfarina styling – a blend of modernity and sportiness",
+  "advantage2": "Spacious interior with comfortable rear seating",
+  "advantage3": "Consistent fuel efficiency, ideal for long-distance travel",
+  "advantage4": "Moderate trunk capacity with 60/40 split-folding rear seats for added versatility",
+  "advantage5": "Well-tuned suspension offering a balance of handling and comfort",
+  "advantage6": "Equipped with CVT transmission for a smoother driving experience",
+  "advantage7": "Comes with a smart infotainment system and rearview camera assist",
+
+  "carousel": [
+    {
+      "title": "Side View 1",
+      "text": "Sharp body lines and a sleek silver finish highlight its urban sophistication."
+    },
+    {
+      "title": "Side View 2",
+      "text": "In the interplay of light and shadow, the Grand Lancer reveals a poised yet dynamic character."
+    },
+    {
+      "title": "",
+      "text": ""
+    }
+  ]
+}

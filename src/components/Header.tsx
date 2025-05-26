@@ -1,0 +1,296 @@
+import { useEffect, useRef, useState } from "react";
+import {
+  Box,
+  Flex,
+  Text,
+  Button,
+  Avatar,
+  HStack,
+  MenuContent,
+  MenuItem,
+  MenuItemGroup,
+  MenuRoot,
+  MenuSeparator,
+  MenuTrigger,
+  MenuPositioner,
+  IconButton,
+  Stack,
+  Drawer,
+} from "@chakra-ui/react";
+import { FiMenu } from "react-icons/fi";
+import { MdOutlineClose } from "react-icons/md";
+import { IUser } from "@/interface/IUser";
+import { ColorModeButton, useColorModeValue } from "./ui/color-mode";
+import { Link, useNavigate, useLocation } from "react-router";
+import { useTranslation } from "react-i18next";
+import { BsTranslate } from "react-icons/bs";
+import { t } from "i18next";
+import { useRecoilState } from "recoil";
+import { userState } from "@/recoil/state";
+
+const LINE_CLIENT_ID = import.meta.env.VITE_LINE_CLIENT_ID;
+const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+const LOGIN_URL = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${LINE_CLIENT_ID}&redirect_uri=${encodeURIComponent(
+  REDIRECT_URI
+)}&state=12345&scope=profile%20openid%20email`;
+
+/**
+ * name 對應 t... 用於 i18n 翻譯
+ */
+const Links = [
+  { name: "page_title_about", path: "/about" },
+  { name: "page_title_project", path: "/project" },
+  { name: "page_title_service", path: "/service" },
+  { name: "page_title_item", path: "/item" },
+  { name: "元件遊樂場", path: "/playground", isDev: true }, // 開發用
+];
+
+// 路由清單
+const NavLinks = ({
+  direction = "row",
+  onLinkClick,
+}: {
+  direction?: "row" | "column";
+  onLinkClick?: () => void;
+}) => {
+  const { t } = useTranslation("common");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const showDevLink = import.meta.env.VITE_SHOW_DEV_LINK === "true";
+
+  const filteredLinks = Links.filter((link) => showDevLink || !link.isDev);
+
+  const getFirstLevelPath = (path: string) => path.split("/")[1];
+
+  return (
+    <Stack as="nav" align="center" flexDirection={direction}>
+      {filteredLinks.map((link) => (
+        <Box
+          key={link.path}
+          onClick={() => {
+            navigate(link.path);
+            onLinkClick?.();
+          }}
+          p={2}
+          cursor="pointer"
+          borderBottom="2px solid"
+          borderBottomColor={
+            getFirstLevelPath(location.pathname) ===
+            getFirstLevelPath(link.path)
+              ? "primary"
+              : "transparent"
+          }
+          color={
+            getFirstLevelPath(location.pathname) ===
+            getFirstLevelPath(link.path)
+              ? "primary"
+              : "inherit"
+          }
+          _hover={{
+            borderBottomColor: "primary",
+            color: "primary",
+          }}
+        >
+          {t(link.name)}
+        </Box>
+      ))}
+    </Stack>
+  );
+};
+
+const LanguageToggleButton = ({
+  toggleLanguage,
+}: {
+  toggleLanguage: () => void;
+}) => (
+  <IconButton variant="ghost" rounded="full" onClick={toggleLanguage}>
+    <BsTranslate />
+  </IconButton>
+);
+
+const UserMenu = ({
+  user,
+  handleLogout,
+}: {
+  user: IUser;
+  handleLogout: () => void;
+}) => (
+  <HStack key={user.displayName} gap="4">
+    <MenuRoot>
+      <MenuTrigger>
+        <Avatar.Root>
+          <Avatar.Fallback name={user.displayName ?? ""} />
+          <Avatar.Image src={user.pictureUrl ?? ""} />
+        </Avatar.Root>
+      </MenuTrigger>
+      <MenuPositioner>
+        <MenuContent>
+          <MenuItemGroup>
+            <MenuItem value="displayName">
+              <Text fontWeight="medium">
+                {t("nickname")}：{user.displayName}
+              </Text>
+            </MenuItem>
+          </MenuItemGroup>
+          <MenuSeparator />
+          <MenuItemGroup>
+            <MenuItem
+              value="logout"
+              onClick={handleLogout}
+              color="fg.error"
+              _hover={{ bg: "bg.error", color: "fg.error" }}
+            >
+              {t("logout")}
+            </MenuItem>
+          </MenuItemGroup>
+        </MenuContent>
+      </MenuPositioner>
+    </MenuRoot>
+  </HStack>
+);
+
+function Header() {
+  const [user, setUser] = useRecoilState(userState);
+  const [isOpen, setOpen] = useState<boolean>(false);
+  const [hideHeader, setHideHeader] = useState(false);
+  const lastScrollY = useRef(0);
+  const { t, i18n } = useTranslation();
+
+  // 監聽滾動事件
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > 100 && currentScrollY > lastScrollY.current) {
+        setHideHeader(true); // 向下滾動 -> 隱藏 Header
+      } else {
+        setHideHeader(false); // 向上滾動 -> 顯示 Header
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      return;
+    } else {
+      const savedUser = localStorage.getItem("user");
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+      }
+    }
+  }, [setUser]);
+
+  const navigate = useNavigate();
+  const handleLogin = () => {
+    navigate("/login");
+  };
+
+  // 登出清除 localStorage
+  const handleLogout = () => {
+    setUser({
+      userId: null,
+      displayName: null,
+      pictureUrl: null,
+      is_admin: false,
+      userEmail: null,
+    });
+    localStorage.removeItem("user"); // 清掉 localStorage
+  };
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language === "zh" ? "en" : "zh";
+    i18n.changeLanguage(newLang);
+  };
+
+  return (
+    <Box
+      position="fixed"
+      top={hideHeader ? "-80px" : "0"} // 滑動時隱藏
+      left="0"
+      width="100%"
+      bg={useColorModeValue("gray.100", "gray.900")}
+      transition="top 0.3s ease"
+      zIndex="max"
+      shadow={"xs"}
+    >
+      <Flex
+        h={14}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+        mx={4}
+      >
+        {/* 開關 ICON #小裝置顯示 */}
+        <IconButton
+          onClick={() => setOpen(!isOpen)}
+          display={{ md: "none" }}
+          variant={"ghost"}
+        >
+          {isOpen ? <MdOutlineClose /> : <FiMenu />}
+        </IconButton>
+
+        <HStack>
+          <Link to={"/"}>
+            <Box p={5}>
+              <Text fontWeight={"bold"}>Logo</Text>
+            </Box>
+          </Link>
+          <HStack as={"nav"} display={{ base: "none", md: "flex" }}>
+            <NavLinks direction="row" />
+          </HStack>
+        </HStack>
+
+        <Flex gap={2}>
+          <Box display={{ base: "none", md: "flex" }}>
+            {/* 黑暗模式切換 */}
+            <ColorModeButton rounded="full"></ColorModeButton>
+            {/* 中英切換 */}
+            <LanguageToggleButton toggleLanguage={toggleLanguage} />
+          </Box>
+
+          {user && user.userId ? (
+            <UserMenu user={user} handleLogout={handleLogout} />
+          ) : (
+            <Button color={"green"} variant={"surface"} onClick={handleLogin}>
+              {t("login")}
+            </Button>
+          )}
+        </Flex>
+      </Flex>
+
+      {/* 小裝置菜單 */}
+      <Drawer.Root
+        open={isOpen}
+        onOpenChange={(e) => setOpen(e.open)}
+        placement={"top"}
+        lazyMount
+        unmountOnExit={false} // 避免動畫還沒跑完就卸載導致撕裂
+      >
+        <Drawer.Backdrop />
+        <Drawer.Positioner>
+          <Drawer.Content>
+            <Drawer.Body>
+              <NavLinks direction="column" onLinkClick={() => setOpen(false)} />
+              <Drawer.Footer justifyContent="space-between">
+                {/* 黑暗模式切換 */}
+                <ColorModeButton rounded="full"></ColorModeButton>
+                {/* 中英切換 */}
+                <LanguageToggleButton toggleLanguage={toggleLanguage} />
+              </Drawer.Footer>
+            </Drawer.Body>
+          </Drawer.Content>
+        </Drawer.Positioner>
+      </Drawer.Root>
+    </Box>
+  );
+}
+
+export default Header;

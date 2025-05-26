@@ -1,0 +1,45 @@
+{
+  "projects": {
+    "A_personalWebsite": {
+      "title": "個人網站",
+      "timeline": {
+        "start": {
+          "title": "專案啟動",
+          "description": "個人網站的發想與初步規劃階段。",
+          "period": "2024 年 11 月 ~ 進行中"
+        },
+        "draft": {
+          "title": "原型設計",
+          "description": "進行 UI 設計、功能規劃及雛型開發。",
+          "period": "2023 年 3 月 ~ 2023 年 5 月"
+        },
+        "launch": {
+          "title": "正式上線",
+          "description": "網站正式上線，公開展示個人作品與履歷。",
+          "period": "2023 年 6 月"
+        }
+      }
+    },
+    "B_travelAlbum": {
+      "title": "旅遊相簿",
+      "timeline": {
+        "start": {
+          "title": "專案啟動",
+          "description": "旅遊相簿的發想與初步規劃階段。",
+          "period": "2023 年 7 月 ~ 2023 年 8 月"
+        },
+        "draft": {
+          "title": "原型設計",
+          "description": "整合地圖與圖片的雛型規劃與初步開發。",
+          "period": "2023 年 9 月"
+        },
+        "launch": {
+          "title": "正式上線",
+          "description": "平台完成上線，可上傳照片與標記旅程。",
+          "period": "2023 年 10 月"
+        }
+      }
+    }
+  },
+  "viewProject": "查看專案"
+}

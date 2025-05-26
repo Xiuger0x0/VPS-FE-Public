@@ -1,0 +1,45 @@
+{
+  "projects": {
+    "A_personalWebsite": {
+      "title": "Personal Website",
+      "timeline": {
+        "start": {
+          "title": "Project Initiation",
+          "description": "Ideation and initial planning phase of the personal website.",
+          "period": "Nov 2024 ~ Ongoing"
+        },
+        "draft": {
+          "title": "Prototype Design",
+          "description": "UI design, feature planning, and prototype development.",
+          "period": "Mar 2023 ~ May 2023"
+        },
+        "launch": {
+          "title": "Official Launch",
+          "description": "Website officially launched to showcase personal works and resume.",
+          "period": "Jun 2023"
+        }
+      }
+    },
+    "B_travelAlbum": {
+      "title": "Travel Album",
+      "timeline": {
+        "start": {
+          "title": "Project Initiation",
+          "description": "Initial planning and concept development of the travel album.",
+          "period": "Jul 2023 ~ Aug 2023"
+        },
+        "draft": {
+          "title": "Prototype Design",
+          "description": "Planning and early development of an integrated map and image gallery.",
+          "period": "Sep 2023"
+        },
+        "launch": {
+          "title": "Official Launch",
+          "description": "Platform officially launched; users can upload photos and mark their journey.",
+          "period": "Oct 2023"
+        }
+      }
+    }
+  },
+  "viewProject": "View Project"
+}

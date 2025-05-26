@@ -1,0 +1,28 @@
+{
+  "_comment": "motorPage專用的**英文**翻譯",
+
+ "introductionText": "The Honda MSX 125 Grom is a lightweight and agile mini street bike, known for its sporty design and excellent fuel efficiency. Its unique appearance, playful yet aggressive body, and smooth 125cc engine make it an ideal choice for urban commuting and casual riding.",
+  "detailsTitle": "Details",
+  "advantage1": "Lightweight body and low seat height",
+  "advantage2": "Excellent fuel efficiency",
+  "advantage3": "Low maintenance costs and high customizability",
+  "advantage4": "Compact size for easy parking",
+  "advantage5": "Comfortable riding posture, beginner-friendly",
+  "advantage6": "5-speed gearbox suitable for both short and long rides",
+  "advantage7": "Gear indicator and ABS braking system",
+
+  "carousel": [
+    {
+      "title": "Side View 1",
+      "text": "A serene beauty captured through light and composition."
+    },
+    {
+      "title": "Side View 2",
+      "text": "Same angle, different vibe. Facing left adds a calm, ready-to-roll feel."
+    },
+    {
+      "title": "Boss Cat",
+      "text": "Boss Cat adds a touch of life to this still journey."
+    }
+  ]
+}
