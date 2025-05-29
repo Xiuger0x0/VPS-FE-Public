@@ -11,8 +11,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8080/', // 代理到本地的 8080 端口(假設後端服務運行在這裡)
-        rewrite: (path) => path.replace(/^\/api/, '/api'), // 重寫 API 路徑
+        target: 'http://127.0.0.1:8080/',
+        rewrite: (path) => path.replace(/^\/api/, '/api')
       },
     }
   },
@@ -21,26 +21,32 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            // 分割 Chakra UI 和 Emotion 相關依賴
+            // Chakra UI
             if (id.includes('@chakra-ui') || id.includes('@emotion')) return 'chakra-ui';
 
-            // 分割 giscus 相關依賴
+            // Giscus
             if (id.includes('@giscus/react')) return 'giscus';
 
-            // 分割 i18n 相關依賴
-            // i18next-http-backend 是 i18next 的一個插件，用於從後端或靜態資源加載翻譯文件
+            // i18n
             if (id.includes('react-i18next') || id.includes('i18next') || id.includes('i18next-http-backend')) return 'i18n';
 
-            // 分割 react-three-fiber 相關依賴
-            if (id.includes('three') || id.includes('@react-three/drei') || id.includes('@react-three/fiber') || id.includes('@types/three') || id.includes('leva')) return 'r3f';
+            // --- R3F 更細的拆法 ---
+            if (id.includes('three')) return 'r3f-three';
+            if (id.includes('@react-three/fiber')) return 'r3f-fiber';
+            if (id.includes('@react-three/drei')) return 'r3f-drei';
+            if (id.includes('leva')) return 'r3f-leva';
 
+            // axios
             if (id.includes('axios')) return 'axios';
+
+            // recoil
             if (id.includes('recoil')) return 'recoil';
 
-            // 其他 node_modules 打包到 vendor
+            // 其他 node_modules 統一為 vendor
             return 'vendor';
           }
-        },
+        }
+
       },
     },
   },
