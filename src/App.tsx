@@ -18,6 +18,10 @@ import OIIA from "./components/R3F/scene/OIIA";
 import { AirsoftManager } from "./pages/AirsoftManager";
 import { RegisterPage } from "./pages/RegisterPage";
 import { LoginPage } from "./pages/LoginPage";
+import { BackendApi } from "./utils/bootstrap";
+import { IUser } from "./interface/IUser";
+import { useSetRecoilState } from "recoil";
+import { userState } from "./recoil/state";
 const MotorPage = lazy(() => import("@/pages/ItemPages/MotorPage"));
 const CarPage = lazy(() => import("@/pages/ItemPages/CarPage"));
 
@@ -29,6 +33,7 @@ const LOGIN_URL = `https://access.line.me/oauth2/v2.1/authorize?response_type=co
 
 function App() {
   const isDev = process.env.NODE_ENV === "development";
+  const setUser = useSetRecoilState<IUser | null>(userState);
 
   return (
     <Routes>
@@ -48,9 +53,27 @@ function App() {
           path="login"
           element={
             <LoginPage
-              onLogin={(data) => {
-                console.log("登入資料", data);
-                // 登入邏輯
+              onLogin={async (data) => {
+                try {
+                  const res = await BackendApi.post("/members/login", data);
+
+                  const userData: IUser = {
+                    userId: res.data.id ?? null,
+                    displayName: res.data.displayName ?? null,
+                    pictureUrl: res.data.pictureUrl ?? null,
+                    userEmail: res.data.email ?? null,
+                  };
+
+                  localStorage.setItem("token", res.data.token);
+                  localStorage.setItem("user", JSON.stringify(userData));
+
+                  setUser(userData);
+
+                  window.location.href = "/";
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                } catch (error) {
+                  alert("登入失敗");
+                }
               }}
               onLineLogin={() => {
                 // LINE OAuth 登入邏輯

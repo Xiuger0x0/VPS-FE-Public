@@ -17,6 +17,10 @@ import axios from "axios";
 import { useState } from "react";
 import { glassmorphismStyle } from "@/styles/glassmorphism";
 import { IMemberForm } from "@/interface/IMemberForm";
+import { BackendApi } from "@/utils/bootstrap";
+import { useSetRecoilState } from "recoil";
+import { IUser } from "@/interface/IUser";
+import { userState } from "@/recoil/state";
 
 const memberLevelOptions = createListCollection({
   items: Object.entries(MemberLevelText).map(([key, label]) => ({
@@ -24,8 +28,6 @@ const memberLevelOptions = createListCollection({
     value: key, // 英文 key，傳給後端
   })),
 });
-
-console.log(memberLevelOptions);
 
 export const RegisterPage = () => {
   const {
@@ -48,6 +50,7 @@ export const RegisterPage = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const setUser = useSetRecoilState<IUser | null>(userState);
 
   const password = watch("password");
 
@@ -55,20 +58,29 @@ export const RegisterPage = () => {
     try {
       setError(null);
       setSuccess(false);
-      await axios.post("/api/members/register", data); // 先註冊
 
-      // 成功後自動登入
-      const loginRes = await axios.post("/api/members/login", {
-        email: data.email,
-        password: data.password,
-      });
+      // 註冊且直接拿回登入資訊（token, displayName, email）
+      const res = await BackendApi.post("/members/register", data);
 
-      const user = loginRes.data;
-      if (!import.meta.env.DEV) {
-        localStorage.setItem("user", JSON.stringify(user));
-      }
       setSuccess(true);
-      window.location.href = "/"; // 或導向個人頁面
+
+      // 直接用註冊回傳的結果當作登入資訊
+      const user = {
+        displayName: res.data.displayName,
+        userEmail: res.data.email,
+        token: res.data.token,
+        userId: null, // 如果後端沒回傳可設null或不設
+        pictureUrl: null, // 同上
+        is_admin: false, // 通常新註冊預設不是管理員
+      };
+
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", user.token);
+
+      setUser(user);
+
+      // 你可以直接跳轉或更新UI
+      window.location.href = "/";
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const message =
@@ -144,8 +156,10 @@ export const RegisterPage = () => {
             )}
           </Field.Root>
 
-          <Field.Root>
-            <Field.Label>暱稱</Field.Label>
+          <Field.Root required>
+            <Field.Label>
+              暱稱 <Field.RequiredIndicator />
+            </Field.Label>
             <Input placeholder="暱稱" {...register("displayName")} />
           </Field.Root>
 

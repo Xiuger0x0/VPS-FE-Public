@@ -13,7 +13,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 
 interface LoginFormData {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -47,17 +47,17 @@ export const LoginPage = ({
       <form onSubmit={handleSubmit(submitHandler)}>
         <VStack align="stretch">
           <Controller
-            name="username"
+            name="email"
             control={control}
             rules={{ required: "請輸入帳號" }}
             render={({ field }) => (
-              <Field.Root invalid={!!errors.username} required>
+              <Field.Root invalid={!!errors.email} required>
                 <Field.Label>
                   帳號 <Field.RequiredIndicator />
                 </Field.Label>
                 <Input {...field} />
-                {errors.username && (
-                  <Field.ErrorText>{errors.username.message}</Field.ErrorText>
+                {errors.email && (
+                  <Field.ErrorText>{errors.email.message}</Field.ErrorText>
                 )}
               </Field.Root>
             )}

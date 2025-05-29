@@ -28,12 +28,6 @@ import { t } from "i18next";
 import { useRecoilState } from "recoil";
 import { userState } from "@/recoil/state";
 
-const LINE_CLIENT_ID = import.meta.env.VITE_LINE_CLIENT_ID;
-const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
-const LOGIN_URL = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${LINE_CLIENT_ID}&redirect_uri=${encodeURIComponent(
-  REDIRECT_URI
-)}&state=12345&scope=profile%20openid%20email`;
-
 /**
  * name 對應 t... 用於 i18n 翻譯
  */
@@ -179,13 +173,9 @@ function Header() {
   }, []);
 
   useEffect(() => {
-    if (import.meta.env.DEV) {
-      return;
-    } else {
-      const savedUser = localStorage.getItem("user");
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
-      }
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
     }
   }, [setUser]);
 
@@ -200,10 +190,12 @@ function Header() {
       userId: null,
       displayName: null,
       pictureUrl: null,
-      is_admin: false,
       userEmail: null,
     });
-    localStorage.removeItem("user"); // 清掉 localStorage
+    // 清除 token
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/"); // 或 navigate("/login")
   };
 
   const toggleLanguage = () => {
@@ -256,7 +248,7 @@ function Header() {
             <LanguageToggleButton toggleLanguage={toggleLanguage} />
           </Box>
 
-          {user && user.userId ? (
+          {user?.userEmail ? (
             <UserMenu user={user} handleLogout={handleLogout} />
           ) : (
             <Button color={"green"} variant={"surface"} onClick={handleLogin}>
