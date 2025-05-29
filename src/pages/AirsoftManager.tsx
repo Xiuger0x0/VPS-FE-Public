@@ -20,7 +20,18 @@ const updateGun = (id: number, data: Partial<Gun>) =>
 
 const deleteGun = (id: number) => BackendApi.delete(`/guns/${id}`);
 
-const fetchCurrentUser = () => BackendApi.get<IUser>("/me");
+const fetchCurrentUser = () => {
+  const userStr = localStorage.getItem("user");
+  if (!userStr) throw new Error("User not found in localStorage");
+
+  console.log("User data from localStorage:", userStr);
+  const user = JSON.parse(userStr);
+  const id = user?.userId;
+
+  if (!id) throw new Error("User ID missing");
+
+  return BackendApi.get<IUser>(`/guns/${id}`);
+};
 
 import { useEffect, useState } from "react";
 import {
@@ -41,14 +52,11 @@ export const AirsoftManager = () => {
   const [loading, setLoading] = useState(true);
   const [input, setInput] = useState<Partial<Gun>>({});
   const [editId, setEditId] = useState<number | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [user, setUser] = useState<IUser | null>(null);
-
   const loadUser = async () => {
     try {
       const res = await fetchCurrentUser();
-      setUser(res.data);
 
+      console.log("Fetched user:", res.data);
       // 假設你希望預設 serialNumber 加入使用者名稱前綴
       setInput((prev) => ({
         ...prev,

@@ -46,6 +46,7 @@ export const LiffPage = () => {
         displayName: profile.displayName,
         pictureUrl: profile.pictureUrl || "", // 確保有值
         userId: profile.userId,
+        userEmail: "", // 預設為空字串
       });
     } catch (err) {
       alert("❌ 取得用戶資料失敗：" + err);
@@ -67,7 +68,7 @@ export const LiffPage = () => {
             <>
               <Heading as="h2">你好, {user.displayName} 👋</Heading>
               <Image
-                src={user.pictureUrl}
+                src={user.pictureUrl || ""}
                 alt="User Avatar"
                 boxSize="100px"
                 borderRadius="full"
