@@ -9,6 +9,10 @@
   "page_title_motor": "HONDA MSX 125 GROM",
   "page_title_car": "Grand Lancer",
 
+  "page_title_airsoft": "Airsoft",
+  "page_title_airsoft_dashboard": "Dashboard",
+  "page_title_airsoft_equipment": "Equipment Management",
+
   "linelogin": "LINE LOGIN",
   "logout" : "LOGOUT",
   "nickname": "Nickname"

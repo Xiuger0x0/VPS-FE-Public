@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router";
 import { lazy } from "react";
-import "@/js/i18n";
-
+import "@/utils/i18n";
 import { MasterLayout } from "@/pages/layouts/MasterLayout";
 import { CallBackPage } from "@/pages/CallBackPage";
 import { AboutPage } from "@/pages/AboutPage";
@@ -15,13 +14,14 @@ import ThemePlayground from "./pages/ThemePlaygroundPage";
 import CustomizerLayout from "./pages/layouts/CustomizerLayout";
 import WeaponCustomizer from "./components/R3F/scene/WeaponCustomizer";
 import OIIA from "./components/R3F/scene/OIIA";
-import { AirsoftManager } from "./pages/AirsoftManager";
+import { AirsoftManager } from "./pages/Airsoft/AirsoftManager";
 import { RegisterPage } from "./pages/RegisterPage";
 import { LoginPage } from "./pages/LoginPage";
-import { BackendApi } from "./utils/bootstrap";
 import { IUser } from "./interface/IUser";
 import { useSetRecoilState } from "recoil";
 import { userState } from "./recoil/state";
+import { BackendApi } from "./js/bootstrap";
+import { AirsoftLayout } from "./pages/layouts/AirsoftLayout";
 const MotorPage = lazy(() => import("@/pages/ItemPages/MotorPage"));
 const CarPage = lazy(() => import("@/pages/ItemPages/CarPage"));
 
@@ -31,6 +31,7 @@ const LOGIN_URL = `https://access.line.me/oauth2/v2.1/authorize?response_type=co
   REDIRECT_URI
 )}&state=12345&scope=profile%20openid%20email`;
 
+// TODO 後續加入動態入載入（依照取得的使用者等級注入額外可用路由）
 function App() {
   const isDev = process.env.NODE_ENV === "development";
   const setUser = useSetRecoilState<IUser | null>(userState);
@@ -100,7 +101,10 @@ function App() {
         </Route>
 
         {/* 課程專案(網頁資料庫程式設計) */}
-        <Route path="airsoft-manager" element={<AirsoftManager />} />
+        <Route path="/airsoft" element={<AirsoftLayout />}>
+          <Route index element={<AirsoftManager />} />
+          <Route path="dashboard" element={<AirsoftManager />} />
+        </Route>
       </Route>
 
       {/* R3F 3D頁面 */}
