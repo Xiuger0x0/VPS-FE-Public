@@ -4,8 +4,6 @@ import {
   IconButton,
   useBreakpointValue,
   Stack,
-  Heading,
-  Text,
   Container,
 } from "@chakra-ui/react";
 import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
@@ -93,14 +91,7 @@ export default function ItemCarousel({
                 position="absolute"
                 transform="translate(0, -50%)"
                 top={captionTop} // 動態 RWD 高度控制
-              >
-                <Heading fontSize={{ base: "3xl", md: "4xl", lg: "5xl" }}>
-                  {card.title}
-                </Heading>
-                <Text fontSize={{ base: "md", lg: "lg" }} color="GrayText">
-                  {card.text}
-                </Text>
-              </Stack>
+              ></Stack>
             </Container>
           </Box>
         ))}
