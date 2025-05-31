@@ -32,11 +32,19 @@ import { userState } from "@/recoil/state";
  * name 對應 t... 用於 i18n 翻譯
  */
 const Links = [
-  { name: "page_title_about", path: "/about" },
-  { name: "page_title_project", path: "/project" },
-  { name: "page_title_service", path: "/service" },
-  { name: "page_title_item", path: "/item" },
+  // { name: "page_title_about", path: "/about" },
+  // { name: "page_title_project", path: "/project" },
+  // { name: "page_title_service", path: "/service" },
+  // { name: "page_title_item", path: "/item" },
   { name: "元件遊樂場", path: "/playground", isDev: true }, // 開發用
+  {
+    name: "page_title_airsoft",
+    path: "/airsoft",
+    children: [
+      { name: "page_title_airsoft_dashboard", path: "/airsoft/dashboard" },
+      { name: "page_title_airsoft_equipment", path: "/airsoft/equipment" },
+    ],
+  },
 ];
 
 // 路由清單
@@ -50,45 +58,91 @@ const NavLinks = ({
   const { t } = useTranslation("common");
   const navigate = useNavigate();
   const location = useLocation();
-
   const showDevLink = import.meta.env.VITE_SHOW_DEV_LINK === "true";
 
   const filteredLinks = Links.filter((link) => showDevLink || !link.isDev);
-
   const getFirstLevelPath = (path: string) => path.split("/")[1];
 
   return (
     <Stack as="nav" align="center" flexDirection={direction}>
-      {filteredLinks.map((link) => (
-        <Box
-          key={link.path}
-          onClick={() => {
-            navigate(link.path);
-            onLinkClick?.();
-          }}
-          p={2}
-          cursor="pointer"
-          borderBottom="2px solid"
-          borderBottomColor={
-            getFirstLevelPath(location.pathname) ===
-            getFirstLevelPath(link.path)
-              ? "primary"
-              : "transparent"
-          }
-          color={
-            getFirstLevelPath(location.pathname) ===
-            getFirstLevelPath(link.path)
-              ? "primary"
-              : "inherit"
-          }
-          _hover={{
-            borderBottomColor: "primary",
-            color: "primary",
-          }}
-        >
-          {t(link.name)}
-        </Box>
-      ))}
+      {filteredLinks.map((link) =>
+        link.children ? (
+          <MenuRoot key={link.name}>
+            <MenuTrigger>
+              <Box
+                p={2}
+                cursor="pointer"
+                borderBottom="2px solid"
+                borderBottomColor={
+                  getFirstLevelPath(location.pathname) ===
+                  getFirstLevelPath(link.path)
+                    ? "primary"
+                    : "transparent"
+                }
+                color={
+                  getFirstLevelPath(location.pathname) ===
+                  getFirstLevelPath(link.path)
+                    ? "primary"
+                    : "inherit"
+                }
+                _hover={{
+                  borderBottomColor: "primary",
+                  color: "primary",
+                }}
+              >
+                {t(link.name)}
+              </Box>
+            </MenuTrigger>
+            <MenuPositioner>
+              <MenuContent>
+                <MenuItemGroup>
+                  {link.children.map((child) => (
+                    <MenuItem
+                      key={child.path}
+                      value={child.path}
+                      onClick={() => {
+                        navigate(child.path);
+                        onLinkClick?.();
+                      }}
+                    >
+                      {t(child.name)}
+                    </MenuItem>
+                  ))}
+                </MenuItemGroup>
+              </MenuContent>
+            </MenuPositioner>
+          </MenuRoot>
+        ) : (
+          <Box
+            key={link.path}
+            onClick={() => {
+              navigate(link.path);
+              onLinkClick?.();
+            }}
+            p={2}
+            cursor="pointer"
+            borderBottom="2px solid"
+            borderBottomColor={
+              getFirstLevelPath(location.pathname) ===
+              getFirstLevelPath(link.path)
+                ? "primary"
+                : "transparent"
+            }
+            color={
+              getFirstLevelPath(location.pathname) ===
+              getFirstLevelPath(link.path)
+                ? "primary"
+                : "inherit"
+            }
+            _hover={{
+              borderBottomColor: "primary",
+              color: "primary",
+            }}
+          >
+            {t(link.name)}
+          </Box>
+        )
+      )}
     </Stack>
   );
 };
