@@ -1,4 +1,3 @@
-import { nginxApi } from "@/js/bootstrap";
 import { countState } from "@/recoil/state";
 import {
   Box,
@@ -14,6 +13,7 @@ import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { useRecoilState } from "recoil";
 import Giscus from "@giscus/react";
+import { BackendApi } from "@/js/bootstrap";
 
 export const HomePage = () => {
   const appName = import.meta.env.VITE_APP_NAME;
@@ -21,8 +21,7 @@ export const HomePage = () => {
   const { t } = useTranslation();
 
   const ApiTest = () => {
-    nginxApi
-      .get("/test")
+    BackendApi.get("/test")
       .then((res) => {
         alert("API 回應：" + JSON.stringify(res.data)); // 成功回應
       })

@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
-import { nginxApi, getCsrfToken } from "@/js/bootstrap"; // 使用已優化的 axios 實例
 import axios from "axios"; // 用來發送 HTTP 請求
+import { BackendApi } from "@/js/bootstrap";
 
 // 環境變數：LINE 的 client_id、client_secret 以及重定向 URI
 const LINE_CLIENT_ID = import.meta.env.VITE_LINE_CLIENT_ID;
@@ -39,7 +39,9 @@ export const CallBackPage = () => {
         }
       );
 
-      console.log("✅ LINE Access Token:", tokenData.access_token);
+      await BackendApi.post("/line/login", {
+        idToken: tokenData.id_token,
+      });
 
       // 2️⃣ 取得 LINE 使用者資訊
       const { data: profile } = await axios.get(
@@ -48,8 +50,6 @@ export const CallBackPage = () => {
           headers: { Authorization: `Bearer ${tokenData.access_token}` },
         }
       );
-
-      console.log("✅ LINE Profile:", profile);
 
       const userData = {
         lineId: profile.userId,
@@ -61,11 +61,8 @@ export const CallBackPage = () => {
       // 3️⃣ 儲存用戶資料到 localStorage
       localStorage.setItem("user", JSON.stringify(userData));
 
-      // 4️⃣ 確保 CSRF Token 設置正確
-      await getCsrfToken(); // 取得 CSRF Token，確保後端 session 正常
-
       // 5️⃣ 將 LINE 使用者資訊傳送到後端
-      await nginxApi.post("/line/login", userData);
+      await BackendApi.post("/line/login", userData);
 
       console.log("✅ LINE User successfully logged in!");
 

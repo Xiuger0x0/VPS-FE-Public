@@ -17,10 +17,10 @@ import axios from "axios";
 import { useState } from "react";
 import { glassmorphismStyle } from "@/styles/glassmorphism";
 import { IMemberForm } from "@/interface/IMemberForm";
-import { BackendApi } from "@/utils/bootstrap";
 import { useSetRecoilState } from "recoil";
 import { IUser } from "@/interface/IUser";
 import { userState } from "@/recoil/state";
+import { BackendApi } from "@/js/bootstrap";
 
 const memberLevelOptions = createListCollection({
   items: Object.entries(MemberLevelText).map(([key, label]) => ({

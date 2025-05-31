@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Button } from "@chakra-ui/react";
-import { nginxApi } from "@/js/bootstrap";
+import { BackendApi } from "@/js/bootstrap";
 
 const LinePayButton = () => {
   const [paymentUrl, setPaymentUrl] = useState(null);
 
   const handlePayment = async () => {
     try {
-      const response = await nginxApi.post("/linepay/request");
+      const response = await BackendApi.post("/linepay/request");
       if (response.data.info && response.data.info.paymentUrl) {
         setPaymentUrl(response.data.info.paymentUrl.web);
       }
