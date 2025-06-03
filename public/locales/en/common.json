@@ -13,6 +13,9 @@
   "page_title_airsoft_dashboard": "Dashboard",
   "page_title_airsoft_equipment": "Equipment Management",
 
+  "page_title_telecommunication": "Telecommunication",
+  "page_title_telecommunication_dashboard": "Dashboard",
+
   "linelogin": "LINE LOGIN",
   "logout" : "LOGOUT",
   "nickname": "Nickname"

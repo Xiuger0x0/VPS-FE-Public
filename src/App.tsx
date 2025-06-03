@@ -12,8 +12,7 @@ import { Page404 } from "@/pages/Page404";
 import { ProjectPage } from "@/pages/ProjectPage";
 import ThemePlayground from "./pages/ThemePlaygroundPage";
 import CustomizerLayout from "./pages/layouts/CustomizerLayout";
-import WeaponCustomizer from "./components/R3F/scene/WeaponCustomizer";
-import OIIA from "./components/R3F/scene/OIIA";
+
 import { AirsoftManager } from "./pages/Airsoft/AirsoftManager";
 import { RegisterPage } from "./pages/RegisterPage";
 import { LoginPage } from "./pages/LoginPage";
@@ -22,8 +21,14 @@ import { useSetRecoilState } from "recoil";
 import { userState } from "./recoil/state";
 import { BackendApi } from "./js/bootstrap";
 import { AirsoftLayout } from "./pages/layouts/AirsoftLayout";
+import { TeleLayout } from "./pages/layouts/TeleLayout";
+import { TeleDashboard } from "./pages/Telecommunications/TeleDashboard";
 const MotorPage = lazy(() => import("@/pages/ItemPages/MotorPage"));
 const CarPage = lazy(() => import("@/pages/ItemPages/CarPage"));
+const WeaponCustomizer = lazy(
+  () => import("./components/R3F/scene/WeaponCustomizer")
+);
+const OIIA = lazy(() => import("./components/R3F/scene/OIIA"));
 
 const LINE_CLIENT_ID = import.meta.env.VITE_LINE_CLIENT_ID;
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
@@ -104,6 +109,12 @@ function App() {
         <Route path="/airsoft" element={<AirsoftLayout />}>
           <Route index element={<AirsoftManager />} />
           <Route path="dashboard" element={<AirsoftManager />} />
+        </Route>
+
+        {/* 課程專案(資料庫系統實務) */}
+        <Route path="/telecommunication" element={<TeleLayout />}>
+          <Route index element={<TeleDashboard />} />
+          <Route path="dashboard" element={<TeleDashboard />} />
         </Route>
       </Route>
 
