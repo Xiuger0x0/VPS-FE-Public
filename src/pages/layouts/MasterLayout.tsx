@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import { Box, Flex } from "@chakra-ui/react";
 import { Suspense } from "react";
 import { Outlet } from "react-router";
+import { Toaster } from "@/components/ui/toaster";
 
 export type VisitorStats = {
   data: {
@@ -47,6 +48,7 @@ export const MasterLayout = () => {
 
   return (
     <Flex direction="column" minH="100vh">
+      <Toaster />
       <Header />
 
       <Box
