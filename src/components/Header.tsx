@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useRef, useState } from "react";
 import {
   Box,
@@ -28,23 +29,28 @@ import { t } from "i18next";
 import { useRecoilState } from "recoil";
 import { userState } from "@/recoil/state";
 
+interface LinkProps {
+  name: string;
+  path: string;
+  isDev?: boolean; // 是否為開發用連結
+  children?: LinkProps[]; // 子連結
+}
+
 /**
  * name 對應 t... 用於 i18n 翻譯
  */
-const Links = [
-  // { name: "page_title_about", path: "/about" },
-  // { name: "page_title_project", path: "/project" },
-  // { name: "page_title_service", path: "/service" },
-  // { name: "page_title_item", path: "/item" },
-  { name: "元件遊樂場", path: "/playground", isDev: true }, // 開發用
-  {
-    name: "page_title_airsoft",
-    path: "/airsoft",
-    children: [
-      { name: "page_title_airsoft_dashboard", path: "/airsoft/dashboard" },
-      { name: "page_title_airsoft_equipment", path: "/airsoft/equipment" },
-    ],
-  },
+const Links: LinkProps[] = [
+  // 可以保留但隱藏在 UI
+  // { name: "元件遊樂場", path: "/playground", isDev: true },
+
+  // {
+  //   name: "page_title_airsoft",
+  //   path: "/airsoft",
+  //   children: [
+  //     { name: "page_title_airsoft_dashboard", path: "/airsoft/dashboard" },
+  //     { name: "page_title_airsoft_equipment", path: "/airsoft/equipment" },
+  //   ],
+  // },
   {
     name: "page_title_telecommunication",
     path: "/telecommunication",
@@ -55,6 +61,26 @@ const Links = [
       },
     ],
   },
+  // {
+  //   name: "page_title_project",
+  //   path: "/project",
+  // },
+  // {
+  //   name: "page_title_item",
+  //   path: "/item",
+  //   children: [
+  //     { name: "page_title_motor", path: "/item/motorcycle" },
+  //     { name: "page_title_car", path: "/item/car" },
+  //   ],
+  // },
+  // {
+  //   name: "page_title_service",
+  //   path: "/service",
+  // },
+  // {
+  //   name: "page_title_about",
+  //   path: "/about",
+  // },
 ];
 
 // 路由清單
@@ -294,11 +320,11 @@ function Header() {
         </IconButton>
 
         <HStack>
-          <Link to={"/"}>
+          {/* <Link to={"/"}>
             <Box p={5}>
               <Text fontWeight={"bold"}>Logo</Text>
             </Box>
-          </Link>
+          </Link> */}
           <HStack as={"nav"} display={{ base: "none", md: "flex" }}>
             <NavLinks direction="row" />
           </HStack>
@@ -307,9 +333,9 @@ function Header() {
         <Flex gap={2}>
           <Box display={{ base: "none", md: "flex" }}>
             {/* 黑暗模式切換 */}
-            <ColorModeButton rounded="full"></ColorModeButton>
+            {/* <ColorModeButton rounded="full"></ColorModeButton> */}
             {/* 中英切換 */}
-            <LanguageToggleButton toggleLanguage={toggleLanguage} />
+            {/* <LanguageToggleButton toggleLanguage={toggleLanguage} /> */}
           </Box>
 
           {user?.userEmail ? (

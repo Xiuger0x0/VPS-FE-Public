@@ -9,6 +9,7 @@ import {
   Portal,
   Table,
   Tabs,
+  Text,
   createListCollection,
   VStack,
   Field,
@@ -20,64 +21,6 @@ import { BackendApi } from "@/js/bootstrap";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
-/**
- *
- * 
- * {
-  "userId": 1,
-  "phoneNumber": "0912345678",
-  "userName": "通話王",
-  "planName": "語音通話方案",
-  "baseFee": 699,
-  "callFee": 17.616666666,
-  "smsFee": 2,
-  "dataFee": 45.59,
-  "discount": 100,
-  "totalAmount": 664.206666666,
-  "issuedAt": "2025-05-31T10:00:00",
-  "paidAt": null
-}
-
-  {
-  "id": 0,
-  "user": {
-    "id": 1,
-    "name": "通話王",
-    "phoneNumber": "0912345678",
-    "subscriberType": "POSTPAID",
-    "currentPlan": {
-      "id": 3,
-      "name": "語音通話方案",
-      "billingType": "POSTPAID",
-      "dataPolicy": "LIMITED",
-      "monthlyFee": 699,
-      "includedSms": 20,
-      "includedDataMb": 1024,
-      "smsRate": 2,
-      "callRatePerMin": 1,
-      "overagePolicy": "BILLABLE",
-      "throttleAfterMb": null,
-      "throttleSpeedKbps": null,
-      "effectiveFrom": "2025-06-05",
-      "createdAt": "2025-06-05T12:20:02.697071"
-    },
-    "prepaidBalance": null,
-    "status": "ACTIVE",
-    "createdAt": "2025-06-05T12:27:08.062768"
-  },
-  "periodStart": "2025-06-01",
-  "periodEnd": "2025-06-30",
-  "baseFee": 699,
-  "callFee": 25.55,
-  "smsFee": 0,
-  "dataFee": 911.8000000000001,
-  "discountTotal": 0,
-  "totalAmount": 1636.3500000000001,
-  "issuedAt": "2025-06-05T12:30:00.505005",
-  "paidAt": null
-}
- */
 
 // ---- Types ----
 type UserInfo = {
@@ -129,6 +72,39 @@ type InvoiceDetailsDto = {
   paidAt?: string | null; // 可為 null
 };
 
+type UserUsageInfoResponse = {
+  user: {
+    id: number;
+    name: string;
+    phoneNumber: string;
+    subscriberType: string;
+    currentPlan: {
+      id: number;
+      name: string;
+    };
+  };
+  callCount: number;
+  smsCount: number;
+  mostContacted: string | null;
+  totalDataUsageMb: number;
+};
+
+type Plan = {
+  id: number;
+  name: string;
+  billingType: string;
+  dataPolicy: string;
+  monthlyFee: number;
+  includedSms: number;
+  includedDataMb: number;
+  smsRate: number;
+  callRatePerMin: number;
+  overagePolicy: string;
+  throttleAfterMb?: number;
+  throttleSpeedKbps?: number;
+  effectiveFrom: string;
+};
+
 export const TeleDashboard = () => {
   // 👉 狀態
   const [activeTab, setActiveTab] = useState("user");
@@ -139,13 +115,30 @@ export const TeleDashboard = () => {
   const [smsRecords, setSmsRecords] = useState<SmsRecordDto[]>([]);
   const [dataRecords, setDataRecords] = useState<DataUsageSummaryDto[]>([]);
   const [bills, setBills] = useState<InvoiceDetailsDto[]>([]);
+  const [plans, setPlans] = useState<Plan[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1; // 月份從 0 開始，所以要加 1
-  const [selectedPhone, setSelectedPhone] = useState<string>("");
   const [year, setYear] = useState<number>(currentYear);
   const [month, setMonth] = useState<number>(currentMonth);
+  const [usageSummary, setUsageSummary] =
+    useState<UserUsageInfoResponse | null>(null);
+  const [topContact, setTopContact] = useState<string | null>(null);
 
+  // 👉 清除所有狀態
+  const clearAllStates = () => {
+    setQueryPhone("");
+    setUserInfo(null);
+    setUserList([]);
+    setCallRecords([]);
+    setSmsRecords([]);
+    setDataRecords([]);
+    setBills([]);
+    setUsageSummary(null);
+    setTopContact(null);
+  };
+
+  // 👉 查詢帳單
   const fetchBills = async (
     phone?: string,
     year = currentYear,
@@ -166,6 +159,7 @@ export const TeleDashboard = () => {
     }
   };
 
+  // 👉 模擬產生所有帳單
   const simulateAllBills = async () => {
     try {
       const res = await BackendApi.post("/telecom/generate-bills");
@@ -204,19 +198,44 @@ export const TeleDashboard = () => {
     }
   };
 
+  // 👉 查詢使用摘要
+  const fetchUsageSummary = async () => {
+    try {
+      const res = await BackendApi.get(
+        `/telecom/users/${queryPhone}/usage-summary`
+      );
+      setUsageSummary(res.data);
+      setTopContact(res.data.mostContacted || null);
+    } catch (err) {
+      console.error("取得使用摘要失敗", err);
+    }
+  };
+
+  // 👉 查詢使用摘要與最常聯絡對象
+  const getAllPlans = async () => {
+    const response = await BackendApi.get("/telecom/plans");
+    return response.data;
+  };
+
+  // 👉 查詢使用摘要與最常聯絡對象
+  const fetchUsageDetails = async () => {
+    await Promise.all([fetchUsageSummary()]);
+  };
+
+  // 👉 查詢所有用戶與使用紀錄
   const fetchAllUsers = async () => {
+    clearAllStates();
+
     try {
       const [usersRes, callRes, smsRes, dataRes] = await Promise.all([
         BackendApi.get("/telecom/users"),
-        BackendApi.get("/telecom/calls"), // 不傳參數，撈全部通話
-        BackendApi.get("/telecom/sms"), // 不傳參數，撈全部簡訊
-        BackendApi.get("/telecom/data-usage"), // 不傳參數，撈全部流量
-        fetchBills(), // 新增：查詢帳單
+        BackendApi.get("/telecom/calls"),
+        BackendApi.get("/telecom/sms"),
+        BackendApi.get("/telecom/data-usage"),
+        fetchBills(),
       ]);
 
       setUserList(usersRes.data);
-      setUserInfo(null); // 清空單一用戶資料
-
       setCallRecords(callRes.data);
       setSmsRecords(smsRes.data);
       setDataRecords(dataRes.data);
@@ -225,21 +244,18 @@ export const TeleDashboard = () => {
         title: "查詢失敗",
         description: "無法查詢用戶與使用紀錄，請稍後再試。",
         type: "error",
-        duration: 3000,
       });
-      setUserList([]);
-      setCallRecords([]);
-      setSmsRecords([]);
-      setDataRecords([]);
     }
   };
 
   // 👉 查詢用戶
   const fetchUserInfo = async (queryPhone?: string) => {
     if (!queryPhone) {
-      fetchAllUsers(); // 無參數，改為查全部
+      fetchAllUsers();
       return;
     }
+
+    clearAllStates(); // 預設清全部
 
     try {
       const userRes = await BackendApi.get(`/telecom/user/${queryPhone}`);
@@ -251,31 +267,29 @@ export const TeleDashboard = () => {
         BackendApi.get(`/telecom/data-usage`, {
           params: { phone: queryPhone },
         }),
-        fetchBills(queryPhone), // 新增：查詢帳單
+        fetchBills(queryPhone),
       ]);
 
       setUserInfo(userRes.data);
-      setUserList([]); // 清空列表
-
       setCallRecords(callRes.data);
       setSmsRecords(smsRes.data);
       setDataRecords(dataRes.data);
+      fetchUsageDetails();
     } catch (err) {
       toaster.create({
         title: "查詢失敗",
         description: "無法查詢用戶資訊與紀錄，請稍後再試。",
         type: "error",
-        duration: 3000,
       });
-      setUserInfo(null);
-      setCallRecords([]);
-      setSmsRecords([]);
-      setDataRecords([]);
     }
   };
 
+  // 👉 初始載入
   useEffect(() => {
     fetchUserInfo(); // 預設會查全部（因為沒給參數）
+    getAllPlans()
+      .then((data) => setPlans(data))
+      .catch(console.error);
   }, []);
 
   const subscriberTypeOptions = createListCollection({
@@ -284,12 +298,17 @@ export const TeleDashboard = () => {
       { label: "預付", value: "PREPAID" },
     ],
   });
+
+  const simplifiedPlans = plans.map((plan) => ({
+    id: plan.id,
+    value: plan.id.toString(), // Select 要用的 value，建議轉成 string
+    label: `${plan.name} ${plan.monthlyFee}元/月`, // 顯示文字
+    name: plan.name, // 你也可以保留更多欄位備用
+    monthlyFee: plan.monthlyFee,
+  }));
+
   const planOptions = createListCollection({
-    items: [
-      { label: "吃到飽方案 ($999)", value: "1" },
-      { label: "小資方案 ($499)", value: "2" },
-      { label: "語音通話方案 ($699)", value: "3" },
-    ],
+    items: simplifiedPlans,
   });
 
   // 👉 表單驗證
@@ -387,10 +406,12 @@ export const TeleDashboard = () => {
       <Tabs.Root value={activeTab} onValueChange={(e) => setActiveTab(e.value)}>
         <Tabs.List>
           <Tabs.Trigger value="user">用戶列表</Tabs.Trigger>
-          <Tabs.Trigger value="usage_call">通話紀錄(30日)</Tabs.Trigger>
-          <Tabs.Trigger value="usage_sms">簡訊紀錄(30日)</Tabs.Trigger>
-          <Tabs.Trigger value="usage_data">流量紀錄(30日)</Tabs.Trigger>
-          <Tabs.Trigger value="invoice">帳單明細</Tabs.Trigger>
+          <Tabs.Trigger value="plan">方案一覽</Tabs.Trigger>
+          <Tabs.Trigger value="usage_call">通話紀錄 (30日)</Tabs.Trigger>
+          <Tabs.Trigger value="usage_data">流量紀錄 (30日)</Tabs.Trigger>
+          <Tabs.Trigger value="usage_sms">簡訊紀錄</Tabs.Trigger>
+          <Tabs.Trigger value="info">用戶細節</Tabs.Trigger>
+          <Tabs.Trigger value="invoice">帳單紀錄</Tabs.Trigger>
         </Tabs.List>
 
         {/* ------------------ Tab: 查詢用戶 ------------------ */}
@@ -431,13 +452,69 @@ export const TeleDashboard = () => {
           )}
         </Tabs.Content>
 
-        {/* ------------------ Tab: 使用紀錄（範例空白） ------------------ */}
+        {/* ------------------ Tab: 方案一覽 ------------------ */}
+        <Tabs.Content value="plan">
+          <Box mt={4}>
+            <Table.Root size="sm">
+              <Table.Header>
+                <Table.Row>
+                  <Table.ColumnHeader>方案 ID</Table.ColumnHeader>
+                  <Table.ColumnHeader>方案名稱</Table.ColumnHeader>
+                  <Table.ColumnHeader>月租費用</Table.ColumnHeader>
+                  <Table.ColumnHeader>免費簡訊數</Table.ColumnHeader>
+                  <Table.ColumnHeader>包含流量 (MB)</Table.ColumnHeader>
+                  <Table.ColumnHeader>計費類型</Table.ColumnHeader>
+                  <Table.ColumnHeader>資料政策</Table.ColumnHeader>
+                  <Table.ColumnHeader>超出費用政策</Table.ColumnHeader>
+                  <Table.ColumnHeader>限速政策</Table.ColumnHeader>
+                  <Table.ColumnHeader>生效日期</Table.ColumnHeader>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {plans.map((plan) => (
+                  <Table.Row key={plan.id}>
+                    <Table.Cell>{plan.id}</Table.Cell>
+                    <Table.Cell>{plan.name}</Table.Cell>
+                    <Table.Cell>${plan.monthlyFee}</Table.Cell>
+                    <Table.Cell>{plan.includedSms}</Table.Cell>
+                    <Table.Cell>
+                      {plan.includedDataMb != 99999
+                        ? `${plan.includedDataMb} MB`
+                        : "不限"}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {plan.billingType === "POSTPAID" ? "月租" : "預付"}
+                    </Table.Cell>
+                    <Table.Cell>{plan.dataPolicy}</Table.Cell>
+                    <Table.Cell>
+                      {plan.overagePolicy === "THROTTLE"
+                        ? `限速 ${plan.throttleSpeedKbps} Kbps`
+                        : "無額外費用"}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {plan.throttleAfterMb
+                        ? `限速後 ${plan.throttleAfterMb} MB`
+                        : "無限速限制"}
+                    </Table.Cell>
+                    <Table.Cell>
+                      {plan.effectiveFrom
+                        ? new Date(plan.effectiveFrom).toLocaleDateString()
+                        : "無生效日期"}
+                    </Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table.Root>
+          </Box>
+        </Tabs.Content>
+
+        {/* ------------------ Tab: 使用紀錄 ------------------ */}
         <Tabs.Content value="usage_call">
           {callRecords.length > 0 ? (
             <Table.Root mt={4} size="sm">
               <Table.Header>
                 <Table.Row>
-                  <Table.ColumnHeader>發送人(ID)</Table.ColumnHeader>
+                  <Table.ColumnHeader>發送人 (ID)</Table.ColumnHeader>
 
                   <Table.ColumnHeader>時間</Table.ColumnHeader>
                   <Table.ColumnHeader>對象</Table.ColumnHeader>
@@ -458,14 +535,16 @@ export const TeleDashboard = () => {
           ) : (
             <Box mt={4}>尚無通話紀錄</Box>
           )}
+          <Text m={2}>總筆數：{callRecords.length}</Text>
         </Tabs.Content>
 
+        {/* ------------------ Tab: 簡訊紀錄 ------------------ */}
         <Tabs.Content value="usage_sms">
           {smsRecords.length > 0 ? (
             <Table.Root mt={4} size="sm">
               <Table.Header>
                 <Table.Row>
-                  <Table.ColumnHeader>發送人(ID)</Table.ColumnHeader>
+                  <Table.ColumnHeader>發送人 (ID)</Table.ColumnHeader>
                   <Table.ColumnHeader>發送時間</Table.ColumnHeader>
                   <Table.ColumnHeader>對象</Table.ColumnHeader>
                   <Table.ColumnHeader>狀態</Table.ColumnHeader>
@@ -485,8 +564,10 @@ export const TeleDashboard = () => {
           ) : (
             <Box mt={4}>尚無簡訊紀錄</Box>
           )}
+          <Text m={2}>總筆數：{smsRecords.length}</Text>
         </Tabs.Content>
 
+        {/* ------------------ Tab: 流量紀錄 ------------------ */}
         <Tabs.Content value="usage_data">
           {dataRecords.length > 0 ? (
             <Table.Root mt={4} size="sm">
@@ -515,14 +596,49 @@ export const TeleDashboard = () => {
           ) : (
             <Box mt={4}>尚無流量紀錄</Box>
           )}
+          <Text m={2}>總筆數：{dataRecords.length}</Text>
         </Tabs.Content>
+
+        {/* ------------------ Tab: 帳戶細節 ------------------ */}
+        <Tabs.Content value="info">
+          <Box mt={5}>
+            {topContact && (
+              <Text mb={2}>最常聯絡對象: {topContact || "無資料"}</Text>
+            )}
+            {(usageSummary && (
+              <Table.Root mt={4} size="sm">
+                <Table.Header>
+                  <Table.Row>
+                    <Table.ColumnHeader>使用者</Table.ColumnHeader>
+                    <Table.ColumnHeader>門號</Table.ColumnHeader>
+                    <Table.ColumnHeader>方案名稱</Table.ColumnHeader>
+                    <Table.ColumnHeader>通話次數</Table.ColumnHeader>
+                    <Table.ColumnHeader>簡訊次數</Table.ColumnHeader>
+                    <Table.ColumnHeader>總上網用量(MB)</Table.ColumnHeader>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  <Table.Row>
+                    <Table.Cell>{usageSummary?.user.name}</Table.Cell>
+                    <Table.Cell>{usageSummary?.user.phoneNumber}</Table.Cell>
+                    <Table.Cell>
+                      {usageSummary?.user.currentPlan.name}
+                    </Table.Cell>
+                    <Table.Cell>{usageSummary?.callCount}</Table.Cell>
+                    <Table.Cell>{usageSummary?.smsCount}</Table.Cell>
+                    <Table.Cell>
+                      {usageSummary?.totalDataUsageMb.toFixed(2)} MB
+                    </Table.Cell>
+                  </Table.Row>
+                </Table.Body>
+              </Table.Root>
+            )) ?? <Box mt={4}>尚未查詢用戶細節</Box>}
+          </Box>
+        </Tabs.Content>
+
+        {/* ------------------ Tab: 帳單紀錄 ------------------ */}
         <Tabs.Content value="invoice">
           <Box display="flex" alignItems="center" gap={2} mb={3}>
-            <Input
-              placeholder="查詢門號（可空）"
-              value={selectedPhone}
-              onChange={(e) => setSelectedPhone(e.target.value)}
-            />
             <Input
               type="number"
               placeholder="年份"
@@ -535,14 +651,13 @@ export const TeleDashboard = () => {
               value={month}
               onChange={(e) => setMonth(Number(e.target.value))}
             />
-            <Button onClick={() => fetchBills(selectedPhone, year, month)}>
-              查詢帳單
+            <Button onClick={() => fetchBills(queryPhone, year, month)}>
+              查詢
             </Button>
-            <Button variant="ghost" color="orange" onClick={simulateAllBills}>
-              模擬帳單
+            <Button variant="surface" color="orange" onClick={simulateAllBills}>
+              模擬帳單(所有用戶)
             </Button>
           </Box>
-
           {bills.length > 0 ? (
             <Table.Root mt={4} size="sm">
               <Table.Header>
@@ -577,17 +692,20 @@ export const TeleDashboard = () => {
                     <Table.Cell>
                       {new Date(record.issuedAt).toLocaleString()}
                     </Table.Cell>
+                    {/* 針對預付卡用戶呈現其他資訊 */}
                     <Table.Cell>
-                      {record.paidAt
-                        ? new Date(record.paidAt).toLocaleString()
-                        : "尚未繳款"}
+                      {record.planName !== "預付卡方案"
+                        ? record.paidAt
+                          ? new Date(record.paidAt).toLocaleString()
+                          : "尚未繳款"
+                        : "無繳款資訊"}
                     </Table.Cell>
                   </Table.Row>
                 ))}
               </Table.Body>
             </Table.Root>
           ) : (
-            <Box mt={4}>尚無帳單紀錄</Box>
+            <Box mt={4}>尚無帳單紀錄 (未產生)</Box>
           )}
         </Tabs.Content>
       </Tabs.Root>
@@ -617,7 +735,11 @@ export const TeleDashboard = () => {
                       {/* 門號 */}
                       <Field.Root invalid={!!errors.number}>
                         <Field.Label>門號</Field.Label>
-                        <Input placeholder="輸入門號" {...register("number")} />
+                        <Input
+                          placeholder="輸入門號"
+                          {...register("number")}
+                          maxLength={8}
+                        />
                         <Field.ErrorText>
                           {errors.number?.message}
                         </Field.ErrorText>
@@ -633,7 +755,6 @@ export const TeleDashboard = () => {
                             <Select.Root
                               onValueChange={({ value }) => {
                                 field.onChange(value);
-                                console.log("Selected subscriber type:", value);
                               }}
                               onInteractOutside={() => field.onBlur()}
                               collection={subscriberTypeOptions}
@@ -676,7 +797,6 @@ export const TeleDashboard = () => {
                               <Select.Root
                                 onValueChange={({ value }) => {
                                   field.onChange(value);
-                                  console.log("Selected plan ID:", value);
                                 }}
                                 onInteractOutside={() => field.onBlur()}
                                 collection={planOptions}
@@ -692,9 +812,9 @@ export const TeleDashboard = () => {
                                 </Select.Control>
                                 <Select.Positioner>
                                   <Select.Content>
-                                    {planOptions.items.map((item) => (
-                                      <Select.Item item={item} key={item.value}>
-                                        {item.label}
+                                    {simplifiedPlans.map((item) => (
+                                      <Select.Item item={item} key={item.id}>
+                                        {item.name} {item.monthlyFee}元/月
                                         <Select.ItemIndicator />
                                       </Select.Item>
                                     ))}

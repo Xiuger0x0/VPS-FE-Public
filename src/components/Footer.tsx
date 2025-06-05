@@ -7,7 +7,7 @@ import {
   Text,
   Link,
 } from "@chakra-ui/react";
-import { FaGithub, FaYoutube } from "react-icons/fa";
+// import { FaGithub, FaYoutube } from "react-icons/fa";
 import { useColorModeValue } from "./ui/color-mode";
 import { VisitorStats } from "@/pages/layouts/MasterLayout";
 
@@ -33,7 +33,7 @@ const Footer = ({ visitorStats }: { visitorStats: VisitorStats | null }) => {
             focusRing={"none"}
           >
             <IconButton variant="ghost" rounded="full">
-              <FaGithub />
+              {/* <FaGithub /> */}
             </IconButton>
           </Link>
 
@@ -45,7 +45,7 @@ const Footer = ({ visitorStats }: { visitorStats: VisitorStats | null }) => {
             focusRing={"none"}
           >
             <IconButton variant="ghost" rounded="full">
-              <FaYoutube />
+              {/* <FaYoutube /> */}
             </IconButton>
           </Link>
         </Flex>

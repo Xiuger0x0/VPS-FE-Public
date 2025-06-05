@@ -1,22 +1,19 @@
 {
   "_comment": "這份文件用於通用位置的**中文翻譯** --- ex：Header 標題、通用元件等",
-
+  "page_title_airsoft_dashboard": "首頁儀表板",
+  "page_title_airsoft_equipment": "裝備清單",
+  "page_title_telecommunication_dashboard": "帳務總覽",
+  "page_title_service": "我的服務",
+  "page_title_item": "我的物品收藏",
+  "page_title_motor": "摩托車：HONDA GROM",
+  "page_title_car": "汽車：Grand Lancer",
   "page_title_about": "關於我",
   "page_title_project": "專案介紹",
   "page_title_home": "首頁",
-  "page_title_service": "服務",
-  "page_title_item": "物品 × 生活",
-  "page_title_motor": "HONDA MSX 125 GROM",
-  "page_title_car": "Grand Lancer",
-
   "page_title_airsoft": "Airsoft",
-  "page_title_airsoft_dashboard": "儀表板",
-  "page_title_airsoft_equipment": "裝備管理",
-
-"page_title_telecommunication": "通訊",
-  "page_title_telecommunication_dashboard": "儀表板",
-
+  "page_title_telecommunication": "通訊",
   "linelogin": "LINE 登入",
-  "logout" : "登出",
+  "login": "登入",
+  "logout": "登出",
   "nickname": "暱稱"
 }
