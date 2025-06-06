@@ -22,7 +22,7 @@ import { FiMenu } from "react-icons/fi";
 import { MdOutlineClose } from "react-icons/md";
 import { IUser } from "@/interface/IUser";
 import { ColorModeButton, useColorModeValue } from "./ui/color-mode";
-import { Link, useNavigate, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { useTranslation } from "react-i18next";
 import { BsTranslate } from "react-icons/bs";
 import { t } from "i18next";
