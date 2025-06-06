@@ -31,6 +31,11 @@ type UserInfo = {
   name: string;
   planName: string;
   createdAt: string;
+  ssn: string;
+  address?: string; // 可選屬性
+  city?: string; // 可選屬性
+  country?: string; // 可選屬性
+  postalCode?: string; // 可選屬性
 };
 
 type CallLogDto = {
@@ -55,6 +60,13 @@ type DataUsageSummaryDto = {
   uploadMb: number;
   userId: number;
   userName: string;
+};
+
+type TopDataUsageDto = {
+  userId: number;
+  userName: string;
+  phoneNumber: string;
+  totalUsageMb: number;
 };
 
 type InvoiceDetailsDto = {
@@ -109,11 +121,11 @@ export const TeleDashboard = () => {
   // 👉 狀態
   const [activeTab, setActiveTab] = useState("user");
   const [queryPhone, setQueryPhone] = useState("");
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [userList, setUserList] = useState<UserInfo[]>([]);
   const [callRecords, setCallRecords] = useState<CallLogDto[]>([]);
   const [smsRecords, setSmsRecords] = useState<SmsRecordDto[]>([]);
   const [dataRecords, setDataRecords] = useState<DataUsageSummaryDto[]>([]);
+  const [topDataRecords, setTopDataRecords] = useState<TopDataUsageDto[]>([]);
   const [bills, setBills] = useState<InvoiceDetailsDto[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -127,12 +139,11 @@ export const TeleDashboard = () => {
 
   // 👉 清除所有狀態
   const clearAllStates = () => {
-    setQueryPhone("");
-    setUserInfo(null);
     setUserList([]);
     setCallRecords([]);
     setSmsRecords([]);
     setDataRecords([]);
+    setTopDataRecords([]);
     setBills([]);
     setUsageSummary(null);
     setTopContact(null);
@@ -201,9 +212,9 @@ export const TeleDashboard = () => {
   // 👉 查詢使用摘要
   const fetchUsageSummary = async () => {
     try {
-      const res = await BackendApi.get(
-        `/telecom/users/${queryPhone}/usage-summary`
-      );
+      const res = await BackendApi.get(`/telecom/users/usage-summary`, {
+        params: { phone: queryPhone },
+      });
       setUsageSummary(res.data);
       setTopContact(res.data.mostContacted || null);
     } catch (err) {
@@ -214,12 +225,8 @@ export const TeleDashboard = () => {
   // 👉 查詢使用摘要與最常聯絡對象
   const getAllPlans = async () => {
     const response = await BackendApi.get("/telecom/plans");
+    setPlans(response.data);
     return response.data;
-  };
-
-  // 👉 查詢使用摘要與最常聯絡對象
-  const fetchUsageDetails = async () => {
-    await Promise.all([fetchUsageSummary()]);
   };
 
   // 👉 查詢所有用戶與使用紀錄
@@ -227,18 +234,21 @@ export const TeleDashboard = () => {
     clearAllStates();
 
     try {
-      const [usersRes, callRes, smsRes, dataRes] = await Promise.all([
-        BackendApi.get("/telecom/users"),
-        BackendApi.get("/telecom/calls"),
-        BackendApi.get("/telecom/sms"),
-        BackendApi.get("/telecom/data-usage"),
-        fetchBills(),
-      ]);
+      const [usersRes, callRes, smsRes, dataRes, topDataRes] =
+        await Promise.all([
+          BackendApi.get("/telecom/users"),
+          BackendApi.get("/telecom/calls"),
+          BackendApi.get("/telecom/sms"),
+          BackendApi.get("/telecom/data-usage"),
+          BackendApi.get("/telecom/data-usage/top10"),
+          fetchBills(),
+        ]);
 
       setUserList(usersRes.data);
       setCallRecords(callRes.data);
       setSmsRecords(smsRes.data);
       setDataRecords(dataRes.data);
+      setTopDataRecords(topDataRes.data);
     } catch (err) {
       toaster.create({
         title: "查詢失敗",
@@ -258,9 +268,11 @@ export const TeleDashboard = () => {
     clearAllStates(); // 預設清全部
 
     try {
-      const userRes = await BackendApi.get(`/telecom/user/${queryPhone}`);
-      const [callRes, smsRes, dataRes] = await Promise.all([
-        BackendApi.get(`/telecom/users/call-history`, {
+      const [callRes, userRes, smsRes, dataRes] = await Promise.all([
+        BackendApi.get(`/telecom/calls`, {
+          params: { phone: queryPhone },
+        }),
+        BackendApi.get(`/telecom/users`, {
           params: { phone: queryPhone },
         }),
         BackendApi.get(`/telecom/sms`, { params: { phone: queryPhone } }),
@@ -269,12 +281,11 @@ export const TeleDashboard = () => {
         }),
         fetchBills(queryPhone),
       ]);
-
-      setUserInfo(userRes.data);
+      setUserList(userRes.data);
       setCallRecords(callRes.data);
       setSmsRecords(smsRes.data);
       setDataRecords(dataRes.data);
-      fetchUsageDetails();
+      fetchUsageSummary();
     } catch (err) {
       toaster.create({
         title: "查詢失敗",
@@ -287,9 +298,7 @@ export const TeleDashboard = () => {
   // 👉 初始載入
   useEffect(() => {
     fetchUserInfo(); // 預設會查全部（因為沒給參數）
-    getAllPlans()
-      .then((data) => setPlans(data))
-      .catch(console.error);
+    getAllPlans();
   }, []);
 
   const subscriberTypeOptions = createListCollection({
@@ -301,9 +310,9 @@ export const TeleDashboard = () => {
 
   const simplifiedPlans = plans.map((plan) => ({
     id: plan.id,
-    value: plan.id.toString(), // Select 要用的 value，建議轉成 string
-    label: `${plan.name} ${plan.monthlyFee}元/月`, // 顯示文字
-    name: plan.name, // 你也可以保留更多欄位備用
+    value: plan.id.toString(),
+    label: `${plan.name} ${plan.monthlyFee}元/月`,
+    name: plan.name,
     monthlyFee: plan.monthlyFee,
   }));
 
@@ -335,6 +344,7 @@ export const TeleDashboard = () => {
           })
         )
         .optional(), // 記得後面 refine 用這邏輯補強
+      ssn: z.string().length(10, { message: "SSN 必須為 10 位數" }),
     })
     .refine(
       (data) =>
@@ -391,32 +401,35 @@ export const TeleDashboard = () => {
 
   return (
     <Box p={6}>
-      <HStack my={4}>
-        <Input
-          placeholder="輸入門號"
-          value={queryPhone}
-          onChange={(e) => setQueryPhone(e.target.value)}
-        />
-        <Button onClick={() => fetchUserInfo(queryPhone)}>查詢</Button>
-        <Button colorScheme="blue" onClick={() => setDialogOpen(true)}>
-          ➕ 新增用戶
-        </Button>
-      </HStack>
       {/* Tabs 切換區塊 */}
       <Tabs.Root value={activeTab} onValueChange={(e) => setActiveTab(e.value)}>
         <Tabs.List>
-          <Tabs.Trigger value="user">用戶列表</Tabs.Trigger>
           <Tabs.Trigger value="plan">方案一覽</Tabs.Trigger>
+          <Tabs.Trigger value="user">用戶列表</Tabs.Trigger>
+          <Tabs.Trigger value="info">用戶細節</Tabs.Trigger>
           <Tabs.Trigger value="usage_call">通話紀錄 (30日)</Tabs.Trigger>
           <Tabs.Trigger value="usage_data">流量紀錄 (30日)</Tabs.Trigger>
+          {!queryPhone && (
+            <Tabs.Trigger value="usage_data_top10">流量排行前十</Tabs.Trigger>
+          )}
           <Tabs.Trigger value="usage_sms">簡訊紀錄</Tabs.Trigger>
-          <Tabs.Trigger value="info">用戶細節</Tabs.Trigger>
           <Tabs.Trigger value="invoice">帳單紀錄</Tabs.Trigger>
         </Tabs.List>
 
+        <HStack my={4}>
+          <Input
+            placeholder="輸入門號"
+            value={queryPhone}
+            onChange={(e) => setQueryPhone(e.target.value)}
+          />
+          <Button onClick={() => fetchUserInfo(queryPhone)}>查詢</Button>
+          <Button colorScheme="blue" onClick={() => setDialogOpen(true)}>
+            ➕ 新增用戶
+          </Button>
+        </HStack>
         {/* ------------------ Tab: 查詢用戶 ------------------ */}
         <Tabs.Content value="user">
-          {(userInfo || userList.length > 0) && (
+          {userList.length > 0 && (
             <Table.Root mt={6} size="sm">
               <Table.Header>
                 <Table.Row>
@@ -425,28 +438,28 @@ export const TeleDashboard = () => {
                   <Table.ColumnHeader>門號</Table.ColumnHeader>
                   <Table.ColumnHeader>方案</Table.ColumnHeader>
                   <Table.ColumnHeader>申辦時間</Table.ColumnHeader>
+                  <Table.ColumnHeader>SSN</Table.ColumnHeader>
+                  <Table.ColumnHeader>地址</Table.ColumnHeader>
+                  <Table.ColumnHeader>城市</Table.ColumnHeader>
+                  <Table.ColumnHeader>國家</Table.ColumnHeader>
+                  <Table.ColumnHeader>郵遞區號</Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {userInfo ? (
-                  <Table.Row>
-                    <Table.Cell>{userInfo.id}</Table.Cell>
-                    <Table.Cell>{userInfo.name}</Table.Cell>
-                    <Table.Cell>{userInfo.number}</Table.Cell>
-                    <Table.Cell>{userInfo.planName}</Table.Cell>
-                    <Table.Cell>{userInfo.createdAt}</Table.Cell>
+                {userList.map((user) => (
+                  <Table.Row key={user.id}>
+                    <Table.Cell>{user.id}</Table.Cell>
+                    <Table.Cell>{user.name}</Table.Cell>
+                    <Table.Cell>{user.number}</Table.Cell>
+                    <Table.Cell>{user.planName}</Table.Cell>
+                    <Table.Cell>{user.createdAt}</Table.Cell>
+                    <Table.Cell>{user.ssn || "限管理者檢視"}</Table.Cell>
+                    <Table.Cell>{user.address || "無資料"}</Table.Cell>
+                    <Table.Cell>{user.city || "無資料"}</Table.Cell>
+                    <Table.Cell>{user.country || "無資料"}</Table.Cell>
+                    <Table.Cell>{user.postalCode || "無資料"}</Table.Cell>
                   </Table.Row>
-                ) : (
-                  userList.map((user) => (
-                    <Table.Row key={user.id}>
-                      <Table.Cell>{user.id}</Table.Cell>
-                      <Table.Cell>{user.name}</Table.Cell>
-                      <Table.Cell>{user.number}</Table.Cell>
-                      <Table.Cell>{user.planName}</Table.Cell>
-                      <Table.Cell>{user.createdAt}</Table.Cell>
-                    </Table.Row>
-                  ))
-                )}
+                ))}
               </Table.Body>
             </Table.Root>
           )}
@@ -493,7 +506,7 @@ export const TeleDashboard = () => {
                     </Table.Cell>
                     <Table.Cell>
                       {plan.throttleAfterMb
-                        ? `限速後 ${plan.throttleAfterMb} MB`
+                        ? `${plan.throttleAfterMb} MB 後限速 `
                         : "無限速限制"}
                     </Table.Cell>
                     <Table.Cell>
@@ -599,6 +612,37 @@ export const TeleDashboard = () => {
           <Text m={2}>總筆數：{dataRecords.length}</Text>
         </Tabs.Content>
 
+        {/* ------------------ Tab: 流量排行前十 ------------------ */}
+        {!queryPhone && (
+          <Tabs.Content value="usage_data_top10">
+            {topDataRecords.length > 0 ? (
+              <Table.Root mt={4} size="sm">
+                <Table.Header>
+                  <Table.Row>
+                    <Table.ColumnHeader>用戶ID</Table.ColumnHeader>
+                    <Table.ColumnHeader>用戶名稱</Table.ColumnHeader>
+                    <Table.ColumnHeader>門號</Table.ColumnHeader>
+                    <Table.ColumnHeader>總流量 (MB)</Table.ColumnHeader>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  {topDataRecords.map((record, idx) => (
+                    <Table.Row key={idx}>
+                      <Table.Cell>{record.userId}</Table.Cell>
+                      <Table.Cell>{record.userName}</Table.Cell>
+                      <Table.Cell>{record.phoneNumber}</Table.Cell>
+                      <Table.Cell>{record.totalUsageMb.toFixed(2)}</Table.Cell>
+                    </Table.Row>
+                  ))}
+                </Table.Body>
+              </Table.Root>
+            ) : (
+              <Box mt={4}>尚無流量排行前十紀錄</Box>
+            )}
+            <Text m={2}>總筆數：{topDataRecords.length}</Text>
+          </Tabs.Content>
+        )}
+
         {/* ------------------ Tab: 帳戶細節 ------------------ */}
         <Tabs.Content value="info">
           <Box mt={5}>
@@ -632,7 +676,7 @@ export const TeleDashboard = () => {
                   </Table.Row>
                 </Table.Body>
               </Table.Root>
-            )) ?? <Box mt={4}>尚未查詢用戶細節</Box>}
+            )) ?? <Box mt={4}>尚未查詢用戶使用明細</Box>}
           </Box>
         </Tabs.Content>
 
@@ -730,6 +774,17 @@ export const TeleDashboard = () => {
                         <Field.ErrorText>
                           {errors.name?.message}
                         </Field.ErrorText>
+                      </Field.Root>
+
+                      {/* SSN */}
+                      <Field.Root invalid={!!errors.ssn}>
+                        <Field.Label>SSN</Field.Label>
+                        <Input
+                          placeholder="輸入 SSN"
+                          {...register("ssn")}
+                          maxLength={10}
+                        />
+                        <Field.ErrorText>{errors.ssn?.message}</Field.ErrorText>
                       </Field.Root>
 
                       {/* 門號 */}
@@ -845,7 +900,13 @@ export const TeleDashboard = () => {
                   </Dialog.ActionTrigger>
                   <Button onClick={handleSubmit(onSubmit)}>儲存</Button>
                 </Dialog.Footer>
-                <Dialog.CloseTrigger asChild>
+                <Dialog.CloseTrigger
+                  asChild
+                  onClick={() => {
+                    reset(); // 重置表單
+                    setDialogOpen(false);
+                  }}
+                >
                   <CloseButton size="sm" />
                 </Dialog.CloseTrigger>
               </Dialog.Content>
