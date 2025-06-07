@@ -381,6 +381,7 @@ export const TeleDashboard = () => {
         number: data.number,
         planId: data.planId,
         subscriberType: data.subscriberType,
+        ssn: data.ssn,
       }).then(() => {
         // 成功後清空表單和關閉對話框
         reset();
