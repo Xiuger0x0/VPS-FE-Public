@@ -37,7 +37,7 @@ export interface Gun {
 }
 
 const fetchGuns = async (memberId?: string) => {
-  const url = memberId ? `/guns/by-member/${memberId}` : `/guns/getAll`;
+  const url = memberId ? `/guns/by-user/${memberId}` : `/guns/getAll`;
   return BackendApi.get(url);
 };
 

@@ -39,7 +39,7 @@ export const CallBackPage = () => {
         }
       );
 
-      await BackendApi.post("/line/login", {
+      await BackendApi.post("/users/line/login", {
         idToken: tokenData.id_token,
       });
 

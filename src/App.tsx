@@ -59,7 +59,7 @@ function App() {
             <LoginPage
               onLogin={async (data) => {
                 try {
-                  const res = await BackendApi.post("/members/login", data);
+                  const res = await BackendApi.post("/users/login", data);
 
                   const userData: IUser = {
                     userId: res.data.id ?? null,
