@@ -27,13 +27,7 @@ export interface Gun {
   velocity025: number;
   velocity036: number;
   lastMaintenanceAt: string;
-  owner: {
-    id: number;
-    email: string;
-    displayName: string;
-    // 可加更多欄位根據需要
-  };
-  // storageSlot 和 displaySlot 如需展示可補上對應型別
+  ownerId: number;
 }
 
 const fetchGuns = async (memberId?: string) => {
@@ -249,7 +243,7 @@ export const AirsoftManager = () => {
             <Table.Body>
               {guns.map((gun) => (
                 <Table.Row key={gun.id}>
-                  <Table.Cell>{gun.owner.id}</Table.Cell>
+                  <Table.Cell>{gun.ownerId}</Table.Cell>
                   <Table.Cell>{gun.model}</Table.Cell>
                   <Table.Cell>{gun.serialNumber}</Table.Cell>
                   <Table.Cell>{gun.powerType}</Table.Cell>
