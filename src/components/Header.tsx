@@ -47,16 +47,6 @@ const Links: LinkProps[] = [
       { name: "page_title_airsoft_equipment", path: "/airsoft/equipment" },
     ],
   },
-  {
-    name: "page_title_telecommunication",
-    path: "/telecommunication",
-    children: [
-      {
-        name: "page_title_telecommunication_dashboard",
-        path: "/telecommunication/dashboard",
-      },
-    ],
-  },
   // {
   //   name: "page_title_project",
   //   path: "/project",

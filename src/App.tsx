@@ -21,8 +21,6 @@ import { useSetRecoilState } from "recoil";
 import { userState } from "./recoil/state";
 import { BackendApi } from "./js/bootstrap";
 import { AirsoftLayout } from "./pages/layouts/AirsoftLayout";
-import { TeleLayout } from "./pages/layouts/TeleLayout";
-import { TeleDashboard } from "./pages/Telecommunications/TeleDashboard";
 const MotorPage = lazy(() => import("@/pages/ItemPages/MotorPage"));
 const CarPage = lazy(() => import("@/pages/ItemPages/CarPage"));
 const WeaponCustomizer = lazy(
@@ -105,16 +103,10 @@ function App() {
           <Route path="car" element={<CarPage />} />
         </Route>
 
-        {/* 課程專案(網頁資料庫程式設計) */}
+        {/* Airsoft */}
         <Route path="/airsoft" element={<AirsoftLayout />}>
           <Route index element={<AirsoftManager />} />
           <Route path="dashboard" element={<AirsoftManager />} />
-        </Route>
-
-        {/* 課程專案(資料庫系統實務) */}
-        <Route path="/telecommunication" element={<TeleLayout />}>
-          <Route index element={<TeleDashboard />} />
-          <Route path="dashboard" element={<TeleDashboard />} />
         </Route>
       </Route>
 
