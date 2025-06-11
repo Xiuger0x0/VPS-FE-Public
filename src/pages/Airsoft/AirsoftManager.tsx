@@ -7,6 +7,7 @@ import {
   Heading,
   Table,
   IconButton,
+  Image,
   Spinner,
   FormatNumber,
   Dialog,
@@ -28,6 +29,7 @@ export interface Gun {
   velocity036: number;
   lastMaintenanceAt: string;
   ownerId: number;
+  imageUrl: string;
 }
 
 const fetchGuns = async (memberId?: string) => {
@@ -232,6 +234,7 @@ export const AirsoftManager = () => {
               <Table.Row whiteSpace={"nowrap"}>
                 <Table.ColumnHeader>會員編號</Table.ColumnHeader>
                 <Table.ColumnHeader>槍型</Table.ColumnHeader>
+                <Table.ColumnHeader>圖片</Table.ColumnHeader>
                 <Table.ColumnHeader>序號</Table.ColumnHeader>
                 <Table.ColumnHeader>動力</Table.ColumnHeader>
                 <Table.ColumnHeader>0.25g</Table.ColumnHeader>
@@ -244,6 +247,13 @@ export const AirsoftManager = () => {
               {guns.map((gun) => (
                 <Table.Row key={gun.id}>
                   <Table.Cell>{gun.ownerId}</Table.Cell>
+                  <Table.Cell>
+                    <Image
+                      height="200px"
+                      src={gun.imageUrl}
+                      alt={gun.imageUrl}
+                    />
+                  </Table.Cell>
                   <Table.Cell>{gun.model}</Table.Cell>
                   <Table.Cell>{gun.serialNumber}</Table.Cell>
                   <Table.Cell>{gun.powerType}</Table.Cell>
