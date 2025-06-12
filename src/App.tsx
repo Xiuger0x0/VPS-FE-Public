@@ -62,10 +62,10 @@ function App() {
                   const res = await BackendApi.post("/users/login", data);
 
                   const userData: IUser = {
-                    userId: res.data.id ?? null,
-                    displayName: res.data.displayName ?? null,
-                    pictureUrl: res.data.pictureUrl ?? null,
-                    userEmail: res.data.email ?? null,
+                    userId: res.data.user.id,
+                    displayName: res.data.user.displayName ?? null,
+                    pictureUrl: res.data.user.pictureUrl ?? null,
+                    userEmail: res.data.user.email,
                   };
 
                   localStorage.setItem("token", res.data.token);
