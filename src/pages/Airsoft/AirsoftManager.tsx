@@ -157,6 +157,13 @@ export const AirsoftManager = () => {
                         }
                       />
                       <Input
+                        placeholder="圖片 URL"
+                        value={input.imageUrl ?? ""}
+                        onChange={(e) =>
+                          setInput({ ...input, imageUrl: e.target.value })
+                        }
+                      />
+                      <Input
                         placeholder="序號"
                         value={input.serialNumber ?? ""}
                         onChange={(e) =>
@@ -247,14 +254,14 @@ export const AirsoftManager = () => {
               {guns.map((gun) => (
                 <Table.Row key={gun.id}>
                   <Table.Cell>{gun.ownerId}</Table.Cell>
+                  <Table.Cell>{gun.model}</Table.Cell>
                   <Table.Cell>
                     <Image
-                      height="200px"
+                      aspectRatio={4 / 3}
                       src={gun.imageUrl}
                       alt={gun.imageUrl}
                     />
                   </Table.Cell>
-                  <Table.Cell>{gun.model}</Table.Cell>
                   <Table.Cell>{gun.serialNumber}</Table.Cell>
                   <Table.Cell>{gun.powerType}</Table.Cell>
                   <Table.Cell>
