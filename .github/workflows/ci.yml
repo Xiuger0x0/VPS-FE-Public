@@ -9,7 +9,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: Deploy   # 👈 使用你自定義的 Environment
+    environment: Deploy   # 👈 使用你自定義的 secretsironment
 
     steps:
       # 1️⃣ 取得原始碼
@@ -38,20 +38,21 @@ jobs:
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
+         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
 
       # 7️⃣ 上傳並部署到遠端目錄
       - name: Copy files to remote server
         run: |
           echo "📁 確保遠端目錄存在..."
-          ssh -o StrictHostKeyChecking=no ${{ env.SSH_USERNAME }}@${{ env.SSH_HOST }} "mkdir -p ${{ env.SSH_TARGET_DIR }}"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p ${{ secrets.SSH_TARGET_DIR }}"
 
           echo "📤 上傳 dist.tar.gz 到遠端..."
-          scp -o StrictHostKeyChecking=no dist.tar.gz ${{ env.SSH_USERNAME }}@${{ env.SSH_HOST }}:${{ env.SSH_TARGET_DIR }}
+          scp -o StrictHostKeyChecking=no dist.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_TARGET_DIR }}
 
           echo "📦 解壓縮並清理..."
-          ssh -o StrictHostKeyChecking=no ${{ env.SSH_USERNAME }}@${{ env.SSH_HOST }} << 'EOF'
-            cd ${{ env.SSH_TARGET_DIR }}
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd ${{ secrets.SSH_TARGET_DIR }}
             tar -xzf dist.tar.gz
             rm dist.tar.gz
           EOF
