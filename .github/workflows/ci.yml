@@ -35,7 +35,7 @@ jobs:
         run: tar -czf dist.tar.gz dist/
 
       - name: Upload build files
-        uses: appleboy/upload-artifact@v0.1.4
+        uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
