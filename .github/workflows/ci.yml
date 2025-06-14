@@ -1,22 +1,56 @@
-name: Frontend CI
+name: Frontend CI/CD
 
-# 當...
 on:
   push:
     branches: [master]
   pull_request:
     branches: [master]
 
-
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ 取得原始碼
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ 使用 Node.js
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      # 3️⃣ 安裝依賴
+      - name: Install dependencies
+        run: npm install
+
+      # 4️⃣ 建置專案
+      - name: Build project
+        run: npm run build
+
+      # 5️⃣ 壓縮 dist
+      - name: Compress build files
+        run: tar -czf dist.tar.gz dist/
+
+      # 6️⃣ 設定 SSH
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # 7️⃣ 上傳並解壓縮
+      - name: Copy files to remote server
+        run: |
+          echo "Creating remote folder on server..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p ~/app"
+
+          echo "Uploading dist.tar.gz..."
+          scp -o StrictHostKeyChecking=no dist.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/app/
+
+          echo "Extracting and cleaning up on server..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd ~/app
+            tar -xzf dist.tar.gz
+            rm dist.tar.gz
+          EOF
