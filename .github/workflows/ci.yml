@@ -2,9 +2,9 @@ name: Frontend CI/CD
 
 on:
   push:
-    branches: [master]
+    branches: [dev]
   pull_request:
-    branches: [master]
+    branches: [dev]
 
 jobs:
   build-and-deploy:
@@ -39,14 +39,14 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # 7️⃣ 上傳並部署到遠端目錄 /home/xiuger/VPS-FE-Public
+      # 7️⃣ 上傳並部署到遠端目錄
       - name: Copy files to remote server
         run: |
           echo "📁 確保遠端目錄存在..."
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p /home/xiuger/VPS-FE-Public"
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p ${{ secrets.SSH_TARGET_DIR }}"
 
           echo "📤 上傳 dist.tar.gz 到遠端..."
-          scp -o StrictHostKeyChecking=no dist.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/xiuger/VPS-FE-Public/
+          scp -o StrictHostKeyChecking=no dist.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_TARGET_DIR }}
 
           echo "📦 解壓縮並清理..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
