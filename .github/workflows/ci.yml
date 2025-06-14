@@ -44,13 +44,10 @@ jobs:
       # 7️⃣ 上傳並部署到遠端目錄
       - name: Copy files to remote server
         run: |
-          echo "📁 確保遠端目錄存在..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p ${{ secrets.SSH_TARGET_DIR }}"
 
-          echo "📤 上傳 dist.tar.gz 到遠端..."
           scp -o StrictHostKeyChecking=no dist.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_TARGET_DIR }}
 
-          echo "📦 解壓縮並清理..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd ${{ secrets.SSH_TARGET_DIR }}
             tar -xzf dist.tar.gz
