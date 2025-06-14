@@ -39,18 +39,18 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # 7️⃣ 上傳並解壓縮
+      # 7️⃣ 上傳並部署到遠端目錄 /home/xiuger/VPS-FE-Public
       - name: Copy files to remote server
         run: |
-          echo "Creating remote folder on server..."
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p ~/app"
+          echo "📁 確保遠端目錄存在..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "mkdir -p /home/xiuger/VPS-FE-Public"
 
-          echo "Uploading dist.tar.gz..."
-          scp -o StrictHostKeyChecking=no dist.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:~/app/
+          echo "📤 上傳 dist.tar.gz 到遠端..."
+          scp -o StrictHostKeyChecking=no dist.tar.gz ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/xiuger/VPS-FE-Public/
 
-          echo "Extracting and cleaning up on server..."
+          echo "📦 解壓縮並清理..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-            cd ~/app
+            cd ${{ secrets.SSH_TARGET_DIR }}
             tar -xzf dist.tar.gz
             rm dist.tar.gz
           EOF
