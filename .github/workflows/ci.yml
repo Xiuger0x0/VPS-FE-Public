@@ -3,13 +3,13 @@ name: Frontend CI/CD
 on:
   push:
     branches: [master]
-    paths:
-      - "VPS-FE-Public/**"
-      - "!VPS-FE-Public/README.md"
+    # paths:
+    # - "VPS-FE-Public/**"
+    # - "!VPS-FE-Public/README.md"
   pull_request:
     branches: [master]
-    paths:
-      - "VPS-FE-Public/**"
+    # paths:
+    # - "VPS-FE-Public/**"
 
 jobs:
   build-and-deploy:
