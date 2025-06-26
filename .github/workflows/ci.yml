@@ -2,23 +2,19 @@ name: Frontend CI/CD
 
 on:
   push:
-    branches: [master]
-    # paths:
-    # - "VPS-FE-Public/**"
-    # - "!VPS-FE-Public/README.md"
+    branches: [main, master]
+    paths:
+      - "**"
+      - "!README.md"
   pull_request:
-    branches: [master]
-    # paths:
-    # - "VPS-FE-Public/**"
+    branches: [main, master]
+    paths:
+      - "**"
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     environment: Deploy
-    defaults:
-      run:
-        working-directory: ./VPS-FE-Public
-
     steps:
       # 1️⃣ 取得原始碼
       - name: Checkout code
@@ -30,23 +26,27 @@ jobs:
         with:
           node-version: 20
           cache: "npm"
-          cache-dependency-path: "./VPS-FE-Public/package-lock.json"
+          cache-dependency-path: "package-lock.json"
 
       # 3️⃣ 安裝依賴
       - name: Install dependencies
         run: npm ci
+        working-directory: .
 
       # 4️⃣ 執行 Lint 檢查
       - name: Run ESLint
         run: npm run lint
+        working-directory: .
 
       # 5️⃣ 建置專案
       - name: Build project
         run: npm run build
+        working-directory: .
 
       # 6️⃣ 壓縮建置文件
       - name: Compress build files
         run: tar -czf dist.tar.gz dist/
+        working-directory: .
 
       # 7️⃣ 上傳建置文件到伺服器
       - name: Upload build files to server
@@ -56,9 +56,8 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT || '22' }}
-          source: VPS-FE-Public/dist.tar.gz
-          target: ${{ secrets.SSH_TARGET_DIR }}
-          strip_components: 1
+          source: dist.tar.gz
+          target: ${{ secrets.SSH_TARGET_DIR }}/VPS-FE-Public/
 
       # 8️⃣ 部署到伺服器
       - name: Deploy to server
@@ -69,22 +68,22 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT || '22' }}
           script: |
-            cd ${{ secrets.SSH_TARGET_DIR }}
+            cd ${{ secrets.SSH_TARGET_DIR }}/VPS-FE-Public
 
             # 備份現有的 dist 目錄
-            if [ -d "VPS-FE-Public/dist" ]; then
-              mv VPS-FE-Public/dist VPS-FE-Public/dist.backup.$(date +%Y%m%d_%H%M%S)
+            if [ -d "dist" ]; then
+              mv dist dist.backup.$(date +%Y%m%d_%H%M%S)
             fi
 
             # 創建新的 dist 目錄
-            mkdir -p VPS-FE-Public/dist
+            mkdir -p dist
 
             # 解壓新的建置文件
-            tar -xzf dist.tar.gz -C VPS-FE-Public/dist --strip-components=1
+            tar -xzf dist.tar.gz -C dist --strip-components=1
             rm dist.tar.gz
 
             # 重啟 nginx 容器以載入新的靜態文件
-            cd VPS-Server
+            cd ${{ secrets.SSH_TARGET_DIR }}/VPS-Server
             docker-compose restart nginx
 
             # 清理舊的備份（保留最近3個）
