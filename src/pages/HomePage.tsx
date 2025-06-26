@@ -11,7 +11,7 @@ export const HomePage = () => {
     <>
       <Helmet>
         <title>
-          {appName} | {t("page_title_home")}
+          {appName} | {t("page_title_home")} CI test
         </title>
       </Helmet>
       <Box>
