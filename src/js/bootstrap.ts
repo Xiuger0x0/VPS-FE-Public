@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_CONFIG, apiLog, ERROR_MESSAGES } from "@/config/api";
+import { API_CONFIG, apiLog } from "@/config/api";
 
 const logout = () => {
   localStorage.removeItem("token");

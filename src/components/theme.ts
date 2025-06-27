@@ -287,9 +287,6 @@ const config = defineConfig({
             },
           },
         },
-        defaultVariants: {
-          colorPalette: "primary",
-        },
       },
       badge: {
         base: {
@@ -334,9 +331,6 @@ const config = defineConfig({
               color: "info",
             },
           },
-        },
-        defaultVariants: {
-          colorPalette: "primary",
         },
       },
     },
