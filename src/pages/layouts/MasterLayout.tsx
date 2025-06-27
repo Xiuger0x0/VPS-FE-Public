@@ -47,17 +47,14 @@ export const MasterLayout = () => {
   }, []);
 
   return (
-    <Flex direction="column" minH="100vh">
+    <Flex direction="column" minH="100vh" bg="bg.canvas">
       <Toaster />
       <Header />
 
       <Box
-        w={{ base: "full", md: "80vw" }}
-        mx="auto"
         flex="1"
-        px={{ base: 2, md: 0 }}
-        mt={14}
-        py={2}
+        mt={16} // 配合新的 Header 高度
+        minH="calc(100vh - 64px)" // 確保內容區域有足夠高度
       >
         <Suspense>
           <Outlet />
