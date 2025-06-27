@@ -77,7 +77,7 @@ export const CallBackPage = () => {
         console.error("❌ 登入失敗:", err);
       }
     }
-  }, [navigate]);
+  }, [navigate, setUser]);
 
   const handleBind = async () => {
     if (!conflict) return;

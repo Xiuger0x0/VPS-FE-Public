@@ -35,7 +35,18 @@ jobs:
 
       # 4️⃣ 執行 Lint 檢查
       - name: Run ESLint
-        run: npm run lint
+        run: |
+          echo "🔍 Running ESLint..."
+          npm run lint
+          echo "✅ ESLint check completed"
+        working-directory: .
+
+      # 4.5️⃣ 嘗試自動修正 Lint 問題
+      - name: Auto-fix ESLint issues
+        run: |
+          echo "🔧 Attempting to auto-fix ESLint issues..."
+          npm run lint -- --fix || true
+          echo "✅ Auto-fix completed"
         working-directory: .
 
       # 5️⃣ 建置專案
@@ -84,7 +95,7 @@ jobs:
 
             # 重啟 nginx 容器以載入新的靜態文件
             cd ${{ secrets.SSH_TARGET_DIR }}/VPS-Server
-            docker-compose restart nginx
+            docker compose restart nginx
 
             # 清理舊的備份（保留最近3個）
             cd ${{ secrets.SSH_TARGET_DIR }}/VPS-FE-Public

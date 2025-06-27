@@ -1,19 +1,20 @@
-import { Tooltip } from "@/components/ui/tooltip";
-import { Badge, Box, Flex, HStack, Text } from "@chakra-ui/react";
+import { Badge, Box, Flex, HStack, Text, Timeline } from "@chakra-ui/react";
+
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { glassmorphismStyle } from "@/styles/glassmorphism";
-import {
-  TimelineConnector,
-  TimelineContent,
-  TimelineDescription,
-  TimelineItem,
-  TimelineRoot,
-  TimelineTitle,
-} from "@/components/ui/timeline";
+// import {
+//   TimelineConnector,
+//   TimelineContent,
+//   TimelineDescription,
+//   TimelineItem,
+//   TimelineRoot,
+//   TimelineTitle,
+// } from "@/components/ui/timeline";
 import { FaBuilding, FaSchool } from "react-icons/fa";
 import { FaPersonMilitaryRifle } from "react-icons/fa6";
 import { Blockquote } from "@chakra-ui/react";
+import { Tooltip } from "@/components/ui/tooltip";
 
 export const AboutPage = () => {
   const appName = import.meta.env.VITE_APP_NAME;
@@ -49,13 +50,13 @@ export const AboutPage = () => {
               rounded={"md"}
             >
               <Box>
-                <TimelineRoot maxW="600px">
-                  <TimelineItem>
-                    <TimelineConnector>
+                <Timeline.Root maxW="600px">
+                  <Timeline.Item>
+                    <Timeline.Connector>
                       <FaPersonMilitaryRifle />
-                    </TimelineConnector>
-                    <TimelineContent>
-                      <TimelineTitle textStyle="sm">
+                    </Timeline.Connector>
+                    <Timeline.Content>
+                      <Timeline.Title textStyle="sm">
                         <Badge
                           whiteSpace="normal"
                           wordBreak="break-word"
@@ -63,19 +64,19 @@ export const AboutPage = () => {
                         >
                           {tAbout("timeline.military")}
                         </Badge>
-                      </TimelineTitle>
-                      <TimelineDescription>
+                      </Timeline.Title>
+                      <Timeline.Description>
                         April 2017 - April 2021
-                      </TimelineDescription>
-                    </TimelineContent>
-                  </TimelineItem>
+                      </Timeline.Description>
+                    </Timeline.Content>
+                  </Timeline.Item>
 
-                  <TimelineItem>
-                    <TimelineConnector>
+                  <Timeline.Item>
+                    <Timeline.Connector>
                       <FaBuilding />
-                    </TimelineConnector>
-                    <TimelineContent>
-                      <TimelineTitle textStyle="sm">
+                    </Timeline.Connector>
+                    <Timeline.Content>
+                      <Timeline.Title textStyle="sm">
                         <Badge
                           whiteSpace="normal"
                           wordBreak="break-word"
@@ -83,22 +84,22 @@ export const AboutPage = () => {
                         >
                           {tAbout("timeline.training")}
                         </Badge>
-                      </TimelineTitle>
-                      <TimelineDescription>
+                      </Timeline.Title>
+                      <Timeline.Description>
                         June 2022 ~ October 2022
-                      </TimelineDescription>
+                      </Timeline.Description>
                       <Text fontSize={"xs"}>
                         {tAbout("timeline.trainingDetail")}
                       </Text>
-                    </TimelineContent>
-                  </TimelineItem>
+                    </Timeline.Content>
+                  </Timeline.Item>
 
-                  <TimelineItem>
-                    <TimelineConnector>
+                  <Timeline.Item>
+                    <Timeline.Connector>
                       <FaSchool />
-                    </TimelineConnector>
-                    <TimelineContent>
-                      <TimelineTitle textStyle="sm">
+                    </Timeline.Connector>
+                    <Timeline.Content>
+                      <Timeline.Title textStyle="sm">
                         <Badge
                           whiteSpace="normal"
                           wordBreak="break-word"
@@ -106,13 +107,13 @@ export const AboutPage = () => {
                         >
                           {tAbout("timeline.university")}
                         </Badge>
-                      </TimelineTitle>
-                      <TimelineDescription>
+                      </Timeline.Title>
+                      <Timeline.Description>
                         June 2023 ~ {tAbout("timeline.now")}
-                      </TimelineDescription>
-                    </TimelineContent>
-                  </TimelineItem>
-                </TimelineRoot>
+                      </Timeline.Description>
+                    </Timeline.Content>
+                  </Timeline.Item>
+                </Timeline.Root>
 
                 <Blockquote.Root>
                   <Blockquote.Content>

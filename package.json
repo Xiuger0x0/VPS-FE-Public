@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "lint:fix": "eslint . --fix",
+    "preview": "vite preview",
+    "pre-commit": "npm run lint && npm run build",
+    "check": "npm run lint && echo '✅ Lint check passed' && npm run build && echo '✅ Build check passed'"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.7.0",

@@ -23,6 +23,19 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      // 允許空的 interface 擴展（UI 組件常見模式）
+      '@typescript-eslint/no-empty-object-type': 'off',
+      // 允許未使用的變數如果以 _ 開頭
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_'
+        }
+      ],
+      // React Hooks 依賴檢查設為警告而非錯誤
+      'react-hooks/exhaustive-deps': 'warn',
     },
   },
 )

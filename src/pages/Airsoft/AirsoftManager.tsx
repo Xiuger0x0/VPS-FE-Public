@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -77,18 +77,18 @@ export const AirsoftManager = () => {
     }
   };
 
-  const loadGuns = async () => {
+  const loadGuns = useCallback(async () => {
     setLoading(true);
     const res = await fetchGuns(queryMemberId);
     console.log("Fetched guns:", res.data);
     setGuns(Array.isArray(res.data) ? res.data : [res.data]);
     setLoading(false);
-  };
+  }, [queryMemberId]);
 
   useEffect(() => {
     loadUser();
     loadGuns();
-  }, []);
+  }, [loadGuns]);
 
   const handleSubmit = async () => {
     if (!input.model || !input.serialNumber) return;
