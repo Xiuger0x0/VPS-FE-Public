@@ -55,12 +55,8 @@ const Links: LinkProps[] = [
     path: "/service",
   },
   {
-    name: "物品展示",
+    name: "氣槍展示",
     path: "/item",
-    children: [
-      { name: "機車", path: "/item/motorcycle" },
-      { name: "汽車", path: "/item/car" },
-    ],
   },
   {
     name: "Airsoft",

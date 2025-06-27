@@ -7,7 +7,7 @@ import { AboutPage } from "@/pages/AboutPage";
 import { HomePage } from "@/pages/HomePage";
 import { LiffPage } from "@/pages/LiffPage";
 import { ServicePage } from "@/pages/ServicePage";
-import { ItemsLayout } from "@/pages/layouts/ItemsLayout";
+
 import { Page404 } from "@/pages/Page404";
 import { ProjectPage } from "@/pages/ProjectPage";
 import ThemePlayground from "./pages/ThemePlaygroundPage";
@@ -21,8 +21,7 @@ import { useSetRecoilState } from "recoil";
 import { userState } from "./recoil/state";
 import { BackendApi } from "./js/bootstrap";
 import { AirsoftLayout } from "./pages/layouts/AirsoftLayout";
-const MotorPage = lazy(() => import("@/pages/ItemPages/MotorPage"));
-const CarPage = lazy(() => import("@/pages/ItemPages/CarPage"));
+import { AirsoftShowcasePage } from "./pages/ItemPages/AirsoftShowcasePage";
 const WeaponCustomizer = lazy(
   () => import("./components/R3F/scene/WeaponCustomizer")
 );
@@ -95,13 +94,8 @@ function App() {
         <Route path="/project" element={<ProjectPage />} />
         <Route path="/service" element={<ServicePage />} />
 
-        {/* 物品 */}
-        <Route path="/item" element={<ItemsLayout />}>
-          {/* 預設導向 motorcycle */}
-          <Route index element={<MotorPage />} />
-          <Route path="motorcycle" element={<MotorPage />} />
-          <Route path="car" element={<CarPage />} />
-        </Route>
+        {/* 氣槍展示 */}
+        <Route path="/item" element={<AirsoftShowcasePage />} />
 
         {/* Airsoft */}
         <Route path="/airsoft" element={<AirsoftLayout />}>
