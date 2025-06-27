@@ -311,6 +311,7 @@ export const ProjectPage: React.FC = () => {
                 css={{ scrollSnapAlign: "center" }}
               >
                 <Card.Root
+                  key={index}
                   h="full"
                   shadow="lg"
                   _hover={{ transform: "translateY(-4px)", shadow: "xl" }}
