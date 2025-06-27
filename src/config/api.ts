@@ -15,26 +15,26 @@ export const API_CONFIG = {
     timeout: 10000,
     withCredentials: false,
   },
-  
+
   // 生產環境配置
   production: {
     baseURL: '/api',
     timeout: 15000,
     withCredentials: false,
   },
-  
+
   // 獲取當前環境配置
-  current: isDevelopment 
+  current: isDevelopment
     ? {
-        baseURL: '/api',
-        timeout: 10000,
-        withCredentials: false,
-      }
+      baseURL: '/api',
+      timeout: 10000,
+      withCredentials: false,
+    }
     : {
-        baseURL: '/api',
-        timeout: 15000,
-        withCredentials: false,
-      }
+      baseURL: '/api',
+      timeout: 15000,
+      withCredentials: false,
+    }
 };
 
 // API 端點配置
@@ -49,7 +49,7 @@ export const API_ENDPOINTS = {
     update: (id: number) => `/users/${id}`,
     list: '/users',
   },
-  
+
   // 槍枝相關
   guns: {
     list: '/guns/getAll',
@@ -59,13 +59,13 @@ export const API_ENDPOINTS = {
     update: (id: number) => `/guns/${id}`,
     delete: (id: number) => `/guns/${id}`,
   },
-  
+
   // 測試相關
   test: {
     ping: '/test/ping',
     version: '/test/version',
   },
-  
+
   // 健康檢查
   health: {
     status: '/actuator/health',
@@ -82,7 +82,7 @@ export const ENV_INFO = {
 };
 
 // 調試用的日誌函數
-export const apiLog = (message: string, data?: any) => {
+export const apiLog = (message: string, data?: unknown) => {
   if (isDevelopment) {
     console.log(`[API] ${message}`, data);
   }
