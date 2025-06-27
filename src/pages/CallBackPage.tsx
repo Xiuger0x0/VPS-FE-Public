@@ -1,14 +1,11 @@
 import { useEffect, useCallback, useState } from "react";
 import { useNavigate } from "react-router";
-import axios from "axios"; // 用來發送 HTTP 請求
 import { BackendApi } from "@/js/bootstrap";
 import { IUser } from "@/interface/IUser";
 import { useSetRecoilState } from "recoil";
 import { userState } from "@/recoil/state";
 
-// 環境變數：LINE 的 client_id、client_secret 以及重定向 URI
-const LINE_CLIENT_ID = import.meta.env.VITE_LINE_CLIENT_ID;
-const LINE_CLIENT_SECRET = import.meta.env.VITE_LINE_CLIENT_SECRET;
+// 環境變數：重定向 URI
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
 
 export const CallBackPage = () => {
@@ -18,7 +15,8 @@ export const CallBackPage = () => {
   const [loading, setLoading] = useState(true);
   const [conflict, setConflict] = useState<{
     email: string;
-    idToken: string;
+    code: string;
+    redirectUri: string;
     message: string;
   } | null>(null);
 
@@ -33,26 +31,10 @@ export const CallBackPage = () => {
     }
 
     try {
-      // 1️⃣ 向 LINE 取得 Access Token
-      const tokenRes = await axios.post(
-        "https://api.line.me/oauth2/v2.1/token",
-        new URLSearchParams({
-          grant_type: "authorization_code",
-          code,
-          redirect_uri: REDIRECT_URI,
-          client_id: LINE_CLIENT_ID,
-          client_secret: LINE_CLIENT_SECRET,
-        }),
-        {
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        }
-      );
-
-      const { id_token } = tokenRes.data;
-
-      // 2️⃣ 將 idToken 傳給後端
+      // 直接將 authorization code 傳給後端處理
       const res = await BackendApi.post("/users/line/login", {
-        idToken: id_token,
+        code,
+        redirectUri: REDIRECT_URI,
       });
 
       const userData: IUser = {
@@ -71,8 +53,8 @@ export const CallBackPage = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err.response?.status === 409) {
-        const { email, idToken, message } = err.response.data;
-        setConflict({ email, idToken, message });
+        const { email, message } = err.response.data;
+        setConflict({ email, code, redirectUri: REDIRECT_URI, message });
       } else {
         console.error("❌ 登入失敗:", err);
       }
@@ -85,7 +67,8 @@ export const CallBackPage = () => {
     try {
       const res = await BackendApi.post("/users/line/bind", {
         email: conflict.email,
-        idToken: conflict.idToken,
+        code: conflict.code,
+        redirectUri: conflict.redirectUri,
       });
 
       localStorage.setItem("token", res.data.token);
