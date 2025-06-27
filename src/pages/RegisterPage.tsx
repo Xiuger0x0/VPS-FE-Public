@@ -60,7 +60,7 @@ export const RegisterPage = () => {
       setSuccess(false);
 
       // 註冊且直接拿回登入資訊（token, displayName, email）
-      const res = await BackendApi.post("/members/register", data);
+      const res = await BackendApi.post("/users/register", data);
 
       setSuccess(true);
 
