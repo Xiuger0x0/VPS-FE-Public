@@ -15,6 +15,13 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     environment: Deploy
+    env:
+      VITE_APP_NAME: "Xiuger's Personal Website"
+      VITE_SHOW_DEV_LINK: false
+      LINE_CLIENT_ID: ${{ secrets.LINE_CLIENT_ID }}
+      REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
+      API_BASE_URL: ${{ secrets.API_BASE_URL }}
+
     steps:
       # 1️⃣ 取得原始碼
       - name: Checkout code
