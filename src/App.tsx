@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router";
 import { lazy } from "react";
 import "@/utils/i18n";
 import { MasterLayout } from "@/pages/layouts/MasterLayout";
+import { ShowcaseLayout } from "@/pages/layouts/ShowcaseLayout";
 import { CallBackPage } from "@/pages/CallBackPage";
 import { AboutPage } from "@/pages/AboutPage";
 import { HomePage } from "@/pages/HomePage";
@@ -93,7 +94,10 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/project" element={<ProjectPage />} />
         <Route path="/service" element={<ServicePage />} />
+      </Route>
 
+      {/* 展示頁面 - 無 Footer */}
+      <Route path="/" element={<ShowcaseLayout />}>
         {/* 氣槍展示 */}
         <Route path="/item" element={<AirsoftShowcasePage />} />
 

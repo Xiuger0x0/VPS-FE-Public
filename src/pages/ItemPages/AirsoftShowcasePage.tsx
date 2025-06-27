@@ -31,7 +31,6 @@ import {
   FaSearch,
   FaHeart,
   FaShare,
-  FaEye,
   FaTimes,
   FaStar,
   FaUser,
@@ -41,6 +40,9 @@ import {
   FaShieldAlt,
   FaBullseye,
   FaFire,
+  FaBolt,
+  FaCogs,
+  FaWind,
 } from "react-icons/fa";
 
 // 氣槍項目類型定義
@@ -48,6 +50,7 @@ interface AirsoftItem {
   id: string;
   title: string;
   category: string;
+  powerType: string;
   brand: string;
   model: string;
   price: string;
@@ -80,39 +83,20 @@ const AIRSOFT_CATEGORIES = [
   { id: "shotgun", name: "霰彈槍", icon: FaTag, count: 0 },
 ];
 
-/**
- {
-  id: string,              // 唯一標識
-  title: string,           // 氣槍名稱
-  category: string,        // 分類
-  brand: string,           // 品牌
-  model: string,           // 型號
-  price: string,           // 價格
-  rating: number,          // 評分
-  likes: number,           // 喜歡數
-  views: number,           // 瀏覽數
-  image: string,           // 主要圖片
-  user: {                  // 分享者資訊
-    name: string,
-    avatar: string,
-  },
-  uploadDate: string,      // 上傳日期
-  accessories: string[],   // 配件清單
-  specs: {                 // 規格參數
-    length: string,
-    weight: string,
-    capacity: string,
-    fps: string,
-  },
-  description: string,     // 詳細描述
-}
- */
+// 動力類型分類
+const POWER_TYPES = [
+  { id: "electric", name: "電動", icon: FaBolt },
+  { id: "gas", name: "氣動", icon: FaWind },
+  { id: "spring", name: "彈簧", icon: FaCogs },
+];
+
 // 測試資料 - 氣槍展示
 const MOCK_AIRSOFT_DATA = [
   {
     id: "1",
     title: "M4A1 戰術突擊步槍",
     category: "assault-rifle",
+    powerType: "electric",
     brand: "Tokyo Marui",
     model: "M4A1 SOPMOD",
     price: "NT$ 15,800",
@@ -141,6 +125,7 @@ const MOCK_AIRSOFT_DATA = [
     id: "2",
     title: "AWP 狙擊步槍",
     category: "sniper-rifle",
+    powerType: "spring",
     brand: "Well",
     model: "MB4401D",
     price: "NT$ 8,500",
@@ -168,6 +153,7 @@ const MOCK_AIRSOFT_DATA = [
     id: "3",
     title: "Glock 17 戰術手槍",
     category: "pistol",
+    powerType: "gas",
     brand: "WE Tech",
     model: "Glock 17 Gen4",
     price: "NT$ 4,200",
@@ -195,6 +181,7 @@ const MOCK_AIRSOFT_DATA = [
     id: "4",
     title: "MP5 衝鋒槍",
     category: "submachine-gun",
+    powerType: "electric",
     brand: "Classic Army",
     model: "MP5A5",
     price: "NT$ 12,000",
@@ -223,6 +210,7 @@ const MOCK_AIRSOFT_DATA = [
 export const AirsoftShowcasePage = () => {
   const appName = import.meta.env.VITE_APP_NAME;
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedPowerType, setSelectedPowerType] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [airsoftData, setAirsoftData] =
     useState<AirsoftItem[]>(MOCK_AIRSOFT_DATA);
@@ -248,11 +236,13 @@ export const AirsoftShowcasePage = () => {
   const filteredData = airsoftData.filter((item) => {
     const matchesCategory =
       selectedCategory === "all" || item.category === selectedCategory;
+    const matchesPowerType =
+      selectedPowerType === "all" || item.powerType === selectedPowerType;
     const matchesSearch =
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.model.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return matchesCategory && matchesPowerType && matchesSearch;
   });
 
   // 模擬載入更多資料
@@ -309,400 +299,375 @@ export const AirsoftShowcasePage = () => {
         />
       </Helmet>
 
+      {/* 展示頁面主容器 */}
       <Box bg="bg.canvas" minH="100vh">
-        <Container maxW="full" p={0}>
-          <Flex>
-            {/* 側邊欄 - 分類選擇 */}
-            <Box
-              w="280px"
-              bg="bg"
-              borderRight="1px solid"
-              borderColor="border"
-              minH="100vh"
-              position="sticky"
-              top={0}
-              p={6}
-            >
-              <VStack gap={6} align="stretch">
-                <Box>
-                  <Heading size="lg" mb={4} color="fg">
-                    氣槍展示館
-                  </Heading>
-                  <Text color="fg.muted" fontSize="sm">
-                    探索精彩的氣槍收藏
-                  </Text>
-                </Box>
+        {/* 置頂搜尋與過濾區域 */}
+        <Box
+          position="sticky"
+          top="0"
+          zIndex={100}
+          bg="bg.canvas"
+          borderBottom="1px solid"
+          borderColor="border"
+          py={6}
+          mt={"60px"}
+          shadow="sm"
+        >
+          <Container maxW="7xl">
+            <VStack gap={6} align="stretch">
+              {/* 搜尋欄 */}
+              <Box maxW="2xl" mx="auto" w="full">
+                <HStack gap={3} p={4} bg="bg" borderRadius="xl" shadow="sm">
+                  <Icon color="fg.muted" fontSize="xl">
+                    <FaSearch />
+                  </Icon>
+                  <Input
+                    placeholder="搜尋氣槍名稱、品牌或型號..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    variant="subtle"
+                    size="lg"
+                    flex={1}
+                  />
+                </HStack>
+              </Box>
 
-                {/* 搜尋框 */}
-                <Box>
-                  <HStack gap={2} p={2} bg="bg.muted" borderRadius="md">
-                    <Icon color="fg.muted">
-                      <FaSearch />
-                    </Icon>
-                    <Input
-                      placeholder="搜尋氣槍..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      variant="subtle"
-                      size="sm"
-                    />
-                  </HStack>
-                </Box>
-
-                {/* 分類選擇 */}
-                <Box>
-                  <Text fontWeight="medium" color="fg" mb={3}>
-                    分類篩選
+              {/* 過濾選項 */}
+              <HStack justify="center" wrap="wrap" gap={4}>
+                {/* 武器分類 */}
+                <HStack gap={2}>
+                  <Text fontSize="sm" fontWeight="medium" color="fg.muted">
+                    分類:
                   </Text>
-                  <VStack gap={2} align="stretch">
+                  <HStack gap={1}>
                     {updateCategoryCounts().map((category) => (
                       <Button
                         key={category.id}
                         variant={
-                          selectedCategory === category.id ? "solid" : "ghost"
+                          selectedCategory === category.id ? "solid" : "outline"
                         }
                         colorPalette={
                           selectedCategory === category.id
                             ? "primary"
                             : "neutral"
                         }
-                        justifyContent="flex-start"
-                        onClick={() => setSelectedCategory(category.id)}
                         size="sm"
+                        onClick={() => setSelectedCategory(category.id)}
                       >
-                        <Icon mr={2}>
+                        <Icon mr={1}>
                           <category.icon />
                         </Icon>
                         {category.name}
-                        <Badge ml="auto" size="sm">
+                        <Badge ml={1} size="sm">
                           {category.count}
                         </Badge>
                       </Button>
                     ))}
-                  </VStack>
-                </Box>
-              </VStack>
-            </Box>
+                  </HStack>
+                </HStack>
 
-            {/* 主要內容區域 */}
-            <Box flex={1} p={6}>
-              {/* Pinterest 風格網格 */}
-              <SimpleGrid
-                columns={[1, 2, 3, 4]}
-                gap={6}
-                css={{
-                  "& > div": {
-                    breakInside: "avoid",
-                  },
-                }}
-              >
-                {filteredData.map((item, index) => (
-                  <Card.Root
-                    key={item.id}
-                    ref={index === filteredData.length - 1 ? lastItemRef : null}
-                    overflow="hidden"
-                    shadow="md"
-                    _hover={{ transform: "translateY(-2px)", shadow: "lg" }}
-                    transition="all 0.2s"
-                    cursor="pointer"
-                    onClick={() => openItemModal(item)}
-                  >
-                    {/* 圖片區域 */}
-                    <Box position="relative">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        w="full"
-                        h="200px"
-                        objectFit="cover"
-                      />
+                <Separator orientation="vertical" h="6" />
 
-                      {/* 懸浮操作按鈕 */}
-                      <Box
-                        position="absolute"
-                        top={2}
-                        right={2}
-                        opacity={0}
-                        _groupHover={{ opacity: 1 }}
-                        transition="opacity 0.2s"
+                {/* 動力類型 */}
+                <HStack gap={2}>
+                  <Text fontSize="sm" fontWeight="medium" color="fg.muted">
+                    動力:
+                  </Text>
+                  <HStack gap={1}>
+                    <Button
+                      variant={
+                        selectedPowerType === "all" ? "solid" : "outline"
+                      }
+                      colorPalette={
+                        selectedPowerType === "all" ? "primary" : "neutral"
+                      }
+                      size="sm"
+                      onClick={() => setSelectedPowerType("all")}
+                    >
+                      全部
+                    </Button>
+                    {POWER_TYPES.map((powerType) => (
+                      <Button
+                        key={powerType.id}
+                        variant={
+                          selectedPowerType === powerType.id
+                            ? "solid"
+                            : "outline"
+                        }
+                        colorPalette={
+                          selectedPowerType === powerType.id
+                            ? "primary"
+                            : "neutral"
+                        }
+                        size="sm"
+                        onClick={() => setSelectedPowerType(powerType.id)}
                       >
-                        <HStack gap={1}>
-                          <Button
-                            size="xs"
-                            colorPalette="neutral"
-                            variant="solid"
-                          >
-                            <FaHeart />
-                          </Button>
-                          <Button
-                            size="xs"
-                            colorPalette="neutral"
-                            variant="solid"
-                          >
-                            <FaShare />
-                          </Button>
+                        <Icon mr={1}>
+                          <powerType.icon />
+                        </Icon>
+                        {powerType.name}
+                      </Button>
+                    ))}
+                  </HStack>
+                </HStack>
+
+                <Separator orientation="vertical" h="6" />
+
+                {/* 結果統計 */}
+                <Text fontSize="sm" color="fg.muted">
+                  共 {filteredData.length} 項結果
+                </Text>
+              </HStack>
+            </VStack>
+          </Container>
+        </Box>
+
+        {/* 主要內容區域 */}
+        <Container maxW="7xl" py={8}>
+          {/* 氣槍卡片網格 */}
+          <SimpleGrid columns={[1, 2, 3, 4, 5]} gap={6}>
+            {filteredData.map((item, index) => (
+              <Card.Root
+                key={item.id}
+                ref={index === filteredData.length - 1 ? lastItemRef : null}
+                overflow="hidden"
+                bg="bg"
+                backdropFilter="blur(10px)"
+                borderRadius="xl"
+                shadow="sm"
+                _hover={{
+                  transform: "translateY(-4px)",
+                  shadow: "lg",
+                  backdropFilter: "blur(15px)",
+                }}
+                transition="all 0.3s ease"
+                cursor="pointer"
+                onClick={() => openItemModal(item)}
+              >
+                {/* 簡化的圖片區域 */}
+                <Box position="relative">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    w="full"
+                    h="240px"
+                    objectFit="cover"
+                    borderTopRadius="xl"
+                  />
+
+                  {/* 愛心徽章 */}
+                  <Box position="absolute" bottom={2} left={2}>
+                    <Badge colorPalette="warning" size="sm">
+                      <Icon mr={1}>
+                        <FaHeart />
+                      </Icon>
+                      {item.rating}
+                    </Badge>
+                  </Box>
+                </Box>
+
+                {/* 簡化的卡片內容 */}
+                <Card.Body p={4}>
+                  <VStack gap={2} align="stretch">
+                    <Heading size="sm" color="fg" lineClamp={1}>
+                      {item.title}
+                    </Heading>
+                    <Text color="fg.muted" fontSize="sm">
+                      {item.brand}
+                    </Text>
+                  </VStack>
+                </Card.Body>
+              </Card.Root>
+            ))}
+          </SimpleGrid>
+
+          {/* 載入更多指示器 */}
+          {loading && (
+            <Flex justify="center" mt={8}>
+              <Spinner size="lg" colorPalette="primary" />
+            </Flex>
+          )}
+
+          {!hasMore && (
+            <Text textAlign="center" mt={8} color="fg.muted">
+              已載入全部內容
+            </Text>
+          )}
+        </Container>
+      </Box>
+
+      {/* 詳細資訊 Dialog */}
+      <DialogRoot
+        open={isModalOpen}
+        onOpenChange={(details: { open: boolean }) =>
+          setIsModalOpen(details.open)
+        }
+        size="xl"
+      >
+        <DialogBackdrop />
+        <DialogPositioner>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{selectedItem?.title}</DialogTitle>
+              <DialogCloseTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <FaTimes />
+                </Button>
+              </DialogCloseTrigger>
+            </DialogHeader>
+
+            <DialogBody>
+              {selectedItem && (
+                <VStack gap={6} align="stretch">
+                  {/* 主要圖片 */}
+                  <Image
+                    src={selectedItem.image}
+                    alt={selectedItem.title}
+                    w="full"
+                    h="300px"
+                    objectFit="cover"
+                    borderRadius="md"
+                  />
+
+                  {/* 基本資訊 */}
+                  <SimpleGrid columns={2} gap={6}>
+                    <Box>
+                      <Heading size="md" mb={3} color="fg">
+                        基本資訊
+                      </Heading>
+                      <VStack gap={2} align="stretch">
+                        <HStack justify="space-between">
+                          <Text color="fg.muted">品牌：</Text>
+                          <Text color="fg">{selectedItem.brand}</Text>
                         </HStack>
-                      </Box>
-
-                      {/* 評分徽章 */}
-                      <Box position="absolute" bottom={2} left={2}>
-                        <Badge colorPalette="warning" size="sm">
-                          <Icon mr={1}>
-                            <FaStar />
-                          </Icon>
-                          {item.rating}
-                        </Badge>
-                      </Box>
-                    </Box>
-
-                    {/* 卡片內容 */}
-                    <Card.Body p={4}>
-                      <VStack gap={3} align="stretch">
-                        <Box>
-                          <Heading size="sm" color="fg" mb={1} lineClamp={2}>
-                            {item.title}
-                          </Heading>
-                          <Text color="fg.muted" fontSize="xs">
-                            {item.brand} • {item.model}
-                          </Text>
-                        </Box>
-
-                        <Text
-                          fontSize="lg"
-                          fontWeight="bold"
-                          color="primary.500"
-                        >
-                          {item.price}
-                        </Text>
-
-                        {/* 用戶資訊 */}
-                        <HStack gap={2}>
-                          <Box
-                            w="20px"
-                            h="20px"
-                            borderRadius="full"
-                            bg="neutral.200"
-                            backgroundImage={`url(${item.user.avatar})`}
-                            backgroundSize="cover"
-                            backgroundPosition="center"
-                          />
-                          <Text fontSize="xs" color="fg.muted">
-                            {item.user.name}
+                        <HStack justify="space-between">
+                          <Text color="fg.muted">型號：</Text>
+                          <Text color="fg">{selectedItem.model}</Text>
+                        </HStack>
+                        <HStack justify="space-between">
+                          <Text color="fg.muted">價格：</Text>
+                          <Text color="primary.500" fontWeight="bold">
+                            {selectedItem.price}
                           </Text>
                         </HStack>
-
-                        {/* 統計資訊 */}
-                        <HStack
-                          justify="space-between"
-                          fontSize="xs"
-                          color="fg.muted"
-                        >
-                          <HStack gap={1}>
-                            <FaHeart />
-                            <Text>{item.likes}</Text>
-                          </HStack>
-                          <HStack gap={1}>
-                            <FaEye />
-                            <Text>{item.views}</Text>
+                        <HStack justify="space-between">
+                          <Text color="fg.muted">評分：</Text>
+                          <HStack>
+                            <Icon color="warning.500">
+                              <FaStar />
+                            </Icon>
+                            <Text color="fg">{selectedItem.rating}</Text>
                           </HStack>
                         </HStack>
                       </VStack>
-                    </Card.Body>
-                  </Card.Root>
-                ))}
-              </SimpleGrid>
+                    </Box>
 
-              {/* 載入更多指示器 */}
-              {loading && (
-                <Flex justify="center" mt={8}>
-                  <Spinner size="lg" colorPalette="primary" />
-                </Flex>
-              )}
+                    <Box>
+                      <Heading size="md" mb={3} color="fg">
+                        規格參數
+                      </Heading>
+                      <VStack gap={2} align="stretch">
+                        <HStack justify="space-between">
+                          <Text color="fg.muted">長度：</Text>
+                          <Text color="fg">{selectedItem.specs.length}</Text>
+                        </HStack>
+                        <HStack justify="space-between">
+                          <Text color="fg.muted">重量：</Text>
+                          <Text color="fg">{selectedItem.specs.weight}</Text>
+                        </HStack>
+                        <HStack justify="space-between">
+                          <Text color="fg.muted">彈匣容量：</Text>
+                          <Text color="fg">{selectedItem.specs.capacity}</Text>
+                        </HStack>
+                        <HStack justify="space-between">
+                          <Text color="fg.muted">初速：</Text>
+                          <Text color="fg">{selectedItem.specs.fps} FPS</Text>
+                        </HStack>
+                      </VStack>
+                    </Box>
+                  </SimpleGrid>
 
-              {!hasMore && (
-                <Text textAlign="center" mt={8} color="fg.muted">
-                  已載入全部內容
-                </Text>
-              )}
-            </Box>
-          </Flex>
-        </Container>
+                  <Separator />
 
-        {/* 詳細資訊 Dialog */}
-        <DialogRoot
-          open={isModalOpen}
-          onOpenChange={(details: { open: boolean }) =>
-            setIsModalOpen(details.open)
-          }
-          size="xl"
-        >
-          <DialogBackdrop />
-          <DialogPositioner>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{selectedItem?.title}</DialogTitle>
-                <DialogCloseTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <FaTimes />
-                  </Button>
-                </DialogCloseTrigger>
-              </DialogHeader>
-
-              <DialogBody>
-                {selectedItem && (
-                  <VStack gap={6} align="stretch">
-                    {/* 主要圖片 */}
-                    <Image
-                      src={selectedItem.image}
-                      alt={selectedItem.title}
-                      w="full"
-                      h="300px"
-                      objectFit="cover"
-                      borderRadius="md"
-                    />
-
-                    {/* 基本資訊 */}
-                    <SimpleGrid columns={2} gap={6}>
-                      <Box>
-                        <Heading size="md" mb={3} color="fg">
-                          基本資訊
-                        </Heading>
-                        <VStack gap={2} align="stretch">
-                          <HStack justify="space-between">
-                            <Text color="fg.muted">品牌：</Text>
-                            <Text color="fg">{selectedItem.brand}</Text>
-                          </HStack>
-                          <HStack justify="space-between">
-                            <Text color="fg.muted">型號：</Text>
-                            <Text color="fg">{selectedItem.model}</Text>
-                          </HStack>
-                          <HStack justify="space-between">
-                            <Text color="fg.muted">價格：</Text>
-                            <Text color="primary.500" fontWeight="bold">
-                              {selectedItem.price}
-                            </Text>
-                          </HStack>
-                          <HStack justify="space-between">
-                            <Text color="fg.muted">評分：</Text>
-                            <HStack>
-                              <Icon color="warning.500">
-                                <FaStar />
-                              </Icon>
-                              <Text color="fg">{selectedItem.rating}</Text>
-                            </HStack>
-                          </HStack>
-                        </VStack>
-                      </Box>
-
-                      <Box>
-                        <Heading size="md" mb={3} color="fg">
-                          規格參數
-                        </Heading>
-                        <VStack gap={2} align="stretch">
-                          <HStack justify="space-between">
-                            <Text color="fg.muted">長度：</Text>
-                            <Text color="fg">{selectedItem.specs.length}</Text>
-                          </HStack>
-                          <HStack justify="space-between">
-                            <Text color="fg.muted">重量：</Text>
-                            <Text color="fg">{selectedItem.specs.weight}</Text>
-                          </HStack>
-                          <HStack justify="space-between">
-                            <Text color="fg.muted">彈匣容量：</Text>
-                            <Text color="fg">
-                              {selectedItem.specs.capacity}
-                            </Text>
-                          </HStack>
-                          <HStack justify="space-between">
-                            <Text color="fg.muted">初速：</Text>
-                            <Text color="fg">{selectedItem.specs.fps} FPS</Text>
-                          </HStack>
-                        </VStack>
-                      </Box>
+                  {/* 配件清單 */}
+                  <Box>
+                    <Heading size="md" mb={3} color="fg">
+                      搭配配件
+                    </Heading>
+                    <SimpleGrid columns={2} gap={2}>
+                      {selectedItem.accessories.map((accessory, index) => (
+                        <Badge
+                          key={index}
+                          colorPalette="primary"
+                          variant="outline"
+                        >
+                          {accessory}
+                        </Badge>
+                      ))}
                     </SimpleGrid>
+                  </Box>
 
-                    <Separator />
+                  <Separator />
 
-                    {/* 配件清單 */}
-                    <Box>
-                      <Heading size="md" mb={3} color="fg">
-                        搭配配件
-                      </Heading>
-                      <SimpleGrid columns={2} gap={2}>
-                        {selectedItem.accessories.map((accessory, index) => (
-                          <Badge
-                            key={index}
-                            colorPalette="primary"
-                            variant="outline"
-                          >
-                            {accessory}
-                          </Badge>
-                        ))}
-                      </SimpleGrid>
-                    </Box>
+                  {/* 描述 */}
+                  <Box>
+                    <Heading size="md" mb={3} color="fg">
+                      詳細描述
+                    </Heading>
+                    <Text color="fg.muted" lineHeight="tall">
+                      {selectedItem.description}
+                    </Text>
+                  </Box>
 
-                    <Separator />
+                  {/* 用戶資訊 */}
+                  <Box>
+                    <Heading size="md" mb={3} color="fg">
+                      分享者
+                    </Heading>
+                    <HStack gap={3}>
+                      <Box
+                        w="48px"
+                        h="48px"
+                        borderRadius="full"
+                        bg="neutral.200"
+                        backgroundImage={`url(${selectedItem.user.avatar})`}
+                        backgroundSize="cover"
+                        backgroundPosition="center"
+                      />
+                      <VStack gap={1} align="start">
+                        <Text fontWeight="medium" color="fg">
+                          {selectedItem.user.name}
+                        </Text>
+                        <HStack gap={1} fontSize="sm" color="fg.muted">
+                          <FaCalendar />
+                          <Text>分享於 {selectedItem.uploadDate}</Text>
+                        </HStack>
+                      </VStack>
+                    </HStack>
+                  </Box>
+                </VStack>
+              )}
+            </DialogBody>
 
-                    {/* 描述 */}
-                    <Box>
-                      <Heading size="md" mb={3} color="fg">
-                        詳細描述
-                      </Heading>
-                      <Text color="fg.muted" lineHeight="tall">
-                        {selectedItem.description}
-                      </Text>
-                    </Box>
-
-                    {/* 用戶資訊 */}
-                    <Box>
-                      <Heading size="md" mb={3} color="fg">
-                        分享者
-                      </Heading>
-                      <HStack gap={3}>
-                        <Box
-                          w="48px"
-                          h="48px"
-                          borderRadius="full"
-                          bg="neutral.200"
-                          backgroundImage={`url(${selectedItem.user.avatar})`}
-                          backgroundSize="cover"
-                          backgroundPosition="center"
-                        />
-                        <VStack gap={1} align="start">
-                          <Text fontWeight="medium" color="fg">
-                            {selectedItem.user.name}
-                          </Text>
-                          <HStack gap={1} fontSize="sm" color="fg.muted">
-                            <FaCalendar />
-                            <Text>分享於 {selectedItem.uploadDate}</Text>
-                          </HStack>
-                        </VStack>
-                      </HStack>
-                    </Box>
-                  </VStack>
-                )}
-              </DialogBody>
-
-              <DialogFooter>
-                <HStack gap={3}>
-                  <Button colorPalette="primary" flex={1}>
-                    <Icon mr={2}>
-                      <FaHeart />
-                    </Icon>
-                    收藏 ({selectedItem?.likes})
-                  </Button>
-                  <Button variant="outline" colorPalette="neutral" flex={1}>
-                    <Icon mr={2}>
-                      <FaShare />
-                    </Icon>
-                    分享
-                  </Button>
-                </HStack>
-              </DialogFooter>
-            </DialogContent>
-          </DialogPositioner>
-        </DialogRoot>
-      </Box>
+            <DialogFooter>
+              <HStack gap={3}>
+                <Button colorPalette="primary" flex={1}>
+                  <Icon mr={2}>
+                    <FaHeart />
+                  </Icon>
+                  收藏 ({selectedItem?.likes})
+                </Button>
+                <Button variant="outline" colorPalette="neutral" flex={1}>
+                  <Icon mr={2}>
+                    <FaShare />
+                  </Icon>
+                  分享
+                </Button>
+              </HStack>
+            </DialogFooter>
+          </DialogContent>
+        </DialogPositioner>
+      </DialogRoot>
     </>
   );
 };
