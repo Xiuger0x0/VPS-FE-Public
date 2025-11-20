@@ -200,7 +200,6 @@ const LanguageToggleButton = ({
   toggleLanguage: () => void;
 }) => (
   <IconButton
-    colorPalette="neutral"
     variant="ghost"
     size="sm"
     onClick={toggleLanguage}
@@ -351,6 +350,7 @@ function Header() {
         {/* Logo 和導航 */}
         <HStack gap={8}>
           <Link to="/">
+          {/* TODO 沒有作用的TEXT */}
             <Box>
               <Text
                 fontSize="xl"
@@ -370,7 +370,7 @@ function Header() {
         {/* 右側功能區 */}
         <HStack gap={2}>
           <Box display={{ base: "none", md: "flex" }} gap={2}>
-            <ColorModeButton colorPalette="neutral" variant="ghost" size="sm" />
+            <ColorModeButton variant="ghost" colorPalette="neutral" size="sm" />
             <LanguageToggleButton toggleLanguage={toggleLanguage} />
           </Box>
 

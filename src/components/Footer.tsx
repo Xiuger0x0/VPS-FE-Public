@@ -77,7 +77,7 @@ const Footer = ({ visitorStats }: { visitorStats: VisitorStats | null }) => {
             {/* 品牌介紹 */}
             <VStack align="start" gap={4}>
               <Heading size="md" color="fg">
-                VPS Project
+                XIUGER VISION
               </Heading>
               <Text color="fg.muted" fontSize="sm">
                 全端開發者的技術分享平台，專注於現代化 Web
@@ -130,7 +130,7 @@ const Footer = ({ visitorStats }: { visitorStats: VisitorStats | null }) => {
             {/* 版權信息 */}
             <VStack align="start" gap={1}>
               <Text fontSize="sm" color="fg.muted">
-                © {currentYear} VPS Project. All rights reserved.
+                © {currentYear} XIUGER VISION. All rights reserved.
               </Text>
               <HStack gap={1} fontSize="sm" color="fg.muted">
                 <Text>Made with</Text>

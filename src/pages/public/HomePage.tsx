@@ -157,7 +157,7 @@ export const HomePage = () => {
                         <VStack gap={4}>
                           <Box
                             p={4}
-                            bg="primary.muted"
+                            bg="primary.fg"
                             borderRadius="full"
                             color="primary"
                           >
