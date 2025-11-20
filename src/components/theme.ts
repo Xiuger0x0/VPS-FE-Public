@@ -160,6 +160,24 @@ const config = defineConfig({
             value: { _light: "white", _dark: "white" },
           },
         },
+        // 中性色語義化 tokens
+        neutral: {
+          DEFAULT: {
+            value: { _light: "{colors.neutral.500}", _dark: "{colors.neutral.500}" },
+          },
+          emphasized: {
+            value: { _light: "{colors.neutral.600}", _dark: "{colors.neutral.400}" },
+          },
+          muted: {
+            value: { _light: "{colors.neutral.200}", _dark: "{colors.neutral.800}" },
+          },
+          subtle: {
+            value: { _light: "{colors.neutral.100}", _dark: "{colors.neutral.900}" },
+          },
+          fg: {
+            value: { _light: "white", _dark: "white" },
+          },
+        },
         // 狀態色語義化 tokens
         success: {
           DEFAULT: {
@@ -203,9 +221,31 @@ const config = defineConfig({
           borderRadius: "md",
           transition: "all 0.2s",
         },
+        defaultVariants: {
+          colorPalette: "primary" as any,
+        },
         variants: {
+          variant: {
+            solid: {},
+            ghost: {},
+            outline: {},
+          },
           colorPalette: {
-            primary: {
+            primary: {},
+            secondary: {},
+            neutral: {},
+            success: {},
+            warning: {},
+            error: {},
+            info: {},
+          },
+        },
+        compoundVariants: [
+          // Primary Solid
+          {
+            variant: "solid",
+            colorPalette: "primary" as any,
+            css: {
               bg: "primary",
               color: "primary.fg",
               _hover: {
@@ -215,7 +255,12 @@ const config = defineConfig({
                 bg: "primary.emphasized",
               },
             },
-            secondary: {
+          },
+          // Secondary Solid
+          {
+            variant: "solid",
+            colorPalette: "secondary" as any,
+            css: {
               bg: "secondary",
               color: "secondary.fg",
               _hover: {
@@ -225,7 +270,12 @@ const config = defineConfig({
                 bg: "secondary.emphasized",
               },
             },
-            neutral: {
+          },
+          // Neutral Solid
+          {
+            variant: "solid",
+            colorPalette: "neutral" as any,
+            css: {
               bg: "neutral.200",
               color: "neutral.800",
               _hover: {
@@ -245,7 +295,29 @@ const config = defineConfig({
                 },
               },
             },
-            success: {
+          },
+          // Neutral Ghost
+          {
+            variant: "ghost",
+            colorPalette: "neutral" as any,
+            css: {
+              bg: "transparent",
+              color: "fg",
+              _hover: {
+                bg: "neutral.100",
+                _dark: { bg: "neutral.800" },
+              },
+              _active: {
+                bg: "neutral.200",
+                _dark: { bg: "neutral.700" },
+              },
+            },
+          },
+          // Success Solid
+          {
+            variant: "solid",
+            colorPalette: "success" as any,
+            css: {
               bg: "success",
               color: "white",
               _hover: {
@@ -255,7 +327,12 @@ const config = defineConfig({
                 bg: "success.600",
               },
             },
-            warning: {
+          },
+          // Warning Solid
+          {
+            variant: "solid",
+            colorPalette: "warning" as any,
+            css: {
               bg: "warning",
               color: "white",
               _hover: {
@@ -265,7 +342,12 @@ const config = defineConfig({
                 bg: "warning.600",
               },
             },
-            error: {
+          },
+          // Error Solid
+          {
+            variant: "solid",
+            colorPalette: "error" as any,
+            css: {
               bg: "error",
               color: "white",
               _hover: {
@@ -275,7 +357,12 @@ const config = defineConfig({
                 bg: "error.600",
               },
             },
-            info: {
+          },
+          // Info Solid
+          {
+            variant: "solid",
+            colorPalette: "info" as any,
+            css: {
               bg: "info",
               color: "white",
               _hover: {
@@ -286,7 +373,7 @@ const config = defineConfig({
               },
             },
           },
-        },
+        ],
       },
       badge: {
         base: {
@@ -301,10 +388,18 @@ const config = defineConfig({
             primary: {
               bg: "primary.muted",
               color: "primary",
+              _dark: {
+                bg: "primary.800",
+                color: "primary.200",
+              },
             },
             secondary: {
               bg: "secondary.muted",
               color: "secondary",
+              _dark: {
+                bg: "secondary.800",
+                color: "secondary.200",
+              },
             },
             neutral: {
               bg: "neutral.100",
