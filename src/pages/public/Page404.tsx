@@ -7,7 +7,7 @@ export const Page404 = () => {
   return (
     <>
       <Helmet>
-        <title>{appName} | 404</title>
+        <title>{`${appName} | 404`}</title>
       </Helmet>
       <Flex
         w="100vw"

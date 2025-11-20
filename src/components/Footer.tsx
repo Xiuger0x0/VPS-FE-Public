@@ -20,7 +20,7 @@ import {
   FaCode,
   FaRocket,
 } from "react-icons/fa";
-import { VisitorStats } from "@/pages/layouts/MasterLayout";
+import { VisitorStats } from "@/layouts/MasterLayout";
 
 const Footer = ({ visitorStats }: { visitorStats: VisitorStats | null }) => {
   const currentYear = new Date().getFullYear();

@@ -292,7 +292,7 @@ export const AirsoftShowcasePage = () => {
   return (
     <>
       <Helmet>
-        <title>{appName} | 氣槍展示館</title>
+        <title>{`${appName} | 氣槍展示館`}</title>
         <meta
           name="description"
           content="探索精彩的氣槍收藏，分享您的戰術裝備，與愛好者交流心得"

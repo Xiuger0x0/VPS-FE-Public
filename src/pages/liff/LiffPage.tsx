@@ -58,7 +58,7 @@ export const LiffPage = () => {
   return (
     <>
       <Helmet>
-        <title>{appName} | LIFF</title>
+        <title>{`${appName} | LIFF`}</title>
       </Helmet>
       <Box textAlign="center" mt="20px">
         {isLineApp ? (

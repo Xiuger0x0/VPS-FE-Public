@@ -1,26 +1,34 @@
 import { Routes, Route } from "react-router";
 import "@/utils/i18n";
-import { MasterLayout } from "@/pages/layouts/MasterLayout";
-import { ShowcaseLayout } from "@/pages/layouts/ShowcaseLayout";
-import { CallBackPage } from "@/pages/CallBackPage";
-import { AboutPage } from "@/pages/AboutPage";
-import { HomePage } from "@/pages/HomePage";
-import { LiffPage } from "@/pages/LiffPage";
-import { ServicePage } from "@/pages/ServicePage";
+import { MasterLayout } from "@/layouts/MasterLayout";
+import { ShowcaseLayout } from "@/layouts/ShowcaseLayout";
+import { CallBackPage } from "@/pages/auth/CallBackPage";
+import { AboutPage } from "@/pages/public/AboutPage";
+import { HomePage } from "@/pages/public/HomePage";
+import { LiffPage } from "@/pages/liff/LiffPage";
+import { ServicePage } from "@/pages/public/ServicePage";
 
-import { Page404 } from "@/pages/Page404";
-import { ProjectPage } from "@/pages/ProjectPage";
+import { Page404 } from "@/pages/public/Page404";
+import { ProjectPage } from "@/pages/public/ProjectPage";
 import ThemePlayground from "./pages/ThemePlaygroundPage";
 
 import { AirsoftManager } from "./pages/Airsoft/AirsoftManager";
-import { RegisterPage } from "./pages/RegisterPage";
-import { LoginPage } from "./pages/LoginPage";
+import { RegisterPage } from "@/pages/auth/RegisterPage";
+import { LoginPage } from "@/pages/auth/LoginPage";
 import { IUser } from "./interface/IUser";
 import { useSetRecoilState } from "recoil";
 import { userState } from "./recoil/state";
 import { BackendApi } from "./js/bootstrap";
-import { AirsoftLayout } from "./pages/layouts/AirsoftLayout";
+import { AirsoftLayout } from "@/layouts/AirsoftLayout";
 import { AirsoftShowcasePage } from "./pages/ItemPages/AirsoftShowcasePage";
+
+import { AdminLayout } from "@/layouts/AdminLayout";
+import { DashboardPage } from "@/pages/admin/DashboardPage";
+import { HomeCMS } from "@/pages/admin/cms/HomeCMS";
+import { AboutCMS } from "@/pages/admin/cms/AboutCMS";
+import { ProjectCMS } from "@/pages/admin/cms/ProjectCMS";
+import { ServiceCMS } from "@/pages/admin/cms/ServiceCMS";
+import { SystemLogs } from "@/pages/admin/logs/SystemLogs";
 
 const LINE_CLIENT_ID = import.meta.env.VITE_LINE_CLIENT_ID;
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
@@ -100,6 +108,16 @@ function App() {
           <Route index element={<AirsoftManager />} />
           <Route path="dashboard" element={<AirsoftManager />} />
         </Route>
+      </Route>
+
+      {/* Admin Routes */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<DashboardPage />} />
+        <Route path="cms/home" element={<HomeCMS />} />
+        <Route path="cms/about" element={<AboutCMS />} />
+        <Route path="cms/projects" element={<ProjectCMS />} />
+        <Route path="cms/services" element={<ServiceCMS />} />
+        <Route path="logs/system" element={<SystemLogs />} />
       </Route>
 
       {/* 僅開發模式下提供前端路由 */}

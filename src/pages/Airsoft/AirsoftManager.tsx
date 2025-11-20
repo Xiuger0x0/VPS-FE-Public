@@ -111,9 +111,7 @@ export const AirsoftManager = () => {
   return (
     <>
       <Helmet>
-        <title>
-          {appName} | {tCommon("page_title_airsoft")}
-        </title>
+        <title>{`${appName} | ${tCommon("page_title_airsoft")}`}</title>
       </Helmet>
 
       <Box maxW="6xl" mx="auto" p={5}>

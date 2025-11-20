@@ -198,7 +198,7 @@ export const ProjectPage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{appName} | 專案作品</title>
+        <title>{`${appName} | 專案作品`}</title>
         <meta
           name="description"
           content="探索我的技術專案，從全端開發到行動應用，展現創新與技術的完美結合"
