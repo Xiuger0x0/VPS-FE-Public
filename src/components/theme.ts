@@ -1,6 +1,6 @@
-import { createSystem, defaultConfig, defineConfig } from "@chakra-ui/react";
+import { createSystem, defaultConfig } from "@chakra-ui/react";
 
-const config = defineConfig({
+const config = {
   theme: {
     tokens: {
       colors: {
@@ -222,7 +222,7 @@ const config = defineConfig({
           transition: "all 0.2s",
         },
         defaultVariants: {
-          colorPalette: "primary" as any,
+          colorPalette: "primary",
         },
         variants: {
           variant: {
@@ -244,7 +244,7 @@ const config = defineConfig({
           // Primary Solid
           {
             variant: "solid",
-            colorPalette: "primary" as any,
+            colorPalette: "primary",
             css: {
               bg: "primary",
               color: "primary.fg",
@@ -259,7 +259,7 @@ const config = defineConfig({
           // Secondary Solid
           {
             variant: "solid",
-            colorPalette: "secondary" as any,
+            colorPalette: "secondary",
             css: {
               bg: "secondary",
               color: "secondary.fg",
@@ -274,7 +274,7 @@ const config = defineConfig({
           // Neutral Solid
           {
             variant: "solid",
-            colorPalette: "neutral" as any,
+            colorPalette: "neutral",
             css: {
               bg: "neutral.200",
               color: "neutral.800",
@@ -299,7 +299,7 @@ const config = defineConfig({
           // Neutral Ghost
           {
             variant: "ghost",
-            colorPalette: "neutral" as any,
+            colorPalette: "neutral",
             css: {
               bg: "transparent",
               color: "fg",
@@ -316,7 +316,7 @@ const config = defineConfig({
           // Success Solid
           {
             variant: "solid",
-            colorPalette: "success" as any,
+            colorPalette: "success",
             css: {
               bg: "success",
               color: "white",
@@ -331,7 +331,7 @@ const config = defineConfig({
           // Warning Solid
           {
             variant: "solid",
-            colorPalette: "warning" as any,
+            colorPalette: "warning",
             css: {
               bg: "warning",
               color: "white",
@@ -346,7 +346,7 @@ const config = defineConfig({
           // Error Solid
           {
             variant: "solid",
-            colorPalette: "error" as any,
+            colorPalette: "error",
             css: {
               bg: "error",
               color: "white",
@@ -361,7 +361,7 @@ const config = defineConfig({
           // Info Solid
           {
             variant: "solid",
-            colorPalette: "info" as any,
+            colorPalette: "info",
             css: {
               bg: "info",
               color: "white",
@@ -430,6 +430,7 @@ const config = defineConfig({
       },
     },
   },
-});
+};
 
-export const system = createSystem(defaultConfig, config);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const system = createSystem(defaultConfig, config as any);
