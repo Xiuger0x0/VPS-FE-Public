@@ -16,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: Deploy
     env:
-      VITE_APP_NAME: "Xiuger's Personal Website"
-      VITE_GS_LINE_CLIENT_ID: ${{ secrets.LINE_CLIENT_ID }}
-      VITE_GV_REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
-      VITE_GV_API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      VITE_APP_NAME: "X V"
+      VITE_GS_LINE_CLIENT_ID: ${{ vars.LINE_CLIENT_ID }}
+      VITE_GV_REDIRECT_URI: ${{ vars.REDIRECT_URI }}
+      VITE_GV_API_BASE_URL: ${{ vars.API_BASE_URL }}
 
     steps:
       # 1️⃣ 取得原始碼
