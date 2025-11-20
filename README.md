@@ -93,9 +93,8 @@ server: {
 
 ```env
 VITE_APP_NAME=VPS Project
-VITE_LINE_CLIENT_ID=your_line_client_id
-VITE_LINE_CLIENT_SECRET=your_line_client_secret
-VITE_REDIRECT_URI=http://localhost:5173/callback
+VITE_GS_LINE_CLIENT_ID=your_line_client_id
+VITE_GV_REDIRECT_URI=http://localhost:5173/callback
 ```
 
 ## 📁 專案結構

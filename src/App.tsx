@@ -30,8 +30,8 @@ import { ProjectCMS } from "@/pages/admin/cms/ProjectCMS";
 import { ServiceCMS } from "@/pages/admin/cms/ServiceCMS";
 import { SystemLogs } from "@/pages/admin/logs/SystemLogs";
 
-const LINE_CLIENT_ID = import.meta.env.VITE_LINE_CLIENT_ID;
-const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+const LINE_CLIENT_ID = import.meta.env.VITE_GS_LINE_CLIENT_ID;
+const REDIRECT_URI = import.meta.env.VITE_GV_REDIRECT_URI;
 const LOGIN_URL = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${LINE_CLIENT_ID}&redirect_uri=${encodeURIComponent(
   REDIRECT_URI
 )}&state=12345&scope=profile%20openid%20email`;
@@ -76,7 +76,6 @@ function App() {
                   setUser(userData);
 
                   window.location.href = "/";
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 } catch (error) {
                   alert("登入失敗");
                 }

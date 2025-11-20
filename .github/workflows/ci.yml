@@ -17,10 +17,9 @@ jobs:
     environment: Deploy
     env:
       VITE_APP_NAME: "Xiuger's Personal Website"
-      VITE_SHOW_DEV_LINK: false
-      LINE_CLIENT_ID: ${{ secrets.LINE_CLIENT_ID }}
-      REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
-      API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      VITE_GS_LINE_CLIENT_ID: ${{ secrets.LINE_CLIENT_ID }}
+      VITE_GV_REDIRECT_URI: ${{ secrets.REDIRECT_URI }}
+      VITE_GV_API_BASE_URL: ${{ secrets.API_BASE_URL }}
 
     steps:
       # 1️⃣ 取得原始碼

@@ -6,7 +6,7 @@ import { useSetRecoilState } from "recoil";
 import { userState } from "@/recoil/state";
 
 // 環境變數：重定向 URI
-const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+const REDIRECT_URI = import.meta.env.VITE_GV_REDIRECT_URI;
 
 export const CallBackPage = () => {
   const navigate = useNavigate(); // React Router 導航
