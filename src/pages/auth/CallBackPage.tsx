@@ -124,6 +124,7 @@ export const CallBackPage = () => {
       });
 
       navigate("/");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       const errorMsg = e.response?.data?.message || "綁定失敗，請稍後再試";
       console.error("❌ 綁定失敗", e);
