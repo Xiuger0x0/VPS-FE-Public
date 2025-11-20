@@ -12,7 +12,6 @@ import { ServicePage } from "@/pages/ServicePage";
 import { Page404 } from "@/pages/Page404";
 import { ProjectPage } from "@/pages/ProjectPage";
 import ThemePlayground from "./pages/ThemePlaygroundPage";
-import CustomizerLayout from "./pages/layouts/CustomizerLayout";
 
 import { AirsoftManager } from "./pages/Airsoft/AirsoftManager";
 import { RegisterPage } from "./pages/RegisterPage";
@@ -23,10 +22,6 @@ import { userState } from "./recoil/state";
 import { BackendApi } from "./js/bootstrap";
 import { AirsoftLayout } from "./pages/layouts/AirsoftLayout";
 import { AirsoftShowcasePage } from "./pages/ItemPages/AirsoftShowcasePage";
-const WeaponCustomizer = lazy(
-  () => import("./components/R3F/scene/WeaponCustomizer")
-);
-const OIIA = lazy(() => import("./components/R3F/scene/OIIA"));
 
 const LINE_CLIENT_ID = import.meta.env.VITE_LINE_CLIENT_ID;
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
@@ -108,16 +103,8 @@ function App() {
         </Route>
       </Route>
 
-      {/* R3F 3D頁面 */}
-      <Route path="/customizer" element={<CustomizerLayout />}>
-        <Route index element={<WeaponCustomizer />} />
-      </Route>
-
       {/* 僅開發模式下提供前端路由 */}
       {isDev && <Route path="/playground" element={<ThemePlayground />} />}
-
-      {/* 小彩蛋 OIIA */}
-      <Route path="oiia" element={<OIIA />} />
 
       {/* 其餘頁面導到404 */}
       <Route path="/*" element={<Page404 />} />

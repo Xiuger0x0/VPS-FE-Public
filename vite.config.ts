@@ -31,12 +31,6 @@ export default defineConfig({
             // i18n
             if (id.includes('react-i18next') || id.includes('i18next') || id.includes('i18next-http-backend')) return 'i18n';
 
-            // --- R3F 更細的拆法 ---
-            if (id.includes('three')) return 'r3f-three';
-            if (id.includes('@react-three/fiber')) return 'r3f-fiber';
-            if (id.includes('@react-three/drei')) return 'r3f-drei';
-            if (id.includes('leva')) return 'r3f-leva';
-
             // axios
             if (id.includes('axios')) return 'axios';
 

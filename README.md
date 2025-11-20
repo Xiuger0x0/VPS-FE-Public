@@ -9,7 +9,6 @@
 - **UI 框架**: Chakra UI
 - **狀態管理**: Recoil
 - **路由**: React Router v7
-- **3D 圖形**: Three.js + React Three Fiber
 - **國際化**: i18next
 - **表單處理**: React Hook Form + Zod
 - **HTTP 客戶端**: Axios
@@ -105,7 +104,6 @@ VITE_REDIRECT_URI=http://localhost:5173/callback
 src/
 ├── components/          # 可重用組件
 │   ├── ui/             # UI 基礎組件
-│   └── R3F/            # Three.js 3D 組件
 ├── pages/              # 頁面組件
 │   ├── layouts/        # 布局組件
 │   └── Airsoft/        # 功能頁面
@@ -123,12 +121,6 @@ src/
 - LINE OAuth 登入
 - JWT Token 管理
 - 自動登出機制
-
-### 3D 圖形
-
-- Three.js 場景渲染
-- 武器客製化工具
-- 互動式 3D 模型
 
 ### 國際化
 
@@ -233,7 +225,6 @@ docker compose restart nginx
 - [Vite 官方文檔](https://vitejs.dev/)
 - [React 官方文檔](https://react.dev/)
 - [Chakra UI 文檔](https://chakra-ui.com/)
-- [Three.js 文檔](https://threejs.org/docs/)
 
 ## 🤝 貢獻指南
 
