@@ -63,9 +63,7 @@ export const HomePage = () => {
   return (
     <>
       <Helmet>
-        <title>
-          {appName} | {t("page_title_home")}
-        </title>
+        <title>{`${appName} | ${t("page_title_home")}`}</title>
         <meta
           name="description"
           content="一個追夢者的數位旅程，用勇氣與熱情在代碼世界中探索無限可能，將夢想化為現實"

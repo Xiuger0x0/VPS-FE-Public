@@ -205,7 +205,7 @@ export const ServicePage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{appName} | TactiCafe - 科技戰術體驗館</title>
+        <title>{`${appName} | TactiCafe - 科技戰術體驗館`}</title>
         <meta
           name="description"
           content="結合科技與戰術的複合式氣槍靶場，提供 Rainbow Six 真人體驗、VR 訓練和精緻軍事主題餐飲"

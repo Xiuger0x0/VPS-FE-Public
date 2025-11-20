@@ -33,9 +33,7 @@ export const AboutPage = () => {
   return (
     <>
       <Helmet>
-        <title>
-          {appName} | {tCommon("page_title_about")}
-        </title>
+        <title>{`${appName} | ${tCommon("page_title_about")}`}</title>
       </Helmet>
 
       {/* 全螢幕背景圖片區域 */}
