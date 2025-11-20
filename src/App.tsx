@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router";
-import { lazy } from "react";
 import "@/utils/i18n";
 import { MasterLayout } from "@/pages/layouts/MasterLayout";
 import { ShowcaseLayout } from "@/pages/layouts/ShowcaseLayout";
