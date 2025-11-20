@@ -76,6 +76,7 @@ function App() {
                   setUser(userData);
 
                   window.location.href = "/";
+                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 } catch (error) {
                   alert("登入失敗");
                 }
