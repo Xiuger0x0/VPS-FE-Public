@@ -36,96 +36,109 @@ const LOGIN_URL = `https://access.line.me/oauth2/v2.1/authorize?response_type=co
   REDIRECT_URI
 )}&state=12345&scope=profile%20openid%20email`;
 
+import { LandingLayout } from "@/layouts/LandingLayout";
+
+import { PhotoProvider } from "@/context/PhotoContext";
+import { VisionPage } from "@/pages/public/VisionPage";
+import { PhotoCMS } from "@/pages/admin/cms/PhotoCMS";
+
 // TODO 後續加入動態入載入（依照取得的使用者等級注入額外可用路由）
 function App() {
   const isDev = process.env.NODE_ENV === "development";
   const setUser = useSetRecoilState<IUser | null>(userState);
 
   return (
-    <Routes>
-      {/* LINE LOGIN callback 跳轉頁面 */}
-      <Route path="/callback" element={<CallBackPage />} />
+    <PhotoProvider>
+      <Routes>
+        {/* LINE LOGIN callback 跳轉頁面 */}
+        <Route path="/callback" element={<CallBackPage />} />
 
-      {/* Liff 入口 (不一定要特別設置入口，可以與一般頁面整合開放額外功能)? */}
-      <Route path="/liff" element={<LiffPage />} />
+        {/* Liff 入口 (不一定要特別設置入口，可以與一般頁面整合開放額外功能)? */}
+        <Route path="/liff" element={<LiffPage />} />
 
-      {/* 基本頁面 */}
-      <Route path="/" element={<MasterLayout />}>
-        <Route path="/" element={<HomePage />} index />
-
-        {/* 註冊頁面 */}
-        <Route path="register" element={<RegisterPage />} />
-        <Route
-          path="login"
-          element={
-            <LoginPage
-              onLogin={async (data) => {
-                try {
-                  const res = await BackendApi.post("/users/login", data);
-
-                  const userData: IUser = {
-                    userId: res.data.user.id,
-                    displayName: res.data.user.displayName ?? null,
-                    pictureUrl: res.data.user.pictureUrl ?? null,
-                    userEmail: res.data.user.email,
-                  };
-
-                  localStorage.setItem("token", res.data.token);
-                  localStorage.setItem("user", JSON.stringify(userData));
-
-                  setUser(userData);
-
-                  window.location.href = "/";
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                } catch (error) {
-                  alert("登入失敗");
-                }
-              }}
-              onLineLogin={() => {
-                // LINE OAuth 登入邏輯
-                window.location.href = LOGIN_URL;
-              }}
-              onRegister={() => {
-                // 跳轉到註冊頁面
-                window.location.href = "/register";
-              }}
-            />
-          }
-        />
-
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/project" element={<ProjectPage />} />
-        <Route path="/service" element={<ServicePage />} />
-      </Route>
-
-      {/* 展示頁面 - 無 Footer */}
-      <Route path="/" element={<ShowcaseLayout />}>
-        {/* 氣槍展示 */}
-        <Route path="/item" element={<AirsoftShowcasePage />} />
-
-        {/* Airsoft */}
-        <Route path="/airsoft" element={<AirsoftLayout />}>
-          <Route index element={<AirsoftManager />} />
-          <Route path="dashboard" element={<AirsoftManager />} />
+        {/* Landing Page - 全螢幕分流入口 */}
+        <Route path="/" element={<LandingLayout />}>
+          <Route index element={<HomePage />} />
         </Route>
-      </Route>
 
-      {/* Admin Routes */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<DashboardPage />} />
-        <Route path="cms/home" element={<HomeCMS />} />
-        <Route path="cms/about" element={<AboutCMS />} />
-        <Route path="cms/projects" element={<ProjectCMS />} />
-        <Route path="cms/services" element={<ServiceCMS />} />
-        <Route path="logs/system" element={<SystemLogs />} />
-      </Route>
+        {/* 基本頁面 - 使用 MasterLayout */}
+        <Route element={<MasterLayout />}>
+          {/* 註冊頁面 */}
+          <Route path="register" element={<RegisterPage />} />
+          <Route
+            path="login"
+            element={
+              <LoginPage
+                onLogin={async (data) => {
+                  try {
+                    const res = await BackendApi.post("/users/login", data);
 
-      {/* 僅開發模式下提供前端路由 */}
-      {isDev && <Route path="/playground" element={<ThemePlayground />} />}
+                    const userData: IUser = {
+                      userId: res.data.user.id,
+                      displayName: res.data.user.displayName ?? null,
+                      pictureUrl: res.data.user.pictureUrl ?? null,
+                      userEmail: res.data.user.email,
+                    };
 
-      {/* 其餘頁面導到404 */}
-      <Route path="/*" element={<Page404 />} />
-    </Routes>
+                    localStorage.setItem("token", res.data.token);
+                    localStorage.setItem("user", JSON.stringify(userData));
+
+                    setUser(userData);
+
+                    window.location.href = "/";
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                  } catch (error) {
+                    alert("登入失敗");
+                  }
+                }}
+                onLineLogin={() => {
+                  // LINE OAuth 登入邏輯
+                  window.location.href = LOGIN_URL;
+                }}
+                onRegister={() => {
+                  // 跳轉到註冊頁面
+                  window.location.href = "/register";
+                }}
+              />
+            }
+          />
+
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/project" element={<ProjectPage />} />
+          <Route path="/service" element={<ServicePage />} />
+          <Route path="/vision" element={<VisionPage />} />
+        </Route>
+
+        {/* 展示頁面 - 無 Footer */}
+        <Route path="/" element={<ShowcaseLayout />}>
+          {/* 氣槍展示 */}
+          <Route path="/item" element={<AirsoftShowcasePage />} />
+
+          {/* Airsoft */}
+          <Route path="/airsoft" element={<AirsoftLayout />}>
+            <Route index element={<AirsoftManager />} />
+            <Route path="dashboard" element={<AirsoftManager />} />
+          </Route>
+        </Route>
+
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<DashboardPage />} />
+          <Route path="cms/home" element={<HomeCMS />} />
+          <Route path="cms/about" element={<AboutCMS />} />
+          <Route path="cms/projects" element={<ProjectCMS />} />
+          <Route path="cms/services" element={<ServiceCMS />} />
+          <Route path="cms/photos" element={<PhotoCMS />} />
+          <Route path="logs/system" element={<SystemLogs />} />
+        </Route>
+
+        {/* 僅開發模式下提供前端路由 */}
+        {isDev && <Route path="/playground" element={<ThemePlayground />} />}
+
+        {/* 其餘頁面導到404 */}
+        <Route path="/*" element={<Page404 />} />
+      </Routes>
+    </PhotoProvider>
   );
 }
 export default App;

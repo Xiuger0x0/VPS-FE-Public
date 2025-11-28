@@ -1,6 +1,6 @@
 import { Box, Flex, VStack, Text, Heading, Link as ChakraLink } from "@chakra-ui/react";
 import { Outlet, Link as RouterLink, useLocation } from "react-router";
-import { FaHome, FaEdit, FaList, FaCog, FaChartBar } from "react-icons/fa";
+import { FaHome, FaEdit, FaList, FaCog, FaChartBar, FaCamera } from "react-icons/fa";
 import { ElementType } from "react";
 
 const SidebarItem = ({ icon: IconComponent, label, to }: { icon: ElementType; label: string; to: string }) => {
@@ -47,6 +47,7 @@ export const AdminLayout = () => {
           <SidebarItem icon={FaEdit} label="About Page" to="/admin/cms/about" />
           <SidebarItem icon={FaList} label="Projects" to="/admin/cms/projects" />
           <SidebarItem icon={FaCog} label="Services" to="/admin/cms/services" />
+          <SidebarItem icon={FaCamera} label="Photos" to="/admin/cms/photos" />
 
           <Text fontSize="xs" fontWeight="bold" color="fg.muted" mt={6} mb={2} textTransform="uppercase" letterSpacing="wider">
             System
