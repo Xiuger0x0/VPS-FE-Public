@@ -20,7 +20,9 @@ import {
   SelectTrigger,
   SelectValueText,
   Switch,
-  SelectValueChangeDetails, SwitchCheckedChangeDetails
+  SelectValueChangeDetails,
+  SwitchCheckedChangeDetails,
+  Spacer
 } from "@chakra-ui/react";
 import { usePhotos, Photo, PhotoCategory } from "@/context/PhotoContext";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
@@ -233,15 +235,17 @@ export const PhotoCMS = () => {
                 </Box>
 
                 <HStack justify="space-between">
-                  <Text fontSize="sm" fontWeight="medium">
-                    Visible
-                  </Text>
-                  <Switch
-                    checked={formData.visible}
+                  <Switch.Root
+                   checked={formData.visible}
                     onCheckedChange={(e: SwitchCheckedChangeDetails) =>
                       setFormData({ ...formData, visible: e.checked })
                     }
-                  />
+                  >
+                    <Switch.Label>Visible</Switch.Label>
+                    <Spacer />
+                    <Switch.HiddenInput />
+                    <Switch.Control />
+                  </Switch.Root>
                 </HStack>
               </VStack>
             </Dialog.Body>
