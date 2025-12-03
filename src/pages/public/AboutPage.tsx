@@ -1,11 +1,9 @@
-import { Box, Flex, HStack, Text, Timeline, Badge } from "@chakra-ui/react";
+import { Box, Container, Heading, Text, SimpleGrid, VStack, Flex } from "@chakra-ui/react";
 import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { glassmorphismStyle } from "@/styles/glassmorphism";
 import { FaBuilding, FaSchool } from "react-icons/fa";
 import { FaPersonMilitaryRifle } from "react-icons/fa6";
-import { Blockquote } from "@chakra-ui/react";
-import { Tooltip } from "@/components/ui/tooltip";
+import { Timeline } from "@chakra-ui/react";
 
 // 興趣愛好資料
 const INTERESTS_DATA = [
@@ -36,69 +34,38 @@ export const AboutPage = () => {
         <title>{`${appName} | ${tCommon("page_title_about")}`}</title>
       </Helmet>
 
-      {/* 全螢幕背景圖片區域 */}
-      <Box position="relative" minH="100vh">
-        {/* 背景圖片 */}
-        <Box
-          position="absolute"
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          bgImage="url('/images/about_fp.jpg')"
-          bgSize="cover"
-          bgPos="center"
-          bgRepeat="no-repeat"
-          bgAttachment="fixed"
-        />
+      <Box bg="#0f0f0f" minH="100vh" color="white" py={20}>
+        <Container maxW="6xl">
+          {/* Header Section */}
+          <VStack gap={6} mb={24} textAlign="center">
+            <Heading size="4xl" letterSpacing="widest" fontWeight="bold">
+              ABOUT ME
+            </Heading>
+            <Text color="gray.400" fontSize="xl" maxW="2xl" fontStyle="italic">
+              "{tAbout("philosophy")}"
+            </Text>
+          </VStack>
 
-        {/* 漸變遮罩 */}
-        <Box
-          position="absolute"
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          bgGradient="linear(to-b, blackAlpha.300, blackAlpha.600, blackAlpha.800)"
-        />
-
-        {/* 內容區域 */}
-        <Flex
-          position="relative"
-          zIndex={1}
-          minH="100vh"
-          alignItems="flex-end"
-          p={8}
-        >
-          <Tooltip content={tAbout("tooltip.topImg")}>
-            <Box
-              {...glassmorphismStyle}
-              p={8}
-              borderRadius="xl"
-              maxW="800px"
-              w="full"
-              mx="auto"
-              mb={16}
-            >
-              {/* Timeline 區域 */}
+          {/* Timeline Section */}
+          <Box mb={24}>
+            <Heading size="xl" mb={12} letterSpacing="wide" color="#FF6600">
+              JOURNEY
+            </Heading>
+            <Box maxW="3xl" mx="auto">
               <Timeline.Root>
                 <Timeline.Item>
                   <Timeline.Connector>
-                    <FaPersonMilitaryRifle />
+                    <Box bg="#FF6600" p={2} borderRadius="full" color="white">
+                        <FaPersonMilitaryRifle size={16} />
+                    </Box>
                   </Timeline.Connector>
                   <Timeline.Content>
                     <Timeline.Title>
-                      <Badge
-                        colorPalette="neutral"
-                        size="lg"
-                        whiteSpace="normal"
-                        wordBreak="break-word"
-                        maxW="full"
-                      >
+                      <Text fontSize="lg" fontWeight="bold" color="white">
                         {tAbout("timeline.military")}
-                      </Badge>
+                      </Text>
                     </Timeline.Title>
-                    <Timeline.Description color="whiteAlpha.800" mt={2}>
+                    <Timeline.Description color="gray.400" mt={1}>
                       April 2017 - April 2021
                     </Timeline.Description>
                   </Timeline.Content>
@@ -106,24 +73,20 @@ export const AboutPage = () => {
 
                 <Timeline.Item>
                   <Timeline.Connector>
-                    <FaBuilding />
+                    <Box bg="#00FFFF" p={2} borderRadius="full" color="black">
+                        <FaBuilding size={16} />
+                    </Box>
                   </Timeline.Connector>
                   <Timeline.Content>
                     <Timeline.Title>
-                      <Badge
-                        colorPalette="neutral"
-                        size="lg"
-                        whiteSpace="normal"
-                        wordBreak="break-word"
-                        maxW="full"
-                      >
+                      <Text fontSize="lg" fontWeight="bold" color="white">
                         {tAbout("timeline.training")}
-                      </Badge>
+                      </Text>
                     </Timeline.Title>
-                    <Timeline.Description color="whiteAlpha.800" mt={2}>
+                    <Timeline.Description color="gray.400" mt={1}>
                       June 2022 ~ October 2022
                     </Timeline.Description>
-                    <Text fontSize="sm" color="whiteAlpha.700" mt={2}>
+                    <Text fontSize="sm" color="gray.500" mt={2}>
                       {tAbout("timeline.trainingDetail")}
                     </Text>
                   </Timeline.Content>
@@ -131,173 +94,112 @@ export const AboutPage = () => {
 
                 <Timeline.Item>
                   <Timeline.Connector>
-                    <FaSchool />
+                    <Box bg="#003366" p={2} borderRadius="full" color="white">
+                        <FaSchool size={16} />
+                    </Box>
                   </Timeline.Connector>
                   <Timeline.Content>
                     <Timeline.Title>
-                      <Badge
-                        colorPalette="neutral"
-                        size="lg"
-                        whiteSpace="normal"
-                        wordBreak="break-word"
-                        maxW="full"
-                      >
+                      <Text fontSize="lg" fontWeight="bold" color="white">
                         {tAbout("timeline.university")}
-                      </Badge>
+                      </Text>
                     </Timeline.Title>
-                    <Timeline.Description color="whiteAlpha.800" mt={2}>
+                    <Timeline.Description color="gray.400" mt={1}>
                       June 2023 ~ {tAbout("timeline.now")}
                     </Timeline.Description>
                   </Timeline.Content>
                 </Timeline.Item>
               </Timeline.Root>
-
-              {/* 個人哲學引言 */}
-              <Box
-                mt={8}
-                pt={6}
-                borderTop="1px solid"
-                borderColor="whiteAlpha.300"
-              >
-                <Blockquote.Root>
-                  <Blockquote.Content>
-                    <Text
-                      fontSize="lg"
-                      fontStyle="italic"
-                      color="whiteAlpha.900"
-                      textAlign="center"
-                      lineHeight="tall"
-                    >
-                      "{tAbout("philosophy")}"
-                    </Text>
-                  </Blockquote.Content>
-                </Blockquote.Root>
-              </Box>
             </Box>
-          </Tooltip>
-        </Flex>
-      </Box>
+          </Box>
 
-      {/* 第二個區域：個人照片展示 */}
-      <Box bg="bg" py={20}>
-        <Box maxW="6xl" mx="auto" px={8}>
-          <HStack gap={8} align="stretch">
-            {/* 左側：個人照片 */}
-            <Box flex="1">
+          {/* Life Photos Section */}
+          <Box mb={24}>
+            <Heading size="xl" mb={12} letterSpacing="wide" color="#00FFFF">
+              LIFE
+            </Heading>
+            <Flex direction={{ base: "column", lg: "row" }} gap={8}>
+              {/* Main Photo */}
               <Box
-                w="full"
+                flex="1"
                 h="500px"
-                bg="neutral.100"
-                borderRadius="2xl"
-                overflow="hidden"
-                position="relative"
-                _dark={{ bg: "neutral.800" }}
-              >
-                {/* 預留照片位置 */}
-                <Box
-                  position="absolute"
-                  top="50%"
-                  left="50%"
-                  transform="translate(-50%, -50%)"
-                  textAlign="center"
-                  color="neutral.400"
-                >
-                  <Text fontSize="sm">個人照片區域</Text>
-                  <Text fontSize="xs" mt={2}>
-                    [待補充照片]
-                  </Text>
-                </Box>
-              </Box>
-            </Box>
-
-            {/* 右側：生活照片網格 */}
-            <Box flex="1">
-              <Box
-                display="grid"
-                gridTemplateColumns="1fr 1fr"
-                gap={4}
-                h="500px"
-              >
-                {LIFE_PHOTOS_DATA.map((photo) => (
-                  <Box
-                    key={photo.id}
-                    bg="neutral.100"
-                    borderRadius="xl"
-                    position="relative"
-                    _dark={{ bg: "neutral.800" }}
-                  >
-                    <Box
-                      position="absolute"
-                      top="50%"
-                      left="50%"
-                      transform="translate(-50%, -50%)"
-                      textAlign="center"
-                      color="neutral.400"
-                    >
-                      <Text fontSize="xs">{photo.placeholder}</Text>
-                    </Box>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          </HStack>
-        </Box>
-      </Box>
-
-      {/* 第三個區域：興趣愛好照片展示 */}
-      <Box bg="bg.subtle" py={20}>
-        <Box maxW="6xl" mx="auto" px={8}>
-          <Text
-            fontSize="2xl"
-            fontWeight="bold"
-            textAlign="center"
-            mb={12}
-            color="fg"
-          >
-            興趣與愛好
-          </Text>
-
-          {/* 興趣照片網格 */}
-          <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap={6}>
-            {INTERESTS_DATA.map((item, index) => (
-              <Box
-                key={index}
-                bg="bg"
+                bg="whiteAlpha.50"
                 borderRadius="xl"
+                borderWidth="1px"
+                borderColor="whiteAlpha.200"
+                position="relative"
                 overflow="hidden"
-                shadow="md"
-                _hover={{ transform: "translateY(-4px)", shadow: "lg" }}
-                transition="all 0.3s"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
               >
+                <Text color="gray.500">Personal Photo</Text>
+              </Box>
+
+              {/* Grid Photos */}
+              <Box flex="1">
+                <SimpleGrid columns={2} gap={4} h="500px">
+                  {LIFE_PHOTOS_DATA.map((photo) => (
+                    <Box
+                      key={photo.id}
+                      bg="whiteAlpha.50"
+                      borderRadius="xl"
+                      borderWidth="1px"
+                      borderColor="whiteAlpha.200"
+                      position="relative"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      transition="all 0.3s"
+                      _hover={{ borderColor: "#00FFFF", bg: "whiteAlpha.100" }}
+                    >
+                      <Text color="gray.500" fontSize="sm">{photo.placeholder}</Text>
+                    </Box>
+                  ))}
+                </SimpleGrid>
+              </Box>
+            </Flex>
+          </Box>
+
+          {/* Interests Section */}
+          <Box>
+            <Heading size="xl" mb={12} letterSpacing="wide" color="#003366">
+              INTERESTS
+            </Heading>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
+              {INTERESTS_DATA.map((item, index) => (
                 <Box
+                  key={index}
                   h="200px"
-                  bg="neutral.100"
-                  position="relative"
-                  _dark={{ bg: "neutral.800" }}
+                  bg="whiteAlpha.50"
+                  borderRadius="xl"
+                  borderWidth="1px"
+                  borderColor="whiteAlpha.200"
+                  p={6}
+                  transition="all 0.3s"
+                  _hover={{
+                    borderColor: "#003366",
+                    transform: "translateY(-5px)",
+                    boxShadow: "0 0 20px rgba(0, 51, 102, 0.3)",
+                    bg: "whiteAlpha.100"
+                  }}
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  textAlign="center"
                 >
-                  <Box
-                    position="absolute"
-                    top="50%"
-                    left="50%"
-                    transform="translate(-50%, -50%)"
-                    textAlign="center"
-                    color="neutral.400"
-                  >
-                    <Text fontSize="sm">{item.title}</Text>
-                  </Box>
-                </Box>
-                <Box p={4}>
-                  <Text fontWeight="medium" color="fg" mb={2}>
+                  <Heading size="md" mb={2} color="white">
                     {item.title}
-                  </Text>
-                  <Text fontSize="sm" color="fg.muted">
+                  </Heading>
+                  <Text color="gray.400" fontSize="sm">
                     {item.desc}
                   </Text>
                 </Box>
-              </Box>
-            ))}
+              ))}
+            </SimpleGrid>
           </Box>
-        </Box>
+        </Container>
       </Box>
     </>
   );

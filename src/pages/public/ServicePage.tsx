@@ -5,14 +5,11 @@ import {
   HStack,
   Heading,
   Text,
-  Card,
-  Badge,
+  SimpleGrid,
   Button,
   Icon,
   Image,
-  SimpleGrid,
-  Flex,
-  List,
+  Tabs,
 } from "@chakra-ui/react";
 import { Helmet } from "react-helmet-async";
 import { useState } from "react";
@@ -26,7 +23,6 @@ import {
   FaShieldAlt,
   FaMapMarkedAlt,
   FaStar,
-  FaPlay,
   FaChevronDown,
   FaChevronUp,
 } from "react-icons/fa";
@@ -193,7 +189,7 @@ const MENU_CATEGORIES = [
   },
 ];
 
-export const ServicePage: React.FC = () => {
+export const ServicePage = () => {
   const appName = import.meta.env.VITE_APP_NAME;
   const [expandedService, setExpandedService] = useState<string | null>(null);
   const [activeMenuCategory, setActiveMenuCategory] = useState("beverages");
@@ -205,337 +201,254 @@ export const ServicePage: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>{`${appName} | TactiCafe - 科技戰術體驗館`}</title>
+        <title>{`${appName} | SERVICES`}</title>
         <meta
           name="description"
-          content="結合科技與戰術的複合式氣槍靶場，提供 Rainbow Six 真人體驗、VR 訓練和精緻軍事主題餐飲"
+          content="TactiCafe - Tactical Experience & Dining"
         />
       </Helmet>
 
-      <Box bg="bg.canvas" minH="100vh">
+      <Box bg="#0f0f0f" minH="100vh" color="white">
         {/* Hero Section */}
         <Box
           position="relative"
-          minH="100vh"
-          bgImage="url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=1920&q=80')"
-          bgSize="cover"
-          bgPos="center"
-          bgAttachment="fixed"
+          h="60vh"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          overflow="hidden"
         >
-          {/* 漸變遮罩 */}
           <Box
             position="absolute"
             top={0}
             left={0}
             right={0}
             bottom={0}
-            bgGradient="linear(to-b, blackAlpha.600, blackAlpha.800)"
+            bgImage="url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=1920&q=80')"
+            bgSize="cover"
+            bgPos="center"
+            bgAttachment="fixed"
+            filter="grayscale(100%) brightness(0.3)"
+            zIndex={0}
           />
-
-          {/* Hero 內容 */}
-          <Flex
-            position="relative"
-            zIndex={1}
-            minH="100vh"
-            alignItems="center"
-            justifyContent="center"
-            textAlign="center"
-            color="white"
-          >
-            <Container maxW="4xl">
-              <VStack gap={8}>
-                <Badge colorPalette="primary" size="lg" px={4} py={2}>
-                  創業計畫 2024
-                </Badge>
-
-                <Heading size="4xl" fontWeight="bold" lineHeight="shorter">
-                  TactiCafe
-                </Heading>
-
-                <Heading size="xl" fontWeight="normal" color="whiteAlpha.900">
-                  科技戰術體驗館
-                </Heading>
-
-                <Text
-                  fontSize="xl"
-                  maxW="2xl"
-                  lineHeight="tall"
-                  color="whiteAlpha.800"
-                >
-                  結合最新科技的複合式氣槍靶場，打造真人版 Rainbow Six 體驗。
-                  專業戰術訓練、VR 沉浸體驗，搭配精緻軍事主題餐飲，
-                  為戰術愛好者創造前所未有的娛樂空間。
-                </Text>
-
-                <HStack gap={4} pt={4}>
-                  <Button colorPalette="primary" size="lg">
-                    <Icon mr={2}>
-                      <FaPlay />
-                    </Icon>
-                    觀看介紹影片
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    color="white"
-                    borderColor="white"
-                  >
-                    了解更多
-                  </Button>
-                </HStack>
-              </VStack>
-            </Container>
-          </Flex>
+          <Container maxW="7xl" position="relative" zIndex={1} textAlign="center">
+            <VStack gap={6}>
+              <Heading size="5xl" letterSpacing="widest" fontWeight="bold" color="white">
+                SERVICES
+              </Heading>
+              <Text color="gray.300" fontSize="2xl" maxW="2xl" letterSpacing="wide">
+                Tactical Experience & Dining
+              </Text>
+            </VStack>
+          </Container>
         </Box>
 
-        {/* 核心服務區域 */}
         <Container maxW="7xl" py={20}>
-          <VStack gap={16} align="stretch">
-            <Box textAlign="center">
-              <Heading size="2xl" mb={4} color="fg">
-                核心服務體驗
-              </Heading>
-              <Text fontSize="lg" color="fg.muted" maxW="3xl" mx="auto">
-                四大主題區域，打造完整的戰術娛樂生態圈
-              </Text>
-            </Box>
-
-            {/* 服務卡片網格 */}
-            <SimpleGrid columns={[1, null, 2]} gap={8}>
-              {CORE_SERVICES.map((service) => (
-                <Card.Root
-                  key={service.id}
-                  overflow="hidden"
-                  shadow="lg"
-                  _hover={{ transform: "translateY(-4px)", shadow: "xl" }}
-                  transition="all 0.3s"
-                >
-                  <Box position="relative">
-                    <Image
-                      src={service.image}
-                      alt={service.title}
-                      w="full"
-                      h="250px"
-                      objectFit="cover"
-                    />
-                    <Box
-                      position="absolute"
-                      top={4}
-                      left={4}
-                      p={3}
-                      bg={`${service.color}.500`}
-                      borderRadius="full"
-                      color="white"
-                    >
-                      <Icon boxSize={6}>
-                        <service.icon />
-                      </Icon>
-                    </Box>
-                  </Box>
-
-                  <Card.Body p={6}>
-                    <VStack gap={4} align="stretch">
-                      <Box>
-                        <Heading size="lg" color="fg" mb={2}>
-                          {service.title}
-                        </Heading>
-                        <Text
-                          color={`${service.color}.500`}
-                          fontWeight="medium"
-                          mb={3}
-                        >
-                          {service.subtitle}
-                        </Text>
-                        <Text color="fg.muted" lineHeight="tall">
-                          {service.description}
-                        </Text>
-                      </Box>
-
-                      {/* 可展開的功能列表 */}
-                      <Box>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => toggleServiceExpansion(service.id)}
-                          w="full"
-                          justifyContent="space-between"
-                        >
-                          查看詳細功能
-                          <Icon ml={2}>
-                            {expandedService === service.id ? (
-                              <FaChevronUp />
-                            ) : (
-                              <FaChevronDown />
-                            )}
-                          </Icon>
-                        </Button>
-
-                        {expandedService === service.id && (
-                          <Box mt={4} p={4} bg="bg.muted" borderRadius="md">
-                            <List.Root>
-                              {service.features.map((feature, index) => (
-                                <List.Item key={index}>
-                                  <List.Indicator>
-                                    <Icon color={`${service.color}.500`}>
-                                      <FaStar />
-                                    </Icon>
-                                  </List.Indicator>
-                                  <Text fontSize="sm" color="fg">
-                                    {feature}
-                                  </Text>
-                                </List.Item>
-                              ))}
-                            </List.Root>
-                          </Box>
-                        )}
-                      </Box>
-                    </VStack>
-                  </Card.Body>
-                </Card.Root>
-              ))}
-            </SimpleGrid>
-          </VStack>
-        </Container>
-
-        {/* 特色亮點 */}
-        <Box bg="bg.subtle" py={20}>
-          <Container maxW="7xl">
-            <VStack gap={12} align="stretch">
-              <Box textAlign="center">
-                <Heading size="2xl" mb={4} color="fg">
-                  為什麼選擇 TactiCafe？
+            {/* Core Services */}
+            <Box mb={24}>
+                <Heading size="xl" mb={12} letterSpacing="wide" color="#FF6600">
+                    EXPERIENCES
                 </Heading>
-                <Text fontSize="lg" color="fg.muted">
-                  我們的獨特優勢
-                </Text>
-              </Box>
-
-              <SimpleGrid columns={[1, 2, 4]} gap={8}>
-                {HIGHLIGHTS.map((highlight, index) => (
-                  <Card.Root key={index} textAlign="center" p={6}>
-                    <Card.Body>
-                      <VStack gap={4}>
+                <SimpleGrid columns={{ base: 1, md: 2 }} gap={8} alignItems="start">
+                    {CORE_SERVICES.map((service) => (
                         <Box
-                          p={4}
-                          bg="primary.muted"
-                          borderRadius="full"
-                          color="primary"
+                            key={service.id}
+                            bg="whiteAlpha.50"
+                            borderRadius="xl"
+                            borderWidth="1px"
+                            borderColor="whiteAlpha.200"
+                            overflow="hidden"
+                            transition="all 0.3s"
+                            _hover={{
+                                borderColor: "#FF6600",
+                                transform: "translateY(-5px)",
+                                boxShadow: "0 0 20px rgba(255, 102, 0, 0.2)",
+                                bg: "whiteAlpha.100"
+                            }}
                         >
-                          <Icon boxSize={8}>
-                            <highlight.icon />
-                          </Icon>
+                            <Box position="relative" h="250px">
+                                <Image
+                                    src={service.image}
+                                    alt={service.title}
+                                    w="full"
+                                    h="full"
+                                    objectFit="cover"
+                                />
+                                <Box
+                                    position="absolute"
+                                    top={4}
+                                    left={4}
+                                    p={3}
+                                    bg="blackAlpha.700"
+                                    borderRadius="full"
+                                    color="#FF6600"
+                                    backdropFilter="blur(10px)"
+                                >
+                                    <Icon boxSize={6}>
+                                        <service.icon />
+                                    </Icon>
+                                </Box>
+                            </Box>
+
+                            <VStack p={8} align="stretch" gap={4}>
+                                <Box>
+                                    <Heading size="xl" mb={2}>{service.title}</Heading>
+                                    <Text color="gray.400" fontSize="lg">{service.subtitle}</Text>
+                                </Box>
+                                <Text color="gray.500" lineHeight="tall">
+                                    {service.description}
+                                </Text>
+
+                                {/* Features Toggle */}
+                                <Button
+                                    variant="ghost"
+                                    color="white"
+                                    justifyContent="space-between"
+                                    onClick={() => toggleServiceExpansion(service.id)}
+                                    _hover={{ bg: "whiteAlpha.100" }}
+                                    mt={2}
+                                >
+                                    FEATURES
+                                    <Icon>
+                                        {expandedService === service.id ? <FaChevronUp /> : <FaChevronDown />}
+                                    </Icon>
+                                </Button>
+
+                                {expandedService === service.id && (
+                                    <Box pt={4} borderTopWidth="1px" borderColor="whiteAlpha.200">
+                                        <VStack align="start" gap={2}>
+                                            {service.features.map((feature, index) => (
+                                                <HStack key={index} color="gray.400">
+                                                    <Icon color="#FF6600" boxSize={3}><FaStar /></Icon>
+                                                    <Text fontSize="sm">{feature}</Text>
+                                                </HStack>
+                                            ))}
+                                        </VStack>
+                                    </Box>
+                                )}
+                            </VStack>
                         </Box>
-                        <Heading size="md" color="fg">
-                          {highlight.title}
-                        </Heading>
-                        <Text color="fg.muted" fontSize="sm" textAlign="center">
-                          {highlight.description}
-                        </Text>
-                      </VStack>
-                    </Card.Body>
-                  </Card.Root>
-                ))}
-              </SimpleGrid>
-            </VStack>
-          </Container>
-        </Box>
-
-        {/* 菜單展示 */}
-        <Container maxW="7xl" py={20}>
-          <VStack gap={12} align="stretch">
-            <Box textAlign="center">
-              <Heading size="2xl" mb={4} color="fg">
-                戰術主題菜單
-              </Heading>
-              <Text fontSize="lg" color="fg.muted" maxW="3xl" mx="auto">
-                精心設計的軍事主題餐飲，讓味蕾也參與戰術體驗
-              </Text>
-            </Box>
-
-            {/* 菜單分類導航 */}
-            <HStack justify="center" wrap="wrap" gap={4}>
-              {MENU_CATEGORIES.map((category) => (
-                <Button
-                  key={category.id}
-                  variant={
-                    activeMenuCategory === category.id ? "solid" : "outline"
-                  }
-                  colorPalette={
-                    activeMenuCategory === category.id ? "primary" : "neutral"
-                  }
-                  onClick={() => setActiveMenuCategory(category.id)}
-                >
-                  <Icon mr={2}>
-                    <category.icon />
-                  </Icon>
-                  {category.name}
-                </Button>
-              ))}
-            </HStack>
-
-            {/* 菜單項目 */}
-            <Box>
-              {MENU_CATEGORIES.filter(
-                (cat) => cat.id === activeMenuCategory
-              ).map((category) => (
-                <SimpleGrid key={category.id} columns={[1, null, 2]} gap={6}>
-                  {category.items.map((item, index) => (
-                    <Card.Root key={index}>
-                      <Card.Body p={6}>
-                        <Flex justify="space-between" align="start" gap={4}>
-                          <Box flex={1}>
-                            <Heading size="md" color="fg" mb={2}>
-                              {item.name}
-                            </Heading>
-                            <Text
-                              color="fg.muted"
-                              fontSize="sm"
-                              lineHeight="tall"
-                            >
-                              {item.description}
-                            </Text>
-                          </Box>
-                          <Text
-                            fontSize="lg"
-                            fontWeight="bold"
-                            color="primary.500"
-                            whiteSpace="nowrap"
-                          >
-                            {item.price}
-                          </Text>
-                        </Flex>
-                      </Card.Body>
-                    </Card.Root>
-                  ))}
+                    ))}
                 </SimpleGrid>
-              ))}
             </Box>
-          </VStack>
-        </Container>
 
-        {/* CTA 區域 */}
-        <Box bg="primary.muted" py={20}>
-          <Container maxW="4xl" textAlign="center">
-            <VStack gap={8}>
-              <Heading size="2xl" color="primary">
-                準備好體驗未來戰術娛樂了嗎？
-              </Heading>
-              <Text fontSize="lg" color="fg.muted" maxW="2xl">
-                加入我們的創業計畫，成為戰術體驗革命的一份子。
-                投資機會有限，搶先體驗無限可能。
-              </Text>
-              <HStack gap={4}>
-                <Button colorPalette="primary" size="lg">
-                  投資諮詢
-                </Button>
-                <Button variant="outline" colorPalette="primary" size="lg">
-                  預約體驗
-                </Button>
-              </HStack>
-            </VStack>
-          </Container>
-        </Box>
+            {/* Highlights */}
+            <Box mb={24}>
+                <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={8}>
+                    {HIGHLIGHTS.map((highlight, index) => (
+                        <VStack
+                            key={index}
+                            bg="whiteAlpha.50"
+                            p={8}
+                            borderRadius="xl"
+                            borderWidth="1px"
+                            borderColor="whiteAlpha.200"
+                            textAlign="center"
+                            gap={4}
+                            transition="all 0.3s"
+                            _hover={{ borderColor: "#00FFFF", transform: "translateY(-5px)" }}
+                        >
+                            <Icon boxSize={8} color="#00FFFF">
+                                <highlight.icon />
+                            </Icon>
+                            <Heading size="md">{highlight.title}</Heading>
+                            <Text color="gray.500" fontSize="sm">
+                                {highlight.description}
+                            </Text>
+                        </VStack>
+                    ))}
+                </SimpleGrid>
+            </Box>
+
+            {/* Menu */}
+            <Box mb={24}>
+                <Heading size="xl" mb={12} letterSpacing="wide" color="#003366">
+                    MENU
+                </Heading>
+                
+                <Tabs.Root
+                    value={activeMenuCategory}
+                    onValueChange={(e) => setActiveMenuCategory(e.value)}
+                    variant="line"
+                    colorPalette="blue"
+                >
+                    <Tabs.List bg="transparent" borderBottomColor="whiteAlpha.200" mb={8}>
+                        {MENU_CATEGORIES.map((cat) => (
+                            <Tabs.Trigger
+                                key={cat.id}
+                                value={cat.id}
+                                color="gray.400"
+                                _selected={{ color: "#003366", borderColor: "#003366" }}
+                                _hover={{ color: "white" }}
+                                px={6}
+                                py={3}
+                            >
+                                <HStack gap={2}>
+                                    <Icon><cat.icon /></Icon>
+                                    <Text>{cat.name}</Text>
+                                </HStack>
+                            </Tabs.Trigger>
+                        ))}
+                    </Tabs.List>
+
+                    {MENU_CATEGORIES.map((category) => (
+                        <Tabs.Content key={category.id} value={category.id}>
+                            <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
+                                {category.items.map((item, index) => (
+                                    <Box
+                                        key={index}
+                                        bg="whiteAlpha.50"
+                                        p={6}
+                                        borderRadius="lg"
+                                        borderWidth="1px"
+                                        borderColor="whiteAlpha.200"
+                                        display="flex"
+                                        justifyContent="space-between"
+                                        alignItems="start"
+                                        _hover={{ bg: "whiteAlpha.100" }}
+                                    >
+                                        <VStack align="start" gap={1}>
+                                            <Heading size="md">{item.name}</Heading>
+                                            <Text color="gray.500" fontSize="sm">{item.description}</Text>
+                                        </VStack>
+                                        <Text color="#003366" fontWeight="bold" fontSize="lg">
+                                            {item.price}
+                                        </Text>
+                                    </Box>
+                                ))}
+                            </SimpleGrid>
+                        </Tabs.Content>
+                    ))}
+                </Tabs.Root>
+            </Box>
+
+            {/* CTA */}
+            <Box
+                bgGradient="linear(to-r, whiteAlpha.50, whiteAlpha.100)"
+                p={12}
+                borderRadius="2xl"
+                borderWidth="1px"
+                borderColor="whiteAlpha.200"
+                textAlign="center"
+            >
+                <VStack gap={6}>
+                    <Heading size="2xl">Ready to Join?</Heading>
+                    <Text color="gray.400" fontSize="lg" maxW="2xl">
+                        Experience the future of tactical entertainment.
+                    </Text>
+                    <HStack gap={4}>
+                        <Button size="lg" colorPalette="cyan" variant="solid">
+                            Contact Us
+                        </Button>
+                        <Button size="lg" variant="outline" color="white" borderColor="whiteAlpha.500" _hover={{ bg: "whiteAlpha.100" }}>
+                            Book Now
+                        </Button>
+                    </HStack>
+                </VStack>
+            </Box>
+        </Container>
       </Box>
     </>
   );
 };
+

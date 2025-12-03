@@ -300,15 +300,16 @@ export const AirsoftShowcasePage = () => {
       </Helmet>
 
       {/* 展示頁面主容器 */}
-      <Box bg="bg.canvas" minH="100vh">
+      <Box bg="#0f0f0f" minH="100vh" color="white">
         {/* 置頂搜尋與過濾區域 */}
         <Box
           position="sticky"
           top="0"
           zIndex={100}
-          bg="bg.canvas"
+          bg="rgba(15, 15, 15, 0.8)"
+          backdropFilter="blur(10px)"
           borderBottom="1px solid"
-          borderColor="border"
+          borderColor="whiteAlpha.200"
           py={6}
           mt={"60px"}
           shadow="sm"
@@ -317,8 +318,8 @@ export const AirsoftShowcasePage = () => {
             <VStack gap={6} align="stretch">
               {/* 搜尋欄 */}
               <Box maxW="2xl" mx="auto" w="full">
-                <HStack gap={3} p={4} bg="bg" borderRadius="xl" shadow="sm">
-                  <Icon color="fg.muted" fontSize="xl">
+                <HStack gap={3} p={4} bg="whiteAlpha.100" borderRadius="xl" borderWidth="1px" borderColor="whiteAlpha.200">
+                  <Icon color="gray.400" fontSize="xl">
                     <FaSearch />
                   </Icon>
                   <Input
@@ -326,6 +327,10 @@ export const AirsoftShowcasePage = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     variant="subtle"
+                    bg="transparent"
+                    _focus={{ bg: "transparent", boxShadow: "none" }}
+                    color="white"
+                    _placeholder={{ color: "gray.500" }}
                     size="lg"
                     flex={1}
                   />
@@ -336,7 +341,7 @@ export const AirsoftShowcasePage = () => {
               <HStack justify="center" wrap="wrap" gap={4}>
                 {/* 武器分類 */}
                 <HStack gap={2}>
-                  <Text fontSize="sm" fontWeight="medium" color="fg.muted">
+                  <Text fontSize="sm" fontWeight="medium" color="gray.400">
                     分類:
                   </Text>
                   <HStack gap={1}>
@@ -344,13 +349,11 @@ export const AirsoftShowcasePage = () => {
                       <Button
                         key={category.id}
                         variant={
-                          selectedCategory === category.id ? "solid" : "outline"
+                          selectedCategory === category.id ? "solid" : "ghost"
                         }
-                        colorPalette={
-                          selectedCategory === category.id
-                            ? "primary"
-                            : "neutral"
-                        }
+                        bg={selectedCategory === category.id ? "#FF6600" : "transparent"}
+                        color={selectedCategory === category.id ? "white" : "gray.400"}
+                        _hover={{ bg: selectedCategory === category.id ? "#E65C00" : "whiteAlpha.100", color: "white" }}
                         size="sm"
                         onClick={() => setSelectedCategory(category.id)}
                       >
@@ -358,7 +361,7 @@ export const AirsoftShowcasePage = () => {
                           <category.icon />
                         </Icon>
                         {category.name}
-                        <Badge ml={1} size="sm">
+                        <Badge ml={1} size="sm" colorPalette={selectedCategory === category.id ? "white" : "gray"} variant="solid" bg={selectedCategory === category.id ? "whiteAlpha.300" : "whiteAlpha.200"}>
                           {category.count}
                         </Badge>
                       </Button>
@@ -366,23 +369,21 @@ export const AirsoftShowcasePage = () => {
                   </HStack>
                 </HStack>
 
-                <Separator orientation="vertical" h="6" />
+                <Separator orientation="vertical" h="6" borderColor="whiteAlpha.200" />
 
                 {/* 動力類型 */}
                 <HStack gap={2}>
-                  <Text fontSize="sm" fontWeight="medium" color="fg.muted">
+                  <Text fontSize="sm" fontWeight="medium" color="gray.400">
                     動力:
                   </Text>
                   <HStack gap={1}>
                     <Button
-                      variant={
-                        selectedPowerType === "all" ? "solid" : "outline"
-                      }
-                      colorPalette={
-                        selectedPowerType === "all" ? "primary" : "neutral"
-                      }
-                      size="sm"
-                      onClick={() => setSelectedPowerType("all")}
+                        variant={selectedPowerType === "all" ? "solid" : "ghost"}
+                        bg={selectedPowerType === "all" ? "#00FFFF" : "transparent"}
+                        color={selectedPowerType === "all" ? "black" : "gray.400"}
+                        _hover={{ bg: selectedPowerType === "all" ? "#00E6E6" : "whiteAlpha.100", color: selectedPowerType === "all" ? "black" : "white" }}
+                        size="sm"
+                        onClick={() => setSelectedPowerType("all")}
                     >
                       全部
                     </Button>
@@ -392,13 +393,11 @@ export const AirsoftShowcasePage = () => {
                         variant={
                           selectedPowerType === powerType.id
                             ? "solid"
-                            : "outline"
+                            : "ghost"
                         }
-                        colorPalette={
-                          selectedPowerType === powerType.id
-                            ? "primary"
-                            : "neutral"
-                        }
+                        bg={selectedPowerType === powerType.id ? "#00FFFF" : "transparent"}
+                        color={selectedPowerType === powerType.id ? "black" : "gray.400"}
+                        _hover={{ bg: selectedPowerType === powerType.id ? "#00E6E6" : "whiteAlpha.100", color: selectedPowerType === powerType.id ? "black" : "white" }}
                         size="sm"
                         onClick={() => setSelectedPowerType(powerType.id)}
                       >
@@ -411,10 +410,10 @@ export const AirsoftShowcasePage = () => {
                   </HStack>
                 </HStack>
 
-                <Separator orientation="vertical" h="6" />
+                <Separator orientation="vertical" h="6" borderColor="whiteAlpha.200" />
 
                 {/* 結果統計 */}
-                <Text fontSize="sm" color="fg.muted">
+                <Text fontSize="sm" color="gray.500">
                   共 {filteredData.length} 項結果
                 </Text>
               </HStack>
@@ -431,14 +430,16 @@ export const AirsoftShowcasePage = () => {
                 key={item.id}
                 ref={index === filteredData.length - 1 ? lastItemRef : null}
                 overflow="hidden"
-                bg="bg"
-                backdropFilter="blur(10px)"
+                bg="whiteAlpha.50"
+                borderColor="whiteAlpha.200"
+                borderWidth="1px"
                 borderRadius="xl"
                 shadow="sm"
                 _hover={{
                   transform: "translateY(-4px)",
                   shadow: "lg",
-                  backdropFilter: "blur(15px)",
+                  borderColor: "#FF6600",
+                  bg: "whiteAlpha.100"
                 }}
                 transition="all 0.3s ease"
                 cursor="pointer"
@@ -457,7 +458,7 @@ export const AirsoftShowcasePage = () => {
 
                   {/* 愛心徽章 */}
                   <Box position="absolute" bottom={2} left={2}>
-                    <Badge colorPalette="warning" size="sm">
+                    <Badge colorPalette="orange" size="sm" variant="solid">
                       <Icon mr={1}>
                         <FaHeart />
                       </Icon>
@@ -469,10 +470,10 @@ export const AirsoftShowcasePage = () => {
                 {/* 簡化的卡片內容 */}
                 <Card.Body p={4}>
                   <VStack gap={2} align="stretch">
-                    <Heading size="sm" color="fg" lineClamp={1}>
+                    <Heading size="sm" color="white" lineClamp={1}>
                       {item.title}
                     </Heading>
-                    <Text color="fg.muted" fontSize="sm">
+                    <Text color="gray.400" fontSize="sm">
                       {item.brand}
                     </Text>
                   </VStack>
@@ -484,12 +485,12 @@ export const AirsoftShowcasePage = () => {
           {/* 載入更多指示器 */}
           {loading && (
             <Flex justify="center" mt={8}>
-              <Spinner size="lg" colorPalette="primary" />
+              <Spinner size="lg" color="cyan.500" />
             </Flex>
           )}
 
           {!hasMore && (
-            <Text textAlign="center" mt={8} color="fg.muted">
+            <Text textAlign="center" mt={8} color="gray.500">
               已載入全部內容
             </Text>
           )}
@@ -504,13 +505,13 @@ export const AirsoftShowcasePage = () => {
         }
         size="xl"
       >
-        <DialogBackdrop />
+        <DialogBackdrop bg="blackAlpha.800" backdropFilter="blur(5px)" />
         <DialogPositioner>
-          <DialogContent>
+          <DialogContent bg="#1a1a1a" color="white" borderColor="whiteAlpha.200" borderWidth="1px">
             <DialogHeader>
-              <DialogTitle>{selectedItem?.title}</DialogTitle>
+              <DialogTitle color="white">{selectedItem?.title}</DialogTitle>
               <DialogCloseTrigger asChild>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" color="gray.400" _hover={{ color: "white", bg: "whiteAlpha.100" }}>
                   <FaTimes />
                 </Button>
               </DialogCloseTrigger>
@@ -532,74 +533,76 @@ export const AirsoftShowcasePage = () => {
                   {/* 基本資訊 */}
                   <SimpleGrid columns={2} gap={6}>
                     <Box>
-                      <Heading size="md" mb={3} color="fg">
+                      <Heading size="md" mb={3} color="#FF6600">
                         基本資訊
                       </Heading>
                       <VStack gap={2} align="stretch">
                         <HStack justify="space-between">
-                          <Text color="fg.muted">品牌：</Text>
-                          <Text color="fg">{selectedItem.brand}</Text>
+                          <Text color="gray.400">品牌：</Text>
+                          <Text color="white">{selectedItem.brand}</Text>
                         </HStack>
                         <HStack justify="space-between">
-                          <Text color="fg.muted">型號：</Text>
-                          <Text color="fg">{selectedItem.model}</Text>
+                          <Text color="gray.400">型號：</Text>
+                          <Text color="white">{selectedItem.model}</Text>
                         </HStack>
                         <HStack justify="space-between">
-                          <Text color="fg.muted">價格：</Text>
-                          <Text color="primary.500" fontWeight="bold">
+                          <Text color="gray.400">價格：</Text>
+                          <Text color="#00FFFF" fontWeight="bold">
                             {selectedItem.price}
                           </Text>
                         </HStack>
                         <HStack justify="space-between">
-                          <Text color="fg.muted">評分：</Text>
+                          <Text color="gray.400">評分：</Text>
                           <HStack>
-                            <Icon color="warning.500">
+                            <Icon color="yellow.400">
                               <FaStar />
                             </Icon>
-                            <Text color="fg">{selectedItem.rating}</Text>
+                            <Text color="white">{selectedItem.rating}</Text>
                           </HStack>
                         </HStack>
                       </VStack>
                     </Box>
 
                     <Box>
-                      <Heading size="md" mb={3} color="fg">
+                      <Heading size="md" mb={3} color="#FF6600">
                         規格參數
                       </Heading>
                       <VStack gap={2} align="stretch">
                         <HStack justify="space-between">
-                          <Text color="fg.muted">長度：</Text>
-                          <Text color="fg">{selectedItem.specs.length}</Text>
+                          <Text color="gray.400">長度：</Text>
+                          <Text color="white">{selectedItem.specs.length}</Text>
                         </HStack>
                         <HStack justify="space-between">
-                          <Text color="fg.muted">重量：</Text>
-                          <Text color="fg">{selectedItem.specs.weight}</Text>
+                          <Text color="gray.400">重量：</Text>
+                          <Text color="white">{selectedItem.specs.weight}</Text>
                         </HStack>
                         <HStack justify="space-between">
-                          <Text color="fg.muted">彈匣容量：</Text>
-                          <Text color="fg">{selectedItem.specs.capacity}</Text>
+                          <Text color="gray.400">彈匣容量：</Text>
+                          <Text color="white">{selectedItem.specs.capacity}</Text>
                         </HStack>
                         <HStack justify="space-between">
-                          <Text color="fg.muted">初速：</Text>
-                          <Text color="fg">{selectedItem.specs.fps} FPS</Text>
+                          <Text color="gray.400">初速：</Text>
+                          <Text color="white">{selectedItem.specs.fps} FPS</Text>
                         </HStack>
                       </VStack>
                     </Box>
                   </SimpleGrid>
 
-                  <Separator />
+                  <Separator borderColor="whiteAlpha.200" />
 
                   {/* 配件清單 */}
                   <Box>
-                    <Heading size="md" mb={3} color="fg">
+                    <Heading size="md" mb={3} color="#FF6600">
                       搭配配件
                     </Heading>
                     <SimpleGrid columns={2} gap={2}>
                       {selectedItem.accessories.map((accessory, index) => (
                         <Badge
                           key={index}
-                          colorPalette="primary"
+                          colorPalette="cyan"
                           variant="outline"
+                          borderColor="cyan.500"
+                          color="cyan.300"
                         >
                           {accessory}
                         </Badge>
@@ -607,21 +610,21 @@ export const AirsoftShowcasePage = () => {
                     </SimpleGrid>
                   </Box>
 
-                  <Separator />
+                  <Separator borderColor="whiteAlpha.200" />
 
                   {/* 描述 */}
                   <Box>
-                    <Heading size="md" mb={3} color="fg">
+                    <Heading size="md" mb={3} color="#FF6600">
                       詳細描述
                     </Heading>
-                    <Text color="fg.muted" lineHeight="tall">
+                    <Text color="gray.300" lineHeight="tall">
                       {selectedItem.description}
                     </Text>
                   </Box>
 
                   {/* 用戶資訊 */}
                   <Box>
-                    <Heading size="md" mb={3} color="fg">
+                    <Heading size="md" mb={3} color="#FF6600">
                       分享者
                     </Heading>
                     <HStack gap={3}>
@@ -629,16 +632,18 @@ export const AirsoftShowcasePage = () => {
                         w="48px"
                         h="48px"
                         borderRadius="full"
-                        bg="neutral.200"
+                        bg="gray.700"
                         backgroundImage={`url(${selectedItem.user.avatar})`}
                         backgroundSize="cover"
                         backgroundPosition="center"
+                        borderWidth="2px"
+                        borderColor="whiteAlpha.200"
                       />
                       <VStack gap={1} align="start">
-                        <Text fontWeight="medium" color="fg">
+                        <Text fontWeight="medium" color="white">
                           {selectedItem.user.name}
                         </Text>
-                        <HStack gap={1} fontSize="sm" color="fg.muted">
+                        <HStack gap={1} fontSize="sm" color="gray.500">
                           <FaCalendar />
                           <Text>分享於 {selectedItem.uploadDate}</Text>
                         </HStack>
@@ -650,14 +655,14 @@ export const AirsoftShowcasePage = () => {
             </DialogBody>
 
             <DialogFooter>
-              <HStack gap={3}>
-                <Button colorPalette="primary" flex={1}>
+              <HStack gap={3} w="full">
+                <Button bg="#FF6600" color="white" _hover={{ bg: "#E65C00" }} flex={1}>
                   <Icon mr={2}>
                     <FaHeart />
                   </Icon>
                   收藏 ({selectedItem?.likes})
                 </Button>
-                <Button variant="outline" colorPalette="neutral" flex={1}>
+                <Button variant="outline" borderColor="whiteAlpha.400" color="white" _hover={{ bg: "whiteAlpha.100" }} flex={1}>
                   <Icon mr={2}>
                     <FaShare />
                   </Icon>

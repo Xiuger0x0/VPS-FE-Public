@@ -5,15 +5,16 @@ import {
   HStack,
   Heading,
   Text,
-  Card,
+  SimpleGrid,
   Badge,
   Button,
   Icon,
   Image,
   Link,
+  Tabs,
 } from "@chakra-ui/react";
 import { Helmet } from "react-helmet-async";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import {
   FaCode,
   FaGithub,
@@ -22,27 +23,9 @@ import {
   FaNodeJs,
   FaDatabase,
   FaMobile,
-  FaChevronLeft,
-  FaChevronRight,
 } from "react-icons/fa";
 
 // 專案資料
-/**
- {
-  id: string,           // 專案唯一標識
-  title: string,        // 專案標題
-  description: string,  // 專案描述
-  status: string,       // 專案狀態
-  statusColor: string,  // 狀態顏色
-  image: string,        // 專案圖片
-  technologies: [],     // 技術棧陣列
-  features: [],         // 功能特色陣列
-  github: string,       // GitHub 連結
-  demo: string,         // 預覽連結
-  startDate: string,    // 開始日期
-  category: string,     // 專案分類
-}
- */
 const PROJECTS_DATA = [
   {
     id: "vps-project",
@@ -50,13 +33,13 @@ const PROJECTS_DATA = [
     description:
       "一個完整的全端 Web 應用，包含前端 React、後端 Spring Boot 和 Docker 部署",
     status: "進行中",
-    statusColor: "warning",
+    statusColor: "orange",
     image:
       "https://images.unsplash.com/photo-1516796181074-bf453fbfa3e6?auto=format&fit=crop&w=900&q=60",
     technologies: [
-      { name: "React", icon: FaReact, color: "info" },
-      { name: "Spring Boot", icon: FaCode, color: "success" },
-      { name: "Docker", icon: FaDatabase, color: "primary" },
+      { name: "React", icon: FaReact, color: "blue" },
+      { name: "Spring Boot", icon: FaCode, color: "green" },
+      { name: "Docker", icon: FaDatabase, color: "blue" },
     ],
     features: ["響應式設計", "用戶認證系統", "RESTful API", "Docker 容器化"],
     github: "https://github.com/xiuger0x0/VPS-Project",
@@ -69,13 +52,13 @@ const PROJECTS_DATA = [
     title: "Airsoft 管理系統",
     description: "專為 Airsoft 愛好者設計的裝備管理和戰術規劃應用",
     status: "規劃中",
-    statusColor: "info",
+    statusColor: "cyan",
     image:
       "https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=900&q=60",
     technologies: [
-      { name: "React", icon: FaReact, color: "info" },
-      { name: "Node.js", icon: FaNodeJs, color: "success" },
-      { name: "MongoDB", icon: FaDatabase, color: "primary" },
+      { name: "React", icon: FaReact, color: "blue" },
+      { name: "Node.js", icon: FaNodeJs, color: "green" },
+      { name: "MongoDB", icon: FaDatabase, color: "green" },
     ],
     features: ["裝備庫存管理", "戰術地圖規劃", "團隊協作功能", "數據統計分析"],
     github: "#",
@@ -88,12 +71,12 @@ const PROJECTS_DATA = [
     title: "行動應用開發",
     description: "跨平台行動應用，提供便捷的生活服務功能",
     status: "已完成",
-    statusColor: "success",
+    statusColor: "green",
     image:
       "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=900&q=60",
     technologies: [
-      { name: "React Native", icon: FaMobile, color: "info" },
-      { name: "Firebase", icon: FaDatabase, color: "warning" },
+      { name: "React Native", icon: FaMobile, color: "blue" },
+      { name: "Firebase", icon: FaDatabase, color: "orange" },
     ],
     features: ["原生性能", "離線功能", "推送通知", "社交分享"],
     github: "#",
@@ -106,12 +89,12 @@ const PROJECTS_DATA = [
     title: "個人作品集網站",
     description: "展示個人技能和專案的現代化作品集網站",
     status: "已完成",
-    statusColor: "success",
+    statusColor: "green",
     image:
       "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=900&q=60",
     technologies: [
-      { name: "React", icon: FaReact, color: "info" },
-      { name: "TypeScript", icon: FaCode, color: "primary" },
+      { name: "React", icon: FaReact, color: "blue" },
+      { name: "TypeScript", icon: FaCode, color: "blue" },
     ],
     features: ["響應式設計", "動畫效果", "SEO 優化", "快速載入"],
     github: "#",
@@ -121,381 +104,199 @@ const PROJECTS_DATA = [
   },
 ];
 
-// 專案分類
-const PROJECT_CATEGORIES = [
-  { id: "all", name: "全部專案", count: PROJECTS_DATA.length },
-  {
-    id: "全端開發",
-    name: "全端開發",
-    count: PROJECTS_DATA.filter((p) => p.category === "全端開發").length,
-  },
-  {
-    id: "前端開發",
-    name: "前端開發",
-    count: PROJECTS_DATA.filter((p) => p.category === "前端開發").length,
-  },
-  {
-    id: "行動開發",
-    name: "行動開發",
-    count: PROJECTS_DATA.filter((p) => p.category === "行動開發").length,
-  },
-  {
-    id: "專案管理",
-    name: "專案管理",
-    count: PROJECTS_DATA.filter((p) => p.category === "專案管理").length,
-  },
-];
-
-export const ProjectPage: React.FC = () => {
+export const ProjectPage = () => {
   const appName = import.meta.env.VITE_APP_NAME;
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
-  // 根據分類過濾專案
+  const categories = ["All", "全端開發", "前端開發", "行動開發", "專案管理"];
+
   const filteredProjects =
-    activeCategory === "all"
+    selectedCategory === "All"
       ? PROJECTS_DATA
-      : PROJECTS_DATA.filter((project) => project.category === activeCategory);
-
-  // 滾動到指定專案
-  const scrollToProject = (index: number) => {
-    if (scrollContainerRef.current) {
-      const container = scrollContainerRef.current;
-      const projectWidth = container.scrollWidth / filteredProjects.length;
-      container.scrollTo({
-        left: projectWidth * index,
-        behavior: "smooth",
-      });
-      setCurrentProjectIndex(index);
-    }
-  };
-
-  // 處理滾動事件
-  const handleScroll = () => {
-    if (scrollContainerRef.current) {
-      const container = scrollContainerRef.current;
-      const projectWidth = container.scrollWidth / filteredProjects.length;
-      const currentIndex = Math.round(container.scrollLeft / projectWidth);
-      setCurrentProjectIndex(currentIndex);
-    }
-  };
-
-  // 左右導航
-  const scrollLeft = () => {
-    const newIndex = Math.max(0, currentProjectIndex - 1);
-    scrollToProject(newIndex);
-  };
-
-  const scrollRight = () => {
-    const newIndex = Math.min(
-      filteredProjects.length - 1,
-      currentProjectIndex + 1
-    );
-    scrollToProject(newIndex);
-  };
+      : PROJECTS_DATA.filter((project) => project.category === selectedCategory);
 
   return (
     <>
       <Helmet>
-        <title>{`${appName} | 專案作品`}</title>
+        <title>{`${appName} | LAB`}</title>
         <meta
           name="description"
-          content="探索我的技術專案，從全端開發到行動應用，展現創新與技術的完美結合"
+          content="XIUGER LAB - Side Projects & Tools"
         />
       </Helmet>
 
-      <Box bg="bg.canvas" minH="100vh">
-        {/* Hero Section */}
-        <Container maxW="7xl" py={12}>
-          <VStack gap={8} align="stretch">
-            <Box textAlign="center">
-              <Heading
-                size="3xl"
-                bgGradient="linear(to-r, primary.500, secondary.500)"
-                bgClip="text"
-                mb={4}
-              >
-                專案作品
-              </Heading>
-              <Text fontSize="lg" color="fg.muted" maxW="2xl" mx="auto">
-                用代碼編織夢想，用技術創造價值。每個專案都是一次探索，每行代碼都承載著創新的可能。
-              </Text>
-            </Box>
+      <Box bg="#0f0f0f" minH="100vh" py={20}>
+        <Container maxW="7xl">
+          {/* Header */}
+          <VStack gap={6} mb={16} align="start">
+            <Heading size="4xl" letterSpacing="widest" fontWeight="bold" color="white">
+              LAB
+            </Heading>
+            <Text color="gray.400" fontSize="xl" maxW="2xl">
+              Experiments, Tools, and Side Projects.
+            </Text>
 
-            {/* 分類導航 */}
-            <Box>
-              <HStack justify="center" wrap="wrap" gap={3}>
-                {PROJECT_CATEGORIES.map((category) => (
-                  <Button
-                    key={category.id}
-                    variant={
-                      activeCategory === category.id ? "solid" : "outline"
-                    }
-                    colorPalette={
-                      activeCategory === category.id ? "primary" : "neutral"
-                    }
-                    size="sm"
-                    onClick={() => setActiveCategory(category.id)}
+            {/* Filter Tabs */}
+            <Tabs.Root
+              value={selectedCategory}
+              onValueChange={(e) => setSelectedCategory(e.value)}
+              variant="line"
+              colorPalette="cyan"
+            >
+              <Tabs.List bg="transparent" borderBottomColor="whiteAlpha.200">
+                {categories.map((cat) => (
+                  <Tabs.Trigger
+                    key={cat}
+                    value={cat}
+                    color="gray.400"
+                    _selected={{ color: "#00FFFF", borderColor: "#00FFFF" }}
+                    _hover={{ color: "white" }}
                   >
-                    {category.name} ({category.count})
-                  </Button>
+                    {cat}
+                  </Tabs.Trigger>
                 ))}
-              </HStack>
-            </Box>
+              </Tabs.List>
+            </Tabs.Root>
           </VStack>
-        </Container>
 
-        {/* 橫向捲軸專案展示 */}
-        <Box position="relative" py={8}>
-          {/* 左右導航按鈕 */}
-          <Button
-            position="absolute"
-            left={4}
-            top="50%"
-            transform="translateY(-50%)"
-            zIndex={2}
-            colorPalette="neutral"
-            variant="solid"
-            size="lg"
-            borderRadius="full"
-            onClick={scrollLeft}
-            disabled={currentProjectIndex === 0}
-          >
-            <Icon>
-              <FaChevronLeft />
-            </Icon>
-          </Button>
-
-          <Button
-            position="absolute"
-            right={4}
-            top="50%"
-            transform="translateY(-50%)"
-            zIndex={2}
-            colorPalette="neutral"
-            variant="solid"
-            size="lg"
-            borderRadius="full"
-            onClick={scrollRight}
-            disabled={currentProjectIndex === filteredProjects.length - 1}
-          >
-            <Icon>
-              <FaChevronRight />
-            </Icon>
-          </Button>
-
-          {/* 專案捲軸容器 */}
-          <Box
-            ref={scrollContainerRef}
-            display="flex"
-            overflowX="auto"
-            overflowY="hidden"
-            gap={6}
-            px={8}
-            py={4}
-            css={{
-              scrollSnapType: "x mandatory",
-              scrollbarWidth: "none",
-              "&::-webkit-scrollbar": {
-                display: "none",
-              },
-            }}
-            onScroll={handleScroll}
-          >
-            {filteredProjects.map((project, index) => (
+          {/* Projects Grid */}
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={8}>
+            {filteredProjects.map((project) => (
               <Box
                 key={project.id}
-                minW="400px"
-                maxW="400px"
-                css={{ scrollSnapAlign: "center" }}
+                bg="whiteAlpha.50"
+                borderRadius="xl"
+                borderWidth="1px"
+                borderColor="whiteAlpha.200"
+                overflow="hidden"
+                transition="all 0.3s"
+                _hover={{
+                  borderColor: "#00FFFF",
+                  transform: "translateY(-5px)",
+                  boxShadow: "0 0 20px rgba(0, 255, 255, 0.2)",
+                  bg: "whiteAlpha.100",
+                }}
+                display="flex"
+                flexDirection="column"
               >
-                <Card.Root
-                  key={index}
-                  h="full"
-                  shadow="lg"
-                  _hover={{ transform: "translateY(-4px)", shadow: "xl" }}
-                  transition="all 0.3s"
-                >
-                  <Card.Body p={0}>
-                    {/* 專案圖片 */}
-                    <Box position="relative" overflow="hidden">
-                      <Image
-                        src={project.image}
-                        alt={project.title}
-                        w="full"
-                        h="200px"
-                        objectFit="cover"
-                      />
-                      <Box position="absolute" top={3} right={3}>
-                        <Badge colorPalette={project.statusColor} size="sm">
-                          {project.status}
-                        </Badge>
-                      </Box>
-                    </Box>
+                {/* Image */}
+                <Box position="relative" h="200px" overflow="hidden">
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    w="full"
+                    h="full"
+                    objectFit="cover"
+                    transition="transform 0.3s"
+                    _hover={{ transform: "scale(1.05)" }}
+                  />
+                  <Box position="absolute" top={4} right={4}>
+                    <Badge colorPalette={project.statusColor} variant="solid">
+                      {project.status}
+                    </Badge>
+                  </Box>
+                </Box>
 
-                    {/* 專案內容 */}
-                    <VStack gap={4} p={6} align="stretch">
-                      <Box>
-                        <Heading size="lg" color="fg" mb={2}>
-                          {project.title}
-                        </Heading>
-                        <Text color="fg.muted" fontSize="sm" lineHeight="tall">
-                          {project.description}
+                {/* Content */}
+                <VStack p={6} align="start" gap={4} flex="1">
+                  <VStack align="start" gap={2}>
+                    <Heading size="lg" color="white">
+                      {project.title}
+                    </Heading>
+                    <Text color="gray.400" fontSize="sm" lineHeight="tall">
+                      {project.description}
+                    </Text>
+                  </VStack>
+
+                  {/* Tech Stack */}
+                  <HStack wrap="wrap" gap={2}>
+                    {project.technologies.map((tech, index) => (
+                      <HStack key={index} gap={1} bg="whiteAlpha.100" px={2} py={1} borderRadius="md">
+                        <Icon color={`${tech.color}.400`} boxSize={3}>
+                          <tech.icon />
+                        </Icon>
+                        <Text fontSize="xs" color="gray.300">
+                          {tech.name}
                         </Text>
-                      </Box>
-
-                      {/* 技術標籤 */}
-                      <Box>
-                        <Text
-                          fontSize="sm"
-                          fontWeight="medium"
-                          color="fg"
-                          mb={2}
-                        >
-                          技術棧
-                        </Text>
-                        <HStack wrap="wrap" gap={2}>
-                          {project.technologies.map((tech, techIndex) => (
-                            <HStack key={techIndex} gap={1}>
-                              <Icon color={`${tech.color}.500`} boxSize={4}>
-                                <tech.icon />
-                              </Icon>
-                              <Text fontSize="xs" color="fg.muted">
-                                {tech.name}
-                              </Text>
-                            </HStack>
-                          ))}
-                        </HStack>
-                      </Box>
-
-                      {/* 功能特色 */}
-                      <Box>
-                        <Text
-                          fontSize="sm"
-                          fontWeight="medium"
-                          color="fg"
-                          mb={2}
-                        >
-                          主要功能
-                        </Text>
-                        <VStack gap={1} align="stretch">
-                          {project.features
-                            .slice(0, 3)
-                            .map((feature, featureIndex) => (
-                              <Text
-                                key={featureIndex}
-                                fontSize="xs"
-                                color="fg.muted"
-                              >
-                                • {feature}
-                              </Text>
-                            ))}
-                        </VStack>
-                      </Box>
-
-                      {/* 操作按鈕 */}
-                      <HStack gap={3} pt={2}>
-                        <Button
-                          asChild
-                          variant="outline"
-                          colorPalette="neutral"
-                          size="sm"
-                          flex={1}
-                        >
-                          <Link
-                            href={project.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Icon mr={2}>
-                              <FaGithub />
-                            </Icon>
-                            源碼
-                          </Link>
-                        </Button>
-                        <Button
-                          asChild
-                          colorPalette="primary"
-                          size="sm"
-                          flex={1}
-                        >
-                          <Link
-                            href={project.demo}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Icon mr={2}>
-                              <FaExternalLinkAlt />
-                            </Icon>
-                            預覽
-                          </Link>
-                        </Button>
                       </HStack>
-                    </VStack>
-                  </Card.Body>
-                </Card.Root>
+                    ))}
+                  </HStack>
+
+                  {/* Actions */}
+                  <HStack gap={4} w="full" pt={4} mt="auto">
+                    <Button
+                      asChild
+                      variant="outline"
+                      borderColor="whiteAlpha.300"
+                      color="white"
+                      size="sm"
+                      flex={1}
+                      _hover={{ bg: "whiteAlpha.200", borderColor: "white" }}
+                    >
+                      <Link
+                        href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Icon mr={2}>
+                          <FaGithub />
+                        </Icon>
+                        Code
+                      </Link>
+                    </Button>
+                    <Button
+                      asChild
+                      bg="cyan.600"
+                      color="white"
+                      size="sm"
+                      flex={1}
+                      _hover={{ bg: "cyan.500" }}
+                    >
+                      <Link
+                        href={project.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Icon mr={2}>
+                          <FaExternalLinkAlt />
+                        </Icon>
+                        Demo
+                      </Link>
+                    </Button>
+                  </HStack>
+                </VStack>
               </Box>
             ))}
-          </Box>
+          </SimpleGrid>
 
-          {/* 快速導航點 */}
-          <HStack justify="center" mt={6} gap={2}>
-            {filteredProjects.map((_, index) => (
-              <Box
-                key={index}
-                w={3}
-                h={3}
-                borderRadius="full"
-                bg={
-                  index === currentProjectIndex ? "primary.500" : "neutral.300"
-                }
-                cursor="pointer"
-                transition="all 0.2s"
-                onClick={() => scrollToProject(index)}
-                _hover={{
-                  bg:
-                    index === currentProjectIndex
-                      ? "primary.600"
-                      : "neutral.400",
-                }}
-              />
-            ))}
-          </HStack>
-        </Box>
-
-        {/* 專案統計 */}
-        <Container maxW="7xl" py={12}>
-          <Box textAlign="center">
-            <Heading size="lg" mb={8} color="fg">
-              專案成果
-            </Heading>
-            <HStack justify="center" gap={12} wrap="wrap">
-              <VStack>
-                <Text fontSize="3xl" fontWeight="bold" color="primary.500">
-                  {PROJECTS_DATA.length}
-                </Text>
-                <Text color="fg.muted">總專案數</Text>
-              </VStack>
-              <VStack>
-                <Text fontSize="3xl" fontWeight="bold" color="success.500">
-                  {PROJECTS_DATA.filter((p) => p.status === "已完成").length}
-                </Text>
-                <Text color="fg.muted">已完成</Text>
-              </VStack>
-              <VStack>
-                <Text fontSize="3xl" fontWeight="bold" color="warning.500">
-                  {PROJECTS_DATA.filter((p) => p.status === "進行中").length}
-                </Text>
-                <Text color="fg.muted">進行中</Text>
-              </VStack>
-              <VStack>
-                <Text fontSize="3xl" fontWeight="bold" color="info.500">
-                  {PROJECTS_DATA.filter((p) => p.status === "規劃中").length}
-                </Text>
-                <Text color="fg.muted">規劃中</Text>
-              </VStack>
-            </HStack>
+          {/* Stats Section */}
+          <Box mt={24} pt={12} borderTopWidth="1px" borderColor="whiteAlpha.200">
+             <SimpleGrid columns={{ base: 2, md: 4 }} gap={8} textAlign="center">
+                <VStack>
+                    <Text fontSize="4xl" fontWeight="bold" color="white">
+                        {PROJECTS_DATA.length}
+                    </Text>
+                    <Text color="gray.500" fontSize="sm" letterSpacing="wider">TOTAL PROJECTS</Text>
+                </VStack>
+                <VStack>
+                    <Text fontSize="4xl" fontWeight="bold" color="green.400">
+                        {PROJECTS_DATA.filter((p) => p.status === "已完成").length}
+                    </Text>
+                    <Text color="gray.500" fontSize="sm" letterSpacing="wider">COMPLETED</Text>
+                </VStack>
+                <VStack>
+                    <Text fontSize="4xl" fontWeight="bold" color="orange.400">
+                        {PROJECTS_DATA.filter((p) => p.status === "進行中").length}
+                    </Text>
+                    <Text color="gray.500" fontSize="sm" letterSpacing="wider">IN PROGRESS</Text>
+                </VStack>
+                <VStack>
+                    <Text fontSize="4xl" fontWeight="bold" color="cyan.400">
+                        {PROJECTS_DATA.filter((p) => p.status === "規劃中").length}
+                    </Text>
+                    <Text color="gray.500" fontSize="sm" letterSpacing="wider">PLANNED</Text>
+                </VStack>
+             </SimpleGrid>
           </Box>
         </Container>
       </Box>
@@ -504,3 +305,4 @@ export const ProjectPage: React.FC = () => {
 };
 
 export default ProjectPage;
+

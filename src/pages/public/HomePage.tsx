@@ -16,7 +16,7 @@ export const HomePage = () => {
     {
       title: "VISION",
       subtitle: "Photography & FPV",
-      link: "/airsoft",
+      link: "/vision",
       hoverColor: "#FF6600", // Brand Orange
     },
     {
