@@ -69,26 +69,26 @@ const Footer = ({ visitorStats }: { visitorStats: VisitorStats | null }) => {
   ];
 
   return (
-    <Box as="footer" bg="bg" borderTop="1px solid" borderColor="border">
+    <Box as="footer" bg="#0f0f0f" borderTop="1px solid" borderColor="whiteAlpha.200" color="white">
       <Container maxW="7xl" py={12}>
         <VStack gap={8} align="stretch">
           {/* 主要內容區 */}
           <SimpleGrid columns={[1, 2, 4]} gap={8}>
             {/* 品牌介紹 */}
             <VStack align="start" gap={4}>
-              <Heading size="md" color="fg">
+              <Heading size="md" color="white">
                 XIUGER VISION
               </Heading>
-              <Text color="fg.muted" fontSize="sm">
+              <Text color="gray.400" fontSize="sm">
                 全端開發者的技術分享平台，專注於現代化 Web
                 應用開發和創新解決方案。
               </Text>
               <HStack gap={2}>
-                <Badge colorPalette="primary" size="sm">
+                <Badge colorPalette="orange" variant="solid" size="sm">
                   <FaCode size={10} style={{ marginRight: 4 }} />
                   全端開發
                 </Badge>
-                <Badge colorPalette="secondary" size="sm">
+                <Badge colorPalette="cyan" variant="solid" size="sm">
                   <FaRocket size={10} style={{ marginRight: 4 }} />
                   創新技術
                 </Badge>
@@ -98,7 +98,7 @@ const Footer = ({ visitorStats }: { visitorStats: VisitorStats | null }) => {
             {/* 導航連結 */}
             {footerLinks.map((section) => (
               <VStack key={section.title} align="start" gap={3}>
-                <Heading size="sm" color="fg">
+                <Heading size="sm" color="white">
                   {section.title}
                 </Heading>
                 <VStack align="start" gap={2}>
@@ -106,10 +106,10 @@ const Footer = ({ visitorStats }: { visitorStats: VisitorStats | null }) => {
                     <Link
                       key={link.name}
                       href={link.href}
-                      color="fg.muted"
+                      color="gray.400"
                       fontSize="sm"
                       _hover={{
-                        color: "primary",
+                        color: "#FF6600",
                         textDecoration: "none",
                         transform: "translateX(4px)",
                       }}
@@ -123,18 +123,18 @@ const Footer = ({ visitorStats }: { visitorStats: VisitorStats | null }) => {
             ))}
           </SimpleGrid>
 
-          <Separator />
+          <Separator borderColor="whiteAlpha.200" />
 
           {/* 底部區域 */}
           <HStack justify="space-between" wrap="wrap" gap={4}>
             {/* 版權信息 */}
             <VStack align="start" gap={1}>
-              <Text fontSize="sm" color="fg.muted">
+              <Text fontSize="sm" color="gray.500">
                 © {currentYear} XIUGER VISION. All rights reserved.
               </Text>
-              <HStack gap={1} fontSize="sm" color="fg.muted">
+              <HStack gap={1} fontSize="sm" color="gray.500">
                 <Text>Made with</Text>
-                <FaHeart color="red" size={12} />
+                <FaHeart color="#FF6600" size={12} />
                 <Text>using React + Kotlin</Text>
               </HStack>
             </VStack>
@@ -144,10 +144,10 @@ const Footer = ({ visitorStats }: { visitorStats: VisitorStats | null }) => {
               {/* 訪客統計 */}
               {visitorStats && (
                 <HStack gap={2}>
-                  <Text fontSize="sm" color="fg.muted">
+                  <Text fontSize="sm" color="gray.500">
                     當前在線:
                   </Text>
-                  <Badge colorPalette="success" size="sm">
+                  <Badge colorPalette="green" variant="solid" size="sm">
                     {visitorStats.data[0].activeUsers}
                   </Badge>
                 </HStack>
@@ -163,12 +163,14 @@ const Footer = ({ visitorStats }: { visitorStats: VisitorStats | null }) => {
                     rel="noopener noreferrer"
                   >
                     <IconButton
-                      colorPalette="neutral"
                       variant="ghost"
                       size="sm"
                       aria-label={social.label}
+                      color="gray.400"
                       _hover={{
                         transform: "translateY(-2px)",
+                        color: "white",
+                        bg: "whiteAlpha.100"
                       }}
                       transition="all 0.2s"
                     >

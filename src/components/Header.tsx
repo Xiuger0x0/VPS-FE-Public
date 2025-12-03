@@ -20,7 +20,6 @@ import {
 import { FiMenu } from "react-icons/fi";
 import { MdOutlineClose } from "react-icons/md";
 import { IUser } from "@/interface/IUser";
-import { ColorModeButton } from "./ui/color-mode";
 import { useNavigate, useLocation, Link } from "react-router";
 import { useTranslation } from "react-i18next";
 import { BsTranslate } from "react-icons/bs";
@@ -63,8 +62,6 @@ const Links: LinkProps[] = [
     path: "/airsoft",
     children: [{ name: "管理面板", path: "/airsoft/dashboard" }],
   },
-  // 開發模式專用
-  { name: "元件遊樂場", path: "/playground", isDev: true },
 ];
 
 // 導航連結組件
@@ -103,9 +100,9 @@ const NavLinks = ({
                 borderRadius="md"
                 fontWeight="medium"
                 position="relative"
-                color={isActive(link.path) ? "primary" : "fg"}
+                color={isActive(link.path) ? "#FF6600" : "gray.300"}
                 _hover={{
-                  color: "primary",
+                  color: "#FF6600",
                   transform: "translateY(-1px)",
                   _after: {
                     width: "100%",
@@ -120,7 +117,7 @@ const NavLinks = ({
                   transform: "translateX(-50%)",
                   width: isActive(link.path) ? "100%" : "0%",
                   height: "2px",
-                  bg: "primary",
+                  bg: "#FF6600",
                   borderRadius: "full",
                   opacity: isActive(link.path) ? 1 : 0,
                   transition: "all 0.3s ease",
@@ -131,7 +128,7 @@ const NavLinks = ({
               </Box>
             </MenuTrigger>
             <MenuPositioner>
-              <MenuContent>
+              <MenuContent bg="#1a1a1a" borderColor="whiteAlpha.200" color="white">
                 <MenuItemGroup>
                   {link.children.map((child) => (
                     <MenuItem
@@ -141,6 +138,10 @@ const NavLinks = ({
                         navigate(child.path);
                         onLinkClick?.();
                       }}
+                      _hover={{ bg: "whiteAlpha.100", color: "#FF6600" }}
+                      bg="transparent"
+                      color="gray.300"
+                      cursor="pointer"
                     >
                       {child.name}
                     </MenuItem>
@@ -162,9 +163,9 @@ const NavLinks = ({
             borderRadius="md"
             fontWeight="medium"
             position="relative"
-            color={isActive(link.path) ? "primary" : "fg"}
+            color={isActive(link.path) ? "#FF6600" : "gray.300"}
             _hover={{
-              color: "primary",
+              color: "#FF6600",
               transform: "translateY(-1px)",
               _after: {
                 width: "100%",
@@ -179,7 +180,7 @@ const NavLinks = ({
               transform: "translateX(-50%)",
               width: isActive(link.path) ? "100%" : "0%",
               height: "2px",
-              bg: "primary",
+              bg: "#FF6600",
               borderRadius: "full",
               opacity: isActive(link.path) ? 1 : 0,
               transition: "all 0.3s ease",
@@ -204,6 +205,8 @@ const LanguageToggleButton = ({
     size="sm"
     onClick={toggleLanguage}
     aria-label="切換語言"
+    color="gray.400"
+    _hover={{ color: "white", bg: "whiteAlpha.100" }}
   >
     <BsTranslate />
   </IconButton>
@@ -228,21 +231,22 @@ const UserMenu = ({
           </Avatar.Root>
         </MenuTrigger>
         <MenuPositioner>
-          <MenuContent>
+          <MenuContent bg="#1a1a1a" borderColor="whiteAlpha.200" color="white">
             <MenuItemGroup>
-              <MenuItem value="displayName">
+              <MenuItem value="displayName" bg="transparent" color="gray.300" _hover={{ bg: "whiteAlpha.100" }}>
                 <Text fontWeight="medium">
                   {t("nickname")}：{user.displayName}
                 </Text>
               </MenuItem>
             </MenuItemGroup>
-            <MenuSeparator />
+            <MenuSeparator borderColor="whiteAlpha.200" />
             <MenuItemGroup>
               <MenuItem
                 value="logout"
                 onClick={handleLogout}
-                color="fg.error"
-                _hover={{ bg: "bg.error", color: "fg.error" }}
+                color="red.400"
+                bg="transparent"
+                _hover={{ bg: "whiteAlpha.100", color: "red.300" }}
               >
                 {t("logout")}
               </MenuItem>
@@ -319,10 +323,10 @@ function Header() {
       top={hideHeader ? "-80px" : "0"}
       left="0"
       width="100%"
-      bg="bg"
+      bg="rgba(15, 15, 15, 0.8)"
       backdropFilter="blur(10px)"
       borderBottom="1px solid"
-      borderColor="border"
+      borderColor="whiteAlpha.200"
       transition="top 0.3s ease"
       zIndex="max"
       shadow="sm"
@@ -339,10 +343,11 @@ function Header() {
         <IconButton
           onClick={() => setOpen(!isOpen)}
           display={{ md: "none" }}
-          colorPalette="neutral"
+          color="white"
           variant="ghost"
           size="sm"
           aria-label="開啟菜單"
+          _hover={{ bg: "whiteAlpha.100" }}
         >
           {isOpen ? <MdOutlineClose /> : <FiMenu />}
         </IconButton>
@@ -355,7 +360,7 @@ function Header() {
               <Text
                 fontSize="xl"
                 fontWeight="bold"
-                bgGradient="linear(to-r, primary.500, secondary.500)"
+                bgGradient="linear(to-r, #FF6600, #00FFFF)"
                 bgClip="text"
               >
                 VPS Project
@@ -370,7 +375,6 @@ function Header() {
         {/* 右側功能區 */}
         <HStack gap={2}>
           <Box display={{ base: "none", md: "flex" }} gap={2}>
-            <ColorModeButton variant="ghost" colorPalette="neutral" size="sm" />
             <LanguageToggleButton toggleLanguage={toggleLanguage} />
           </Box>
 
@@ -380,10 +384,10 @@ function Header() {
             <Button
               variant="ghost"
               size="sm"
-              color="fg"
+              color="gray.300"
               _hover={{
-                color: "primary",
-                bg: "bg.muted",
+                color: "#FF6600",
+                bg: "whiteAlpha.100",
               }}
               onClick={handleLogin}
             >
@@ -401,18 +405,13 @@ function Header() {
         lazyMount
         unmountOnExit={false}
       >
-        <Drawer.Backdrop />
+        <Drawer.Backdrop bg="blackAlpha.800" backdropFilter="blur(5px)" />
         <Drawer.Positioner>
-          <Drawer.Content bg="bg" borderColor="border">
+          <Drawer.Content bg="#0f0f0f" borderColor="whiteAlpha.200" color="white">
             <Drawer.Body py={6}>
               <NavLinks direction="column" onLinkClick={() => setOpen(false)} />
               <Drawer.Footer justifyContent="center" mt={6}>
                 <HStack gap={4}>
-                  <ColorModeButton
-                    colorPalette="neutral"
-                    variant="ghost"
-                    size="sm"
-                  />
                   <LanguageToggleButton toggleLanguage={toggleLanguage} />
                 </HStack>
               </Drawer.Footer>
