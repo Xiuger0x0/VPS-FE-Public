@@ -10,7 +10,6 @@ import { ServicePage } from "@/pages/public/ServicePage";
 
 import { Page404 } from "@/pages/public/Page404";
 import { ProjectPage } from "@/pages/public/ProjectPage";
-import ThemePlayground from "./pages/ThemePlaygroundPage";
 
 import { AirsoftManager } from "./pages/Airsoft/AirsoftManager";
 import { RegisterPage } from "@/pages/auth/RegisterPage";
@@ -40,11 +39,11 @@ import { LandingLayout } from "@/layouts/LandingLayout";
 
 import { PhotoProvider } from "@/context/PhotoContext";
 import { VisionPage } from "@/pages/public/VisionPage";
+import { PhotographyPage } from "@/pages/public/PhotographyPage";
 import { PhotoCMS } from "@/pages/admin/cms/PhotoCMS";
 
 // TODO 後續加入動態入載入（依照取得的使用者等級注入額外可用路由）
 function App() {
-  const isDev = process.env.NODE_ENV === "development";
   const setUser = useSetRecoilState<IUser | null>(userState);
 
   return (
@@ -107,6 +106,7 @@ function App() {
           <Route path="/project" element={<ProjectPage />} />
           <Route path="/service" element={<ServicePage />} />
           <Route path="/vision" element={<VisionPage />} />
+          <Route path="/photography" element={<PhotographyPage />} />
         </Route>
 
         {/* 展示頁面 - 無 Footer */}
@@ -131,9 +131,6 @@ function App() {
           <Route path="cms/photos" element={<PhotoCMS />} />
           <Route path="logs/system" element={<SystemLogs />} />
         </Route>
-
-        {/* 僅開發模式下提供前端路由 */}
-        {isDev && <Route path="/playground" element={<ThemePlayground />} />}
 
         {/* 其餘頁面導到404 */}
         <Route path="/*" element={<Page404 />} />
