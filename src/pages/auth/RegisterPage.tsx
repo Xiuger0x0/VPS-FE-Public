@@ -10,17 +10,20 @@ import {
   Field,
   Heading,
   Center,
+  Container,
+  Icon,
+  Text,
 } from "@chakra-ui/react";
 import { Controller, useForm } from "react-hook-form";
 import { MemberLevelText } from "@/types/MemberEnum";
 import axios from "axios";
 import { useState } from "react";
-import { glassmorphismStyle } from "@/styles/glassmorphism";
 import { IMemberForm } from "@/interface/IMemberForm";
 import { useSetRecoilState } from "recoil";
 import { IUser } from "@/interface/IUser";
 import { userState } from "@/recoil/state";
 import { BackendApi } from "@/js/bootstrap";
+import { FaUser, FaEnvelope, FaLock, FaPhone, FaCrown } from "react-icons/fa";
 
 const memberLevelOptions = createListCollection({
   items: Object.entries(MemberLevelText).map(([key, label]) => ({
@@ -93,151 +96,235 @@ export const RegisterPage = () => {
   };
 
   return (
-    <Box maxW="md" mx="auto" my={10} p={6} {...glassmorphismStyle}>
-      <Center pb={4}>
-        <Heading size={"2xl"}>註冊</Heading>
-      </Center>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <VStack align="stretch">
-          <Field.Root required>
-            <Field.Label>
-              電子郵件 (帳號) <Field.RequiredIndicator />
-            </Field.Label>
-            <Input
-              type="email"
-              placeholder="請輸入電子郵件"
-              {...register("email", {
-                required: "請輸入電子郵件",
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: "電子郵件格式不正確",
-                },
-              })}
-            />
-            {errors.email && (
-              <Field.HelperText color="red.500">
-                {errors.email.message}
-              </Field.HelperText>
-            )}
-          </Field.Root>
+    <Box bg="#0f0f0f" minH="calc(100vh - 64px)" display="flex" alignItems="center" justifyContent="center" py={12}>
+      <Container maxW="md">
+        <Box
+          p={8}
+          borderRadius="2xl"
+          bg="whiteAlpha.50"
+          borderWidth="1px"
+          borderColor="whiteAlpha.200"
+          backdropFilter="blur(10px)"
+          shadow="xl"
+        >
+          <Center pb={8} flexDirection="column" gap={2}>
+            <Heading size="2xl" color="white" letterSpacing="wide">CREATE ACCOUNT</Heading>
+            <Text color="gray.400">Join our community today</Text>
+          </Center>
 
-          <Field.Root required>
-            <Field.Label>
-              密碼 <Field.RequiredIndicator />
-            </Field.Label>
-            <Input
-              type="password"
-              placeholder="密碼"
-              {...register("password", { required: "請輸入密碼" })}
-            />
-            {errors.password && (
-              <Field.HelperText color="red.500">
-                {errors.password.message}
-              </Field.HelperText>
-            )}
-          </Field.Root>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <VStack gap={5} align="stretch">
+              <Field.Root required invalid={!!errors.email}>
+                <Field.Label color="gray.300">
+                  <Icon mr={2} color="#FF6600"><FaEnvelope /></Icon>
+                  電子郵件 (帳號)
+                </Field.Label>
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  bg="whiteAlpha.50"
+                  borderColor="whiteAlpha.200"
+                  color="white"
+                  _hover={{ borderColor: "#FF6600" }}
+                  _focus={{ borderColor: "#FF6600", boxShadow: "0 0 0 1px #FF6600" }}
+                  _placeholder={{ color: "gray.600" }}
+                  {...register("email", {
+                    required: "請輸入電子郵件",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "電子郵件格式不正確",
+                    },
+                  })}
+                />
+                {errors.email && (
+                  <Field.ErrorText color="red.400">
+                    {errors.email.message}
+                  </Field.ErrorText>
+                )}
+              </Field.Root>
 
-          <Field.Root required>
-            <Field.Label>
-              再次輸入密碼 <Field.RequiredIndicator />
-            </Field.Label>
-            <Input
-              type="password"
-              placeholder="請再次輸入密碼"
-              {...register("password2", {
-                required: "請再次輸入密碼",
-                validate: (value) => value === password || "密碼輸入不一致",
-              })}
-            />
-            {errors.password2 && (
-              <Field.HelperText color="red.500">
-                {errors.password2.message}
-              </Field.HelperText>
-            )}
-          </Field.Root>
+              <Field.Root required invalid={!!errors.password}>
+                <Field.Label color="gray.300">
+                  <Icon mr={2} color="#FF6600"><FaLock /></Icon>
+                  密碼
+                </Field.Label>
+                <Input
+                  type="password"
+                  placeholder="Create a password"
+                  bg="whiteAlpha.50"
+                  borderColor="whiteAlpha.200"
+                  color="white"
+                  _hover={{ borderColor: "#FF6600" }}
+                  _focus={{ borderColor: "#FF6600", boxShadow: "0 0 0 1px #FF6600" }}
+                  _placeholder={{ color: "gray.600" }}
+                  {...register("password", { required: "請輸入密碼" })}
+                />
+                {errors.password && (
+                  <Field.ErrorText color="red.400">
+                    {errors.password.message}
+                  </Field.ErrorText>
+                )}
+              </Field.Root>
 
-          <Field.Root required>
-            <Field.Label>
-              暱稱 <Field.RequiredIndicator />
-            </Field.Label>
-            <Input placeholder="暱稱" {...register("displayName")} />
-          </Field.Root>
+              <Field.Root required invalid={!!errors.password2}>
+                <Field.Label color="gray.300">
+                  <Icon mr={2} color="#FF6600"><FaLock /></Icon>
+                  再次輸入密碼
+                </Field.Label>
+                <Input
+                  type="password"
+                  placeholder="Confirm your password"
+                  bg="whiteAlpha.50"
+                  borderColor="whiteAlpha.200"
+                  color="white"
+                  _hover={{ borderColor: "#FF6600" }}
+                  _focus={{ borderColor: "#FF6600", boxShadow: "0 0 0 1px #FF6600" }}
+                  _placeholder={{ color: "gray.600" }}
+                  {...register("password2", {
+                    required: "請再次輸入密碼",
+                    validate: (value) => value === password || "密碼輸入不一致",
+                  })}
+                />
+                {errors.password2 && (
+                  <Field.ErrorText color="red.400">
+                    {errors.password2.message}
+                  </Field.ErrorText>
+                )}
+              </Field.Root>
 
-          <Field.Root>
-            <Field.Label>電話</Field.Label>
-            <Input placeholder="電話" {...register("phone")} />
-          </Field.Root>
+              <Field.Root required invalid={!!errors.displayName}>
+                <Field.Label color="gray.300">
+                  <Icon mr={2} color="#FF6600"><FaUser /></Icon>
+                  暱稱
+                </Field.Label>
+                <Input
+                  placeholder="Your display name"
+                  bg="whiteAlpha.50"
+                  borderColor="whiteAlpha.200"
+                  color="white"
+                  _hover={{ borderColor: "#FF6600" }}
+                  _focus={{ borderColor: "#FF6600", boxShadow: "0 0 0 1px #FF6600" }}
+                  _placeholder={{ color: "gray.600" }}
+                  {...register("displayName", { required: "請輸入暱稱" })}
+                />
+                {errors.displayName && (
+                  <Field.ErrorText color="red.400">
+                    {errors.displayName.message}
+                  </Field.ErrorText>
+                )}
+              </Field.Root>
 
-          <Field.Root required>
-            <Field.Label>
-              會員等級 <Field.RequiredIndicator />
-            </Field.Label>
-            <Controller
-              name="memberLevel"
-              control={control}
-              rules={{
-                validate: (value) =>
-                  (Array.isArray(value) && value.length > 0) ||
-                  "請選擇會員等級",
-              }}
-              render={({ field }) => (
-                <Select.Root
-                  name={field.name}
-                  value={field.value}
-                  onValueChange={(e) => setValue("memberLevel", e.value)}
-                  onInteractOutside={() => field.onBlur()}
-                  collection={memberLevelOptions}
-                >
-                  <Select.HiddenSelect />
-                  <Select.Control>
-                    <Select.Trigger>
-                      <Select.ValueText placeholder="請選擇會員等級" />
-                    </Select.Trigger>
-                    <Select.IndicatorGroup>
-                      <Select.Indicator />
-                    </Select.IndicatorGroup>
-                  </Select.Control>
-                  <Portal>
-                    <Select.Positioner>
-                      <Select.Content>
-                        {memberLevelOptions.items.map((option) => (
-                          <Select.Item item={option} key={option.value}>
-                            {option.label}
-                            <Select.ItemIndicator />
-                          </Select.Item>
-                        ))}
-                      </Select.Content>
-                    </Select.Positioner>
-                  </Portal>
-                </Select.Root>
+              <Field.Root>
+                <Field.Label color="gray.300">
+                  <Icon mr={2} color="#FF6600"><FaPhone /></Icon>
+                  電話
+                </Field.Label>
+                <Input
+                  placeholder="Your phone number (optional)"
+                  bg="whiteAlpha.50"
+                  borderColor="whiteAlpha.200"
+                  color="white"
+                  _hover={{ borderColor: "#FF6600" }}
+                  _focus={{ borderColor: "#FF6600", boxShadow: "0 0 0 1px #FF6600" }}
+                  _placeholder={{ color: "gray.600" }}
+                  {...register("phone")}
+                />
+              </Field.Root>
+
+              <Field.Root required invalid={!!errors.memberLevel}>
+                <Field.Label color="gray.300">
+                  <Icon mr={2} color="#FF6600"><FaCrown /></Icon>
+                  會員等級
+                </Field.Label>
+                <Controller
+                  name="memberLevel"
+                  control={control}
+                  rules={{
+                    validate: (value) =>
+                      (Array.isArray(value) && value.length > 0) ||
+                      "請選擇會員等級",
+                  }}
+                  render={({ field }) => (
+                    <Select.Root
+                      name={field.name}
+                      value={field.value}
+                      onValueChange={(e) => setValue("memberLevel", e.value)}
+                      onInteractOutside={() => field.onBlur()}
+                      collection={memberLevelOptions}
+                    >
+                      <Select.HiddenSelect />
+                      <Select.Control>
+                        <Select.Trigger
+                          bg="whiteAlpha.50"
+                          borderColor="whiteAlpha.200"
+                          color="white"
+                          _hover={{ borderColor: "#FF6600" }}
+                        >
+                          <Select.ValueText placeholder="Select membership level" />
+                        </Select.Trigger>
+                        <Select.IndicatorGroup>
+                          <Select.Indicator color="gray.400" />
+                        </Select.IndicatorGroup>
+                      </Select.Control>
+                      <Portal>
+                        <Select.Positioner>
+                          <Select.Content bg="#1a1a1a" borderColor="whiteAlpha.200" color="white">
+                            {memberLevelOptions.items.map((option) => (
+                              <Select.Item
+                                item={option}
+                                key={option.value}
+                                _hover={{ bg: "whiteAlpha.100", color: "#FF6600" }}
+                                bg="transparent"
+                                color="gray.300"
+                                cursor="pointer"
+                              >
+                                {option.label}
+                                <Select.ItemIndicator color="#FF6600" />
+                              </Select.Item>
+                            ))}
+                          </Select.Content>
+                        </Select.Positioner>
+                      </Portal>
+                    </Select.Root>
+                  )}
+                />
+                {errors.memberLevel && (
+                  <Field.ErrorText color="red.400">
+                    {errors.memberLevel.message}
+                  </Field.ErrorText>
+                )}
+              </Field.Root>
+
+              {error && (
+                <Alert.Root status="error" variant="subtle" bg="red.900" color="red.200" borderColor="red.800" borderWidth="1px">
+                  <Alert.Indicator color="red.400" />
+                  <Alert.Title>{error}</Alert.Title>
+                </Alert.Root>
               )}
-            />
-            {errors.memberLevel && (
-              <Field.HelperText color="red.500">
-                {errors.memberLevel.message}
-              </Field.HelperText>
-            )}
-          </Field.Root>
 
-          {error && (
-            <Alert.Root status="error">
-              <Alert.Indicator />
-              <Alert.Title>{error}</Alert.Title>
-            </Alert.Root>
-          )}
+              {success && (
+                <Alert.Root status="success" variant="subtle" bg="green.900" color="green.200" borderColor="green.800" borderWidth="1px">
+                  <Alert.Indicator color="green.400" />
+                  <Alert.Title>註冊成功！</Alert.Title>
+                </Alert.Root>
+              )}
 
-          {success && (
-            <Alert.Root status="success">
-              <Alert.Indicator />
-              <Alert.Title>註冊成功！</Alert.Title>
-            </Alert.Root>
-          )}
-
-          <Button colorScheme="teal" type="submit">
-            送出
-          </Button>
-        </VStack>
-      </form>
+              <Button
+                type="submit"
+                width="100%"
+                bg="#FF6600"
+                color="white"
+                size="lg"
+                _hover={{ bg: "#E65C00", transform: "translateY(-2px)", shadow: "lg" }}
+                transition="all 0.2s"
+                mt={4}
+              >
+                註冊帳號
+              </Button>
+            </VStack>
+          </form>
+        </Box>
+      </Container>
     </Box>
   );
 };
